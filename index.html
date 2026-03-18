@@ -176,6 +176,12 @@
       cursor:pointer; text-decoration:none; display:block;
       background:var(--moss);
     }
+    .cat-card img {
+      position:absolute; inset:0;
+      width:100%; height:100%; object-fit:cover;
+      transition:transform .6s ease;
+    }
+    .cat-card:hover img { transform:scale(1.06); }
     .cat-overlay {
       position:absolute; inset:0;
       background:linear-gradient(to top,rgba(10,20,10,.82) 0%,rgba(10,20,10,.15) 55%);
@@ -412,30 +418,39 @@
       <p class="section-sub">Everything you need on the water — flies, rods, reels, fly line, leaders, tippet, accessories, and more.</p>
     </div>
     <div class="cat-grid">
+
       <a href="https://www.troutprostore.com/store/flies" class="cat-card" aria-label="Shop flies">
+        <img src="images/flies.png" alt="Fly fishing flies" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Most Popular</span>
           <div class="cat-name">Flies</div>
         </div>
       </a>
+
       <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop fly rods">
+        <img src="images/flyrod.png" alt="Fly fishing rods" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Gear</span>
           <div class="cat-name">Fly Rods</div>
         </div>
       </a>
+
       <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop fly line and leaders">
+        <img src="flyline.png" alt="Fly fishing line and leaders" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Gear</span>
           <div class="cat-name">Fly Line &amp; Leaders</div>
         </div>
       </a>
+
       <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop accessories">
+        <img src="flyacc.png" alt="Fly fishing accessories" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Gear</span>
           <div class="cat-name">Accessories</div>
         </div>
       </a>
+
     </div>
   </div>
 </section>
