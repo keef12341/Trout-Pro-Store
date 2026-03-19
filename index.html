@@ -907,16 +907,11 @@
   }
 
   /* ════════════════════════════════════════════════
-     LIVE RIVER SEARCH
-     Uses USGS Water Services REST API — no API key needed.
-     Two-step:
-       1. Search sites by name  → get site numbers
-       2. Fetch instantaneous values (discharge + gage height)
+     LIVE RIVER SEARCH — USGS Water Services API
      
-     IMPORTANT: The USGS APIs support CORS, so they work
-     directly from any browser. If the domain blocks outbound
-     fetches you may need to add waterservices.usgs.gov to
-     your WordPress allowed-origins or use a proxy plugin.
+     Strategy: try direct fetch first (works in most browsers).
+     If blocked (GitHub Pages, some hosts), auto-retry through
+     the allorigins.win CORS proxy — no setup needed.
   ════════════════════════════════════════════════ */
 
   const STATE_MAP = {
@@ -952,43 +947,50 @@
     btn.disabled = false; btn.textContent = 'Search';
   }
 
+  /* Fetch helper — tries direct first, falls back to CORS proxy */
+  const PROXY = 'https://api.allorigins.win/raw?url=';
+
+  async function fetchWithFallback(url, asJson = false) {
+    /* 1. Try direct */
+    try {
+      const r = await fetch(url, { mode: 'cors' });
+      if (r.ok) return asJson ? r.json() : r.text();
+    } catch (_) { /* blocked — fall through to proxy */ }
+
+    /* 2. Try via allorigins proxy */
+    const proxied = PROXY + encodeURIComponent(url);
+    const r2 = await fetch(proxied);
+    if (!r2.ok) throw new Error(`Proxy HTTP ${r2.status}`);
+    return asJson ? r2.json() : r2.text();
+  }
+
   async function searchRiver() {
     const query = document.getElementById('river-input').value.trim();
     if (!query) return;
     setLoading(query);
 
     try {
-      /* ── Step 1: find matching stream gauges ── */
-      const siteUrl =
-        'https://waterservices.usgs.gov/nwis/site/?' +
-        new URLSearchParams({
-          format:        'rdb',
-          siteName:      query,
-          siteType:      'ST',
-          hasDataTypeCd: 'iv',
-          siteStatus:    'active'
-        });
+      /* ── Step 1: find matching USGS stream gauge sites ── */
+      const siteUrl = 'https://waterservices.usgs.gov/nwis/site/?'
+        + 'format=rdb'
+        + '&siteName=' + encodeURIComponent(query)
+        + '&siteType=ST'
+        + '&hasDataTypeCd=iv'
+        + '&siteStatus=active';
 
-      const siteResp = await fetch(siteUrl, { mode: 'cors' });
-      if (!siteResp.ok) throw new Error(`Site search HTTP ${siteResp.status}`);
-      const siteText = await siteResp.text();
+      const siteText = await fetchWithFallback(siteUrl, false);
 
-      /* Parse RDB — skip # comment lines, first data line is header, second is type row */
+      /* Parse RDB tab-delimited — skip # comment lines */
       const lines = siteText.split('\n').filter(l => l.trim() && !l.startsWith('#'));
-      if (lines.length < 3) {
-        showNoResults(query);
-        resetBtn(); return;
-      }
+      /* lines[0]=headers  lines[1]=type-row  lines[2+]=data */
+      if (lines.length < 3) { showNoResults(query); resetBtn(); return; }
 
       const headers   = lines[0].split('\t');
       const siteNoIdx = headers.indexOf('site_no');
       const nameIdx   = headers.indexOf('station_nm');
       const stateIdx  = headers.indexOf('state_cd');
 
-      if (siteNoIdx === -1) {
-        showNoResults(query);
-        resetBtn(); return;
-      }
+      if (siteNoIdx === -1) { showNoResults(query); resetBtn(); return; }
 
       const sites = [];
       for (let i = 2; i < lines.length && sites.length < 9; i++) {
@@ -996,29 +998,23 @@
         if (!cols[siteNoIdx] || !cols[siteNoIdx].trim()) continue;
         sites.push({
           siteNo: cols[siteNoIdx].trim(),
-          name:   (nameIdx   >= 0 && cols[nameIdx])  ? cols[nameIdx].trim()  : 'Unknown Station',
-          state:  (stateIdx  >= 0 && cols[stateIdx]) ? cols[stateIdx].trim() : ''
+          name:   nameIdx  >= 0 && cols[nameIdx]  ? cols[nameIdx].trim()  : 'Unknown Station',
+          state:  stateIdx >= 0 && cols[stateIdx] ? cols[stateIdx].trim() : ''
         });
       }
 
-      if (sites.length === 0) { showNoResults(query); resetBtn(); return; }
+      if (!sites.length) { showNoResults(query); resetBtn(); return; }
 
-      /* ── Step 2: fetch live flow data ── */
-      const siteNos  = sites.map(s => s.siteNo).join(',');
-      const ivUrl    =
-        'https://waterservices.usgs.gov/nwis/iv/?' +
-        new URLSearchParams({
-          format:      'json',
-          sites:       siteNos,
-          parameterCd: '00060,00065',
-          siteStatus:  'active'
-        });
+      /* ── Step 2: fetch live instantaneous values ── */
+      const ivUrl = 'https://waterservices.usgs.gov/nwis/iv/?'
+        + 'format=json'
+        + '&sites=' + sites.map(s => s.siteNo).join(',')
+        + '&parameterCd=00060,00065'
+        + '&siteStatus=active';
 
-      const ivResp = await fetch(ivUrl, { mode: 'cors' });
-      if (!ivResp.ok) throw new Error(`IV fetch HTTP ${ivResp.status}`);
-      const ivData = await ivResp.json();
+      const ivData = await fetchWithFallback(ivUrl, true);
 
-      /* Build lookup siteNo → readings */
+      /* Build lookup siteNo → { cfs, ft, dt } */
       const readings = {};
       (ivData?.value?.timeSeries || []).forEach(ts => {
         const sno   = ts.sourceInfo?.siteCode?.[0]?.value;
@@ -1030,7 +1026,7 @@
         if (pCode === '00065') readings[sno].ft  = parseFloat(val.value);
       });
 
-      /* ── Render ── */
+      /* ── Render results ── */
       const cards = sites.map(s => buildCard(s, readings[s.siteNo] || {})).join('');
       const el = document.getElementById('river-results');
       el.innerHTML = `
@@ -1039,10 +1035,10 @@
         </div>
         <div class="results-grid">${cards}</div>`;
 
-      /* Animate bars */
+      /* Animate flow bars */
       requestAnimationFrame(() => {
-        el.querySelectorAll('.gauge-bar-fill[data-pct]').forEach(bar => {
-          bar.style.width = bar.dataset.pct + '%';
+        el.querySelectorAll('.gauge-bar-fill[data-pct]').forEach(b => {
+          b.style.width = b.dataset.pct + '%';
         });
       });
 
@@ -1050,13 +1046,10 @@
       console.error('River search error:', err);
       document.getElementById('river-results').innerHTML = `
         <div class="results-error">
-          ⚠ Could not reach the USGS data service. This can happen if:<br>
-          • Your network blocks external API requests<br>
-          • The USGS service is temporarily down<br><br>
-          Try again in a moment, or visit 
-          <a href="https://waterdata.usgs.gov/nwis/rt" target="_blank" rel="noopener" style="color:var(--water)">
-            waterdata.usgs.gov
-          </a> directly.
+          ⚠ Could not load river data right now.<br>
+          The USGS service may be temporarily unavailable — please try again in a moment.<br><br>
+          You can also search directly at
+          <a href="https://waterdata.usgs.gov/nwis/rt" target="_blank" rel="noopener" style="color:var(--water)">waterdata.usgs.gov ↗</a>
         </div>`;
     }
 
@@ -1067,8 +1060,7 @@
     document.getElementById('river-results').innerHTML = `
       <div class="results-error">
         No active USGS stream gauges found for &ldquo;${esc(query)}&rdquo;.<br>
-        Try a shorter name (e.g. <em>Davidson</em> instead of <em>Davidson River NC</em>),
-        or check the spelling.
+        Try a shorter name — e.g. <em>Davidson</em> instead of <em>Davidson River NC</em>.
       </div>`;
   }
 
@@ -1076,7 +1068,6 @@
     const hasCfs = r.cfs != null && !isNaN(r.cfs);
     const hasFt  = r.ft  != null && !isNaN(r.ft);
 
-    /* Flow classification — rough thresholds */
     let status = 'na', label = 'No Data';
     if (hasCfs) {
       if      (r.cfs > 5000) { status = 'high';   label = 'High Flow'; }
@@ -1084,7 +1075,6 @@
       else                   { status = 'normal'; label = 'Normal';    }
     }
 
-    /* Logarithmic % for the bar */
     const pct = hasCfs
       ? Math.min(100, Math.round(Math.log10(Math.max(r.cfs, 1) + 1) / Math.log10(10001) * 100))
       : 0;
@@ -1130,7 +1120,7 @@
         <div class="gauge-meta">
           ${stateName ? stateName + ' · ' : ''}Site #${esc(site.siteNo)}<br>
           Updated ${dtStr} ·
-          <a href="${usgsLink}" target="_blank" rel="noopener">USGS page ↗</a>
+          <a href="${usgsLink}" target="_blank" rel="noopener">View on USGS ↗</a>
         </div>
       </div>`;
   }
