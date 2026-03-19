@@ -105,13 +105,10 @@
       overflow: hidden;
       background: var(--forest);
     }
-
-    /* Left panel — text */
     .hero-left {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; justify-content: center;
       padding: 80px 56px 80px 60px;
-      background: linear-gradient(to right, rgba(10,20,10,1) 70%, rgba(10,20,10,0) 100%);
     }
     .hero-badge {
       display: inline-block;
@@ -176,14 +173,12 @@
       transition: transform 8s ease;
     }
     .hero:hover .hero-right img { transform: scale(1.04); }
-    /* fade left edge of image into the text panel */
     .hero-right::before {
       content: '';
       position: absolute; inset: 0;
-      background: linear-gradient(to right, rgba(10,20,10,.85) 0%, rgba(10,20,10,0) 40%);
+      background: linear-gradient(to right, rgba(26,46,26,1) 0%, rgba(26,46,26,0) 35%);
       z-index: 1;
     }
-    /* decorative gold frame accent */
     .hero-right::after {
       content: '';
       position: absolute;
@@ -192,7 +187,6 @@
       z-index: 2;
       pointer-events: none;
     }
-    /* floating label on image */
     .hero-img-label {
       position: absolute;
       bottom: 52px; left: 52px;
@@ -214,15 +208,11 @@
       line-height: 1.3; display: block;
     }
 
-    /* Mobile hero */
     @media (max-width: 860px) {
       .hero { grid-template-columns: 1fr; min-height: auto; }
-      .hero-right { height: 52vw; min-height: 260px; }
-      .hero-right::before { background: linear-gradient(to bottom, rgba(10,20,10,.6) 0%, rgba(10,20,10,0) 50%); }
-      .hero-left {
-        padding: 52px 24px 44px;
-        background: var(--forest);
-      }
+      .hero-right { height: 56vw; min-height: 280px; }
+      .hero-right::before { background: linear-gradient(to bottom, rgba(26,46,26,.7) 0%, transparent 60%); }
+      .hero-left { padding: 52px 24px 44px; }
       .hero-img-label { bottom: 20px; left: 20px; }
     }
 
@@ -306,20 +296,19 @@
     .river-section .section-sub { color:var(--sand); }
 
     .river-search-box {
-      display: flex; gap: 0;
+      display: flex;
       max-width: 680px;
-      margin-bottom: 40px;
+      margin-bottom: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,.4);
     }
     .river-search-box input {
-      flex: 1;
+      flex: 1; min-width: 0;
       padding: 16px 22px;
       font-family: 'Source Serif 4', serif;
       font-size: 1rem;
       border: none; outline: none;
       background: rgba(255,255,255,.95);
       color: var(--text);
-      min-width: 0;
     }
     .river-search-box input::placeholder { color: var(--stone); }
     .river-search-btn {
@@ -332,34 +321,37 @@
       transition: background .2s;
     }
     .river-search-btn:hover { background: var(--gold-light); }
+    .river-search-btn:disabled { opacity:.6; cursor:not-allowed; }
 
     .river-hint {
       font-family: 'Fira Mono', monospace;
       font-size: .72rem; color: var(--stone);
       margin-bottom: 36px; letter-spacing: .04em;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
     }
-    .river-hint span {
-      display: inline-block; margin-right: 10px;
+    .hint-chip {
       background: rgba(255,255,255,.07);
       border: 1px solid rgba(255,255,255,.12);
-      padding: 4px 12px; cursor: pointer;
+      padding: 4px 14px; cursor: pointer;
       transition: background .18s, border-color .18s;
-      border-radius: 2px;
+      border-radius: 2px; color: var(--stone);
+      font-family: 'Fira Mono', monospace; font-size: .72rem;
     }
-    .river-hint span:hover { background: rgba(200,147,42,.15); border-color: rgba(200,147,42,.4); color: var(--gold-light); }
+    .hint-chip:hover { background: rgba(200,147,42,.15); border-color: rgba(200,147,42,.4); color: var(--gold-light); }
 
-    /* Results area */
-    #river-results { min-height: 40px; }
+    /* Results */
+    #river-results { min-height: 20px; }
 
     .results-loading {
       color: var(--sand);
       font-family: 'Fira Mono', monospace;
-      font-size: .82rem; letter-spacing: .08em;
+      font-size: .82rem; letter-spacing: .06em;
       display: flex; align-items: center; gap: 12px;
+      padding: 20px 0;
     }
     .spinner {
       width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.15);
       border-top-color: var(--gold);
       border-radius: 50%;
       animation: spin .7s linear infinite;
@@ -371,10 +363,15 @@
       background: rgba(200,80,60,.1);
       border: 1px solid rgba(200,80,60,.3);
       color: #e88878;
-      padding: 16px 20px;
+      padding: 18px 22px;
       font-family: 'Fira Mono', monospace;
-      font-size: .82rem;
-      max-width: 560px;
+      font-size: .82rem; line-height: 1.6;
+      max-width: 620px;
+    }
+    .results-count {
+      font-family: 'Fira Mono', monospace;
+      font-size: .72rem; color: var(--stone);
+      letter-spacing: .08em; margin-bottom: 20px;
     }
 
     .results-grid {
@@ -388,86 +385,72 @@
       border: 1px solid rgba(255,255,255,.1);
       padding: 24px;
       transition: background .25s, border-color .25s;
-      cursor: default;
     }
     .gauge-card:hover { background: rgba(255,255,255,.09); border-color: rgba(200,147,42,.35); }
 
     .gauge-top {
       display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 14px; gap: 10px;
+      margin-bottom: 12px; gap: 10px;
     }
     .gauge-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.05rem; font-weight: 700;
-      color: var(--white); line-height: 1.3;
-      flex: 1;
+      font-size: 1rem; font-weight: 700;
+      color: var(--white); line-height: 1.3; flex: 1;
     }
     .gauge-status {
       font-family: 'Fira Mono', monospace;
-      font-size: .62rem; letter-spacing: .08em; text-transform: uppercase;
-      padding: 3px 10px; border-radius: 20px; white-space: nowrap;
-      flex-shrink: 0;
+      font-size: .6rem; letter-spacing: .08em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
     }
-    .status-high   { background: rgba(200,80,60,.2); color: #e88878; border: 1px solid rgba(200,80,60,.35); }
-    .status-normal { background: rgba(80,160,80,.2); color: #7dca7d; border: 1px solid rgba(80,160,80,.3); }
-    .status-low    { background: rgba(200,147,42,.2); color: var(--gold-light); border: 1px solid rgba(200,147,42,.35); }
+    .status-high   { background:rgba(200,80,60,.2);  color:#e88878; border:1px solid rgba(200,80,60,.35); }
+    .status-normal { background:rgba(80,160,80,.2);  color:#7dca7d; border:1px solid rgba(80,160,80,.3); }
+    .status-low    { background:rgba(200,147,42,.2); color:var(--gold-light); border:1px solid rgba(200,147,42,.35); }
+    .status-na     { background:rgba(255,255,255,.06); color:var(--stone); border:1px solid rgba(255,255,255,.1); }
 
     .gauge-metrics {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 14px; margin-bottom: 16px;
+      gap: 14px; margin-bottom: 14px;
     }
     .metric-label {
       font-family: 'Fira Mono', monospace;
-      font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+      font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
       color: var(--stone); margin-bottom: 3px;
     }
     .metric-value {
       font-family: 'Playfair Display', serif;
-      font-size: 1.3rem; font-weight: 700; color: var(--gold-light);
-      line-height: 1;
+      font-size: 1.25rem; font-weight: 700; color: var(--gold-light); line-height: 1;
     }
-    .metric-unit {
-      font-size: .68rem; color: var(--stone);
-      font-family: 'Fira Mono', monospace; font-weight: 400;
-      margin-left: 3px;
-    }
+    .metric-unit { font-size: .65rem; color: var(--stone); font-family:'Fira Mono',monospace; margin-left:3px; }
 
-    .gauge-bar-wrap {
-      margin-bottom: 14px;
-    }
+    .gauge-bar-wrap { margin-bottom: 12px; }
     .gauge-bar-label {
       display: flex; justify-content: space-between;
-      font-family: 'Fira Mono', monospace; font-size: .64rem;
+      font-family: 'Fira Mono', monospace; font-size: .62rem;
       color: var(--stone); margin-bottom: 5px;
     }
-    .gauge-bar-track {
-      height: 5px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden;
-    }
-    .gauge-bar-fill {
-      height: 100%; border-radius: 3px;
-      transition: width .8s ease;
-    }
+    .gauge-bar-track { height: 4px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; }
+    .gauge-bar-fill { height: 100%; border-radius: 3px; width: 0%; transition: width .9s ease; }
     .fill-high   { background: #c85040; }
     .fill-normal { background: #5aaa5a; }
     .fill-low    { background: var(--gold); }
+    .fill-na     { background: var(--stone); }
 
-    .gauge-site {
+    .gauge-meta {
       font-family: 'Fira Mono', monospace;
-      font-size: .64rem; color: var(--stone);
-      letter-spacing: .04em;
+      font-size: .62rem; color: var(--stone); line-height: 1.6;
     }
+    .gauge-meta a { color: var(--water); transition: color .18s; }
+    .gauge-meta a:hover { color: var(--gold-light); }
 
-    .results-footer {
-      margin-top: 36px; text-align: center;
-    }
+    .view-all-wrap { text-align:center; margin-top:44px; }
     .btn-outline-light {
-      border: 1.5px solid rgba(200,147,42,.5); color: var(--gold-light);
-      padding: 14px 36px;
-      font-family: 'Source Serif 4', serif; font-weight: 600; font-size: .95rem;
-      letter-spacing: .05em; display: inline-block;
-      transition: border-color .2s, background .2s;
+      border:1.5px solid rgba(200,147,42,.5); color:var(--gold-light);
+      padding:14px 36px;
+      font-family:'Source Serif 4',serif; font-weight:600; font-size:.95rem;
+      letter-spacing:.05em; display:inline-block;
+      transition:border-color .2s,background .2s;
     }
-    .btn-outline-light:hover { border-color: var(--gold-light); background: rgba(200,147,42,.08); }
+    .btn-outline-light:hover { border-color:var(--gold-light); background:rgba(200,147,42,.08); }
 
     /* ── BLOG ───────────────────────────────────── */
     .blog-section { background:var(--cream); }
@@ -534,7 +517,7 @@
       .email-form { flex-direction:column; align-items:center; }
       .email-btn { width:100%; max-width:320px; }
       .river-search-box { flex-direction:column; }
-      .river-search-btn { padding:14px; }
+      .river-search-btn { width:100%; padding:14px; text-align:center; }
     }
     @media (max-width:540px) {
       .products-grid { grid-template-columns:1fr; }
@@ -581,12 +564,8 @@
 
 <main>
 
-<!-- ═══════════════════════════════════════════
-     HERO — split layout with hero.png
-═══════════════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero" aria-label="Welcome to Trout Pro Store">
-
-  <!-- LEFT: headline + CTA -->
   <div class="hero-left fade-up">
     <span class="hero-badge">Trout Pro Store</span>
     <h1>Flies, Rods &amp; Gear for <em>Serious</em> Trout Anglers</h1>
@@ -596,30 +575,20 @@
       <a href="#river-reports" class="btn-outline">River Reports</a>
     </div>
     <div class="hero-stats">
-      <div>
-        <span class="stat-num">5,000+</span>
-        <span class="stat-lbl">Fly Patterns</span>
-      </div>
-      <div>
-        <span class="stat-num">200+</span>
-        <span class="stat-lbl">River Reports</span>
-      </div>
-      <div>
-        <span class="stat-num">25+</span>
-        <span class="stat-lbl">Years of Expertise</span>
-      </div>
+      <div><span class="stat-num">5,000+</span><span class="stat-lbl">Fly Patterns</span></div>
+      <div><span class="stat-num">200+</span><span class="stat-lbl">River Reports</span></div>
+      <div><span class="stat-num">25+</span><span class="stat-lbl">Years of Expertise</span></div>
     </div>
   </div>
-
-  <!-- RIGHT: hero image -->
   <div class="hero-right" aria-hidden="true">
-    <img src="hero.png" alt="Fly fishing on a mountain trout stream" />
+    <img src="hero.png"
+         onerror="this.style.display='none'"
+         alt="Fly fishing on a mountain trout stream" />
     <div class="hero-img-label">
       <p>Trout Pro Store</p>
       <span>America's Fly Fishing Destination</span>
     </div>
   </div>
-
 </section>
 
 <!-- SHOP CATEGORIES -->
@@ -648,8 +617,9 @@
         </div>
       </a>
 
+      <!-- flyline.png and flyacc.png are in the root, same folder as index.html -->
       <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop fly line and leaders">
-        <img src="flyline.png" alt="Fly fishing line and leaders" loading="lazy" />
+        <img src="images/flyline.png" alt="Fly fishing line and leaders" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Gear</span>
           <div class="cat-name">Fly Line &amp; Leaders</div>
@@ -657,7 +627,7 @@
       </a>
 
       <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop accessories">
-        <img src="flyacc.png" alt="Fly fishing accessories" loading="lazy" />
+        <img src="images/flyacc.png" alt="Fly fishing accessories" loading="lazy" />
         <div class="cat-overlay">
           <span class="cat-label">Gear</span>
           <div class="cat-name">Accessories</div>
@@ -683,7 +653,6 @@
       <button class="tab-btn" role="tab" aria-selected="false">Accessories</button>
     </div>
     <div class="products-grid">
-
       <article class="product-card" itemscope itemtype="https://schema.org/Product">
         <div class="product-img"><span class="product-badge">Best Seller</span></div>
         <div class="product-info">
@@ -692,11 +661,10 @@
           <p class="product-desc">Example</p>
           <div class="product-footer">
             <div class="product-price"><span>from </span>$2.49</div>
-            <button class="add-btn" aria-label="Add Example to cart">Add to Cart</button>
+            <button class="add-btn">Add to Cart</button>
           </div>
         </div>
       </article>
-
       <article class="product-card" itemscope itemtype="https://schema.org/Product">
         <div class="product-img"><span class="product-badge">Top Rated</span></div>
         <div class="product-info">
@@ -705,11 +673,10 @@
           <p class="product-desc">Example.</p>
           <div class="product-footer">
             <div class="product-price"><span>from </span>$1.99</div>
-            <button class="add-btn" aria-label="Add example to cart">Add to Cart</button>
+            <button class="add-btn">Add to Cart</button>
           </div>
         </div>
       </article>
-
       <article class="product-card" itemscope itemtype="https://schema.org/Product">
         <div class="product-img"></div>
         <div class="product-info">
@@ -718,11 +685,10 @@
           <p class="product-desc">example</p>
           <div class="product-footer">
             <div class="product-price"><span>from </span>$2.99</div>
-            <button class="add-btn" aria-label="Add example to cart">Add to Cart</button>
+            <button class="add-btn">Add to Cart</button>
           </div>
         </div>
       </article>
-
       <article class="product-card" itemscope itemtype="https://schema.org/Product">
         <div class="product-img"><span class="product-badge">New Stock</span></div>
         <div class="product-info">
@@ -731,11 +697,10 @@
           <p class="product-desc">example.</p>
           <div class="product-footer">
             <div class="product-price"><span>from </span>$2.29</div>
-            <button class="add-btn" aria-label="Add example to cart">Add to Cart</button>
+            <button class="add-btn">Add to Cart</button>
           </div>
         </div>
       </article>
-
     </div>
     <div class="view-all-wrap" style="margin-top:44px;">
       <a href="https://www.troutprostore.com/products" class="btn-primary">View All Products →</a>
@@ -743,40 +708,35 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     LIVE RIVER SEARCH — USGS real-time data
-═══════════════════════════════════════════ -->
+<!-- LIVE RIVER SEARCH -->
 <section class="river-section" id="river-reports" aria-labelledby="reports-heading">
   <div class="section-inner">
     <div class="section-header fade-up">
       <span class="section-tag">Live USGS Data · 200+ Reports Available</span>
       <h2 class="section-heading" id="reports-heading">Search River Conditions</h2>
-      <p class="section-sub" style="color:var(--sand)">Type a river or creek name and we'll pull live flow and gauge data straight from the USGS stream monitoring network.</p>
+      <p class="section-sub" style="color:var(--sand)">Type any river or creek name to pull live streamflow and gauge data from the USGS national monitoring network.</p>
     </div>
 
-    <div class="river-search-box" role="search" aria-label="River search">
-      <input
-        type="text"
-        id="river-input"
-        placeholder="e.g. Davidson River, Yellowstone, Spring Creek…"
-        aria-label="River name"
-        autocomplete="off"
-      />
-      <button class="river-search-btn" id="river-search-btn" onclick="searchRiver()">Search</button>
+    <div class="river-search-box" role="search">
+      <input type="text" id="river-input"
+             placeholder="e.g. Davidson River, Yellowstone, Spring Creek…"
+             aria-label="River name" autocomplete="off" />
+      <button class="river-search-btn" id="search-btn" onclick="searchRiver()">Search</button>
     </div>
 
-    <div class="river-hint" aria-label="Quick search suggestions">
-      Try: 
-      <span onclick="quickSearch('Davidson River NC')">Davidson River, NC</span>
-      <span onclick="quickSearch('Yellowstone River MT')">Yellowstone River, MT</span>
-      <span onclick="quickSearch('Spring Creek PA')">Spring Creek, PA</span>
-      <span onclick="quickSearch('Gunnison River CO')">Gunnison River, CO</span>
+    <div class="river-hint">
+      <span>Try:</span>
+      <button class="hint-chip" onclick="quickSearch('Davidson River')">Davidson River, NC</button>
+      <button class="hint-chip" onclick="quickSearch('Yellowstone River')">Yellowstone River, MT</button>
+      <button class="hint-chip" onclick="quickSearch('Spring Creek')">Spring Creek, PA</button>
+      <button class="hint-chip" onclick="quickSearch('Gunnison River')">Gunnison River, CO</button>
+      <button class="hint-chip" onclick="quickSearch('Little River')">Little River, TN</button>
     </div>
 
     <div id="river-results" aria-live="polite" aria-atomic="true"></div>
 
-    <div class="results-footer">
-      <a href="https://perfectflystore.com/your-streams/" class="btn-outline-light" rel="noopener">View All 200+ River Reports →</a>
+    <div class="view-all-wrap">
+      <a href="https://perfectflystore.com/your-streams/" class="btn-outline-light" target="_blank" rel="noopener">View All 200+ River Reports →</a>
     </div>
   </div>
 </section>
@@ -790,7 +750,6 @@
       <p class="section-sub">Fly fishing stories, tips, and destinations.</p>
     </div>
     <div class="blog-grid">
-
       <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
         <div class="blog-img"></div>
         <div class="blog-body">
@@ -800,7 +759,6 @@
           <a href="https://www.troutprostore.com/blogs" class="blog-link" rel="noopener">Read More →</a>
         </div>
       </article>
-
       <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
         <div class="blog-img"></div>
         <div class="blog-body">
@@ -810,7 +768,6 @@
           <a href="https://www.troutprostore.com/blog/late-fall-trout-fishing-great-smoky-mountains-national-park" class="blog-link" rel="noopener">Read More →</a>
         </div>
       </article>
-
       <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
         <div class="blog-img"></div>
         <div class="blog-body">
@@ -820,7 +777,6 @@
           <a href="https://www.troutprostore.com/blog/see-flies-through-trouts-eyes-how-trout-see-flies" class="blog-link" rel="noopener">Read More →</a>
         </div>
       </article>
-
     </div>
     <div class="view-all-wrap">
       <a href="https://www.troutprostore.com/blogs" class="btn-primary">View All Blog Posts →</a>
@@ -871,12 +827,12 @@
     <div class="footer-col">
       <h4>River Reports</h4>
       <ul>
-        <li><a href="https://perfectflystore.com/your-streams/">All River Reports</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/">Search by River</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/">Spring Creek, PA</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/">Smith River, MT</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/">Gunnison River, CO</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/">Chattahoochee, GA</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">All River Reports</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Search by River</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Spring Creek, PA</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Smith River, MT</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Gunnison River, CO</a></li>
+        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Chattahoochee, GA</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -897,9 +853,6 @@
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════ -->
 <script>
   /* ── Mobile nav ── */
   const hambBtn   = document.getElementById('hambBtn');
@@ -913,26 +866,22 @@
     hambBtn.setAttribute('aria-expanded', false);
   }));
 
-  /* ── Hide header on scroll down, show on scroll up ── */
+  /* ── Scroll-hide header ── */
   let lastScroll = 0;
   const siteHeader = document.getElementById('site-header');
   window.addEventListener('scroll', () => {
     const cur = window.scrollY;
-    if (cur > lastScroll && cur > 80) {
-      siteHeader.classList.add('hidden');
-    } else {
-      siteHeader.classList.remove('hidden');
-    }
+    siteHeader.classList.toggle('hidden', cur > lastScroll && cur > 80);
     lastScroll = cur;
   }, { passive: true });
 
-  /* ── Fade-up on scroll ── */
+  /* ── Fade-up ── */
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-  /* ── Product tabs (visual) ── */
+  /* ── Product tabs ── */
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
@@ -945,16 +894,12 @@
     const inp = document.querySelector('.email-input');
     if (!inp.value || !inp.value.includes('@')) { inp.focus(); return; }
     const btn = document.querySelector('.email-btn');
-    btn.textContent = '✓ Subscribed!';
-    btn.style.background = '#2d7a3a';
-    inp.value = '';
+    btn.textContent = '✓ Subscribed!'; btn.style.background = '#2d7a3a'; inp.value = '';
     setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3500);
   }
 
-  /* ── Enter key on river search ── */
-  document.getElementById('river-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') searchRiver();
-  });
+  /* ── River search keyboard ── */
+  document.getElementById('river-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchRiver(); });
 
   function quickSearch(term) {
     document.getElementById('river-input').value = term;
@@ -962,177 +907,19 @@
   }
 
   /* ════════════════════════════════════════════════
-     LIVE RIVER SEARCH — USGS Water Services API
-     Endpoint: https://waterservices.usgs.gov/nwis/iv/
-     No API key required.
+     LIVE RIVER SEARCH
+     Uses USGS Water Services REST API — no API key needed.
+     Two-step:
+       1. Search sites by name  → get site numbers
+       2. Fetch instantaneous values (discharge + gage height)
+     
+     IMPORTANT: The USGS APIs support CORS, so they work
+     directly from any browser. If the domain blocks outbound
+     fetches you may need to add waterservices.usgs.gov to
+     your WordPress allowed-origins or use a proxy plugin.
   ════════════════════════════════════════════════ */
-  async function searchRiver() {
-    const query = document.getElementById('river-input').value.trim();
-    if (!query) return;
 
-    const resultsEl = document.getElementById('river-results');
-    resultsEl.innerHTML = `
-      <div class="results-loading">
-        <div class="spinner"></div>
-        Searching USGS stream gauges for "${query}"…
-      </div>`;
-
-    try {
-      /* Step 1: Search for matching sites by name */
-      const siteUrl = `https://waterservices.usgs.gov/nwis/site/?format=rdb&siteName=${encodeURIComponent(query)}&siteType=ST&hasDataTypeCd=iv`;
-      const siteResp = await fetch(siteUrl);
-      if (!siteResp.ok) throw new Error('USGS site search failed');
-      const siteText = await siteResp.text();
-
-      /* Parse RDB (tab-delimited) — skip comment lines starting with # */
-      const lines = siteText.split('\n').filter(l => l && !l.startsWith('#'));
-      /* lines[0] = headers, lines[1] = type row, lines[2+] = data */
-      if (lines.length < 3) {
-        resultsEl.innerHTML = renderNoResults(query);
-        return;
-      }
-
-      const headers = lines[0].split('\t');
-      const siteNoIdx   = headers.indexOf('site_no');
-      const stationIdx  = headers.indexOf('station_nm');
-      const stateIdx    = headers.indexOf('state_cd');
-      const latIdx      = headers.indexOf('dec_lat_va');
-      const lonIdx      = headers.indexOf('dec_long_va');
-
-      const sites = [];
-      for (let i = 2; i < lines.length && sites.length < 9; i++) {
-        const cols = lines[i].split('\t');
-        if (cols.length < 4 || !cols[siteNoIdx]) continue;
-        sites.push({
-          siteNo:  cols[siteNoIdx].trim(),
-          name:    cols[stationIdx] ? cols[stationIdx].trim() : 'Unknown Station',
-          state:   cols[stateIdx]  ? cols[stateIdx].trim()   : '',
-          lat:     cols[latIdx]    ? parseFloat(cols[latIdx]) : null,
-          lon:     cols[lonIdx]    ? parseFloat(cols[lonIdx]) : null,
-        });
-      }
-
-      if (sites.length === 0) {
-        resultsEl.innerHTML = renderNoResults(query);
-        return;
-      }
-
-      /* Step 2: Fetch instantaneous values (discharge + gage height) for all sites */
-      const siteNos = sites.map(s => s.siteNo).join(',');
-      const ivUrl = `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${siteNos}&parameterCd=00060,00065&siteStatus=active`;
-      const ivResp = await fetch(ivUrl);
-      if (!ivResp.ok) throw new Error('USGS IV fetch failed');
-      const ivData = await ivResp.json();
-
-      /* Build a lookup: siteNo → { discharge, gageHeight, dateTime } */
-      const readings = {};
-      const tseries = ivData?.value?.timeSeries || [];
-      tseries.forEach(ts => {
-        const siteNo = ts.sourceInfo?.siteCode?.[0]?.value;
-        const pCode  = ts.variable?.variableCode?.[0]?.value;
-        const val    = ts.values?.[0]?.value?.[0];
-        if (!siteNo || !val) return;
-        if (!readings[siteNo]) readings[siteNo] = { dateTime: val.dateTime };
-        if (pCode === '00060') readings[siteNo].discharge    = parseFloat(val.value);
-        if (pCode === '00065') readings[siteNo].gageHeight   = parseFloat(val.value);
-      });
-
-      /* Step 3: Render cards */
-      const cards = sites.map(site => {
-        const r = readings[site.siteNo] || {};
-        return renderGaugeCard(site, r);
-      }).join('');
-
-      resultsEl.innerHTML = `<div class="results-grid">${cards}</div>`;
-
-      /* Animate bars after paint */
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.gauge-bar-fill').forEach(el => {
-          el.style.width = el.dataset.pct + '%';
-        });
-      });
-
-    } catch (err) {
-      console.error(err);
-      resultsEl.innerHTML = `
-        <div class="results-error">
-          Could not load river data. Check your connection or try a different river name.
-        </div>`;
-    }
-  }
-
-  function renderGaugeCard(site, r) {
-    const hasDischarge  = r.discharge  != null && !isNaN(r.discharge);
-    const hasGageHeight = r.gageHeight != null && !isNaN(r.gageHeight);
-
-    /* Classify flow status — very rough heuristics */
-    let status = 'normal', statusLabel = 'Normal';
-    if (hasDischarge) {
-      if (r.discharge > 5000)      { status = 'high';   statusLabel = 'High Flow'; }
-      else if (r.discharge < 50)   { status = 'low';    statusLabel = 'Low Flow';  }
-    }
-
-    /* Bar % — cap at 100, scale logarithmically for cfs */
-    let pct = 50;
-    if (hasDischarge) {
-      pct = Math.min(100, Math.round(Math.log10(Math.max(r.discharge, 1) + 1) / Math.log10(10001) * 100));
-    }
-
-    const dt = r.dateTime ? new Date(r.dateTime) : null;
-    const dtStr = dt ? dt.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) : '—';
-
-    const stateName = usgsStateName(site.state);
-
-    return `
-      <div class="gauge-card">
-        <div class="gauge-top">
-          <div class="gauge-name">${escHtml(site.name)}</div>
-          <span class="gauge-status status-${status}">${statusLabel}</span>
-        </div>
-        <div class="gauge-metrics">
-          <div>
-            <div class="metric-label">Discharge</div>
-            <div class="metric-value">
-              ${hasDischarge ? r.discharge.toLocaleString() : '—'}
-              <span class="metric-unit">${hasDischarge ? 'cfs' : ''}</span>
-            </div>
-          </div>
-          <div>
-            <div class="metric-label">Gage Height</div>
-            <div class="metric-value">
-              ${hasGageHeight ? r.gageHeight.toFixed(2) : '—'}
-              <span class="metric-unit">${hasGageHeight ? 'ft' : ''}</span>
-            </div>
-          </div>
-        </div>
-        <div class="gauge-bar-wrap">
-          <div class="gauge-bar-label">
-            <span>Flow Level</span>
-            <span>${hasDischarge ? pct + '%' : 'No data'}</span>
-          </div>
-          <div class="gauge-bar-track">
-            <div class="gauge-bar-fill fill-${status}" data-pct="${hasDischarge ? pct : 0}" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="gauge-site">
-          ${stateName ? stateName + ' · ' : ''}Site #${escHtml(site.siteNo)} · Updated ${dtStr}
-        </div>
-      </div>`;
-  }
-
-  function renderNoResults(query) {
-    return `
-      <div class="results-error">
-        No active USGS stream gauges found for "<strong>${escHtml(query)}</strong>". Try a shorter name, a nearby town, or check the spelling.
-      </div>`;
-  }
-
-  function escHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  /* USGS two-digit state code → name */
-  const STATE_CODES = {
+  const STATE_MAP = {
     '01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California',
     '08':'Colorado','09':'Connecticut','10':'Delaware','12':'Florida','13':'Georgia',
     '15':'Hawaii','16':'Idaho','17':'Illinois','18':'Indiana','19':'Iowa',
@@ -1145,7 +932,208 @@
     '48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington',
     '54':'West Virginia','55':'Wisconsin','56':'Wyoming'
   };
-  function usgsStateName(code) { return STATE_CODES[code] || ''; }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function setLoading(query) {
+    document.getElementById('river-results').innerHTML = `
+      <div class="results-loading">
+        <div class="spinner"></div>
+        Searching USGS gauges for &ldquo;${esc(query)}&rdquo;&hellip;
+      </div>`;
+    const btn = document.getElementById('search-btn');
+    btn.disabled = true; btn.textContent = 'Searching…';
+  }
+
+  function resetBtn() {
+    const btn = document.getElementById('search-btn');
+    btn.disabled = false; btn.textContent = 'Search';
+  }
+
+  async function searchRiver() {
+    const query = document.getElementById('river-input').value.trim();
+    if (!query) return;
+    setLoading(query);
+
+    try {
+      /* ── Step 1: find matching stream gauges ── */
+      const siteUrl =
+        'https://waterservices.usgs.gov/nwis/site/?' +
+        new URLSearchParams({
+          format:        'rdb',
+          siteName:      query,
+          siteType:      'ST',
+          hasDataTypeCd: 'iv',
+          siteStatus:    'active'
+        });
+
+      const siteResp = await fetch(siteUrl, { mode: 'cors' });
+      if (!siteResp.ok) throw new Error(`Site search HTTP ${siteResp.status}`);
+      const siteText = await siteResp.text();
+
+      /* Parse RDB — skip # comment lines, first data line is header, second is type row */
+      const lines = siteText.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+      if (lines.length < 3) {
+        showNoResults(query);
+        resetBtn(); return;
+      }
+
+      const headers   = lines[0].split('\t');
+      const siteNoIdx = headers.indexOf('site_no');
+      const nameIdx   = headers.indexOf('station_nm');
+      const stateIdx  = headers.indexOf('state_cd');
+
+      if (siteNoIdx === -1) {
+        showNoResults(query);
+        resetBtn(); return;
+      }
+
+      const sites = [];
+      for (let i = 2; i < lines.length && sites.length < 9; i++) {
+        const cols = lines[i].split('\t');
+        if (!cols[siteNoIdx] || !cols[siteNoIdx].trim()) continue;
+        sites.push({
+          siteNo: cols[siteNoIdx].trim(),
+          name:   (nameIdx   >= 0 && cols[nameIdx])  ? cols[nameIdx].trim()  : 'Unknown Station',
+          state:  (stateIdx  >= 0 && cols[stateIdx]) ? cols[stateIdx].trim() : ''
+        });
+      }
+
+      if (sites.length === 0) { showNoResults(query); resetBtn(); return; }
+
+      /* ── Step 2: fetch live flow data ── */
+      const siteNos  = sites.map(s => s.siteNo).join(',');
+      const ivUrl    =
+        'https://waterservices.usgs.gov/nwis/iv/?' +
+        new URLSearchParams({
+          format:      'json',
+          sites:       siteNos,
+          parameterCd: '00060,00065',
+          siteStatus:  'active'
+        });
+
+      const ivResp = await fetch(ivUrl, { mode: 'cors' });
+      if (!ivResp.ok) throw new Error(`IV fetch HTTP ${ivResp.status}`);
+      const ivData = await ivResp.json();
+
+      /* Build lookup siteNo → readings */
+      const readings = {};
+      (ivData?.value?.timeSeries || []).forEach(ts => {
+        const sno   = ts.sourceInfo?.siteCode?.[0]?.value;
+        const pCode = ts.variable?.variableCode?.[0]?.value;
+        const val   = ts.values?.[0]?.value?.[0];
+        if (!sno || !val || val.value === '-999999') return;
+        if (!readings[sno]) readings[sno] = { dt: val.dateTime };
+        if (pCode === '00060') readings[sno].cfs = parseFloat(val.value);
+        if (pCode === '00065') readings[sno].ft  = parseFloat(val.value);
+      });
+
+      /* ── Render ── */
+      const cards = sites.map(s => buildCard(s, readings[s.siteNo] || {})).join('');
+      const el = document.getElementById('river-results');
+      el.innerHTML = `
+        <div class="results-count">
+          Found ${sites.length} USGS gauge${sites.length !== 1 ? 's' : ''} matching &ldquo;${esc(query)}&rdquo;
+        </div>
+        <div class="results-grid">${cards}</div>`;
+
+      /* Animate bars */
+      requestAnimationFrame(() => {
+        el.querySelectorAll('.gauge-bar-fill[data-pct]').forEach(bar => {
+          bar.style.width = bar.dataset.pct + '%';
+        });
+      });
+
+    } catch (err) {
+      console.error('River search error:', err);
+      document.getElementById('river-results').innerHTML = `
+        <div class="results-error">
+          ⚠ Could not reach the USGS data service. This can happen if:<br>
+          • Your network blocks external API requests<br>
+          • The USGS service is temporarily down<br><br>
+          Try again in a moment, or visit 
+          <a href="https://waterdata.usgs.gov/nwis/rt" target="_blank" rel="noopener" style="color:var(--water)">
+            waterdata.usgs.gov
+          </a> directly.
+        </div>`;
+    }
+
+    resetBtn();
+  }
+
+  function showNoResults(query) {
+    document.getElementById('river-results').innerHTML = `
+      <div class="results-error">
+        No active USGS stream gauges found for &ldquo;${esc(query)}&rdquo;.<br>
+        Try a shorter name (e.g. <em>Davidson</em> instead of <em>Davidson River NC</em>),
+        or check the spelling.
+      </div>`;
+  }
+
+  function buildCard(site, r) {
+    const hasCfs = r.cfs != null && !isNaN(r.cfs);
+    const hasFt  = r.ft  != null && !isNaN(r.ft);
+
+    /* Flow classification — rough thresholds */
+    let status = 'na', label = 'No Data';
+    if (hasCfs) {
+      if      (r.cfs > 5000) { status = 'high';   label = 'High Flow'; }
+      else if (r.cfs < 50)   { status = 'low';    label = 'Low Flow';  }
+      else                   { status = 'normal'; label = 'Normal';    }
+    }
+
+    /* Logarithmic % for the bar */
+    const pct = hasCfs
+      ? Math.min(100, Math.round(Math.log10(Math.max(r.cfs, 1) + 1) / Math.log10(10001) * 100))
+      : 0;
+
+    const dtStr = r.dt
+      ? new Date(r.dt).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' })
+      : '—';
+
+    const stateName = STATE_MAP[site.state] || site.state || '';
+    const usgsLink  = `https://waterdata.usgs.gov/monitoring-location/${site.siteNo}/`;
+
+    return `
+      <div class="gauge-card">
+        <div class="gauge-top">
+          <div class="gauge-name">${esc(site.name)}</div>
+          <span class="gauge-status status-${status}">${label}</span>
+        </div>
+        <div class="gauge-metrics">
+          <div>
+            <div class="metric-label">Discharge</div>
+            <div class="metric-value">
+              ${hasCfs ? r.cfs.toLocaleString() : '—'}
+              <span class="metric-unit">${hasCfs ? 'cfs' : ''}</span>
+            </div>
+          </div>
+          <div>
+            <div class="metric-label">Gage Height</div>
+            <div class="metric-value">
+              ${hasFt ? r.ft.toFixed(2) : '—'}
+              <span class="metric-unit">${hasFt ? 'ft' : ''}</span>
+            </div>
+          </div>
+        </div>
+        <div class="gauge-bar-wrap">
+          <div class="gauge-bar-label">
+            <span>Flow Level</span>
+            <span>${hasCfs ? pct + '%' : 'No reading'}</span>
+          </div>
+          <div class="gauge-bar-track">
+            <div class="gauge-bar-fill fill-${status}" data-pct="${pct}" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="gauge-meta">
+          ${stateName ? stateName + ' · ' : ''}Site #${esc(site.siteNo)}<br>
+          Updated ${dtStr} ·
+          <a href="${usgsLink}" target="_blank" rel="noopener">USGS page ↗</a>
+        </div>
+      </div>`;
+  }
 </script>
 </body>
 </html>
