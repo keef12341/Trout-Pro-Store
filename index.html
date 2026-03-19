@@ -719,17 +719,17 @@
 
     <div class="river-search-box" role="search">
       <input type="text" id="river-input"
-             placeholder="e.g. Davidson River, Yellowstone, Spring Creek…"
+             placeholder="e.g. Little River, Davidson, Yellowstone, Spring Creek…"
              aria-label="River name" autocomplete="off" />
       <button class="river-search-btn" id="search-btn" onclick="searchRiver()">Search</button>
     </div>
 
     <div class="river-hint">
       <span>Try:</span>
-      <button class="hint-chip" onclick="quickSearch('Davidson River')">Davidson River, NC</button>
-      <button class="hint-chip" onclick="quickSearch('Yellowstone River')">Yellowstone River, MT</button>
+      <button class="hint-chip" onclick="quickSearch('Davidson')">Davidson River, NC</button>
+      <button class="hint-chip" onclick="quickSearch('Yellowstone')">Yellowstone River, MT</button>
       <button class="hint-chip" onclick="quickSearch('Spring Creek')">Spring Creek, PA</button>
-      <button class="hint-chip" onclick="quickSearch('Gunnison River')">Gunnison River, CO</button>
+      <button class="hint-chip" onclick="quickSearch('Gunnison')">Gunnison River, CO</button>
       <button class="hint-chip" onclick="quickSearch('Little River')">Little River, TN</button>
     </div>
 
@@ -971,21 +971,28 @@
 
     try {
       /* ── Step 1: find matching USGS stream gauge sites ── */
+      /* siteNameMatchOperator=contains allows partial matching anywhere in the name */
       const siteUrl = 'https://waterservices.usgs.gov/nwis/site/?'
         + 'format=rdb'
         + '&siteName=' + encodeURIComponent(query)
+        + '&siteNameMatchOperator=contains'
         + '&siteType=ST'
         + '&hasDataTypeCd=iv'
         + '&siteStatus=active';
 
       const siteText = await fetchWithFallback(siteUrl, false);
 
-      /* Parse RDB tab-delimited — skip # comment lines */
-      const lines = siteText.split('\n').filter(l => l.trim() && !l.startsWith('#'));
-      /* lines[0]=headers  lines[1]=type-row  lines[2+]=data */
-      if (lines.length < 3) { showNoResults(query); resetBtn(); return; }
+      /* Parse USGS RDB format:
+         Lines starting with # = comments (skip)
+         First non-comment line  = column headers
+         Second non-comment line = column type codes e.g. "5s  15s" (skip)
+         Remaining lines         = data */
+      const allLines  = siteText.split('\n');
+      const dataLines = allLines.filter(l => l.trim() && !l.startsWith('#'));
 
-      const headers   = lines[0].split('\t');
+      if (dataLines.length < 3) { showNoResults(query); resetBtn(); return; }
+
+      const headers   = dataLines[0].split('\t');
       const siteNoIdx = headers.indexOf('site_no');
       const nameIdx   = headers.indexOf('station_nm');
       const stateIdx  = headers.indexOf('state_cd');
@@ -993,11 +1000,13 @@
       if (siteNoIdx === -1) { showNoResults(query); resetBtn(); return; }
 
       const sites = [];
-      for (let i = 2; i < lines.length && sites.length < 9; i++) {
-        const cols = lines[i].split('\t');
-        if (!cols[siteNoIdx] || !cols[siteNoIdx].trim()) continue;
+      /* Start at index 2 to skip the type-code row */
+      for (let i = 2; i < dataLines.length && sites.length < 9; i++) {
+        const cols = dataLines[i].split('\t');
+        const sno  = cols[siteNoIdx] ? cols[siteNoIdx].trim() : '';
+        if (!sno) continue;
         sites.push({
-          siteNo: cols[siteNoIdx].trim(),
+          siteNo: sno,
           name:   nameIdx  >= 0 && cols[nameIdx]  ? cols[nameIdx].trim()  : 'Unknown Station',
           state:  stateIdx >= 0 && cols[stateIdx] ? cols[stateIdx].trim() : ''
         });
@@ -1059,8 +1068,9 @@
   function showNoResults(query) {
     document.getElementById('river-results').innerHTML = `
       <div class="results-error">
-        No active USGS stream gauges found for &ldquo;${esc(query)}&rdquo;.<br>
-        Try a shorter name — e.g. <em>Davidson</em> instead of <em>Davidson River NC</em>.
+        No USGS stream gauges found matching &ldquo;${esc(query)}&rdquo;.<br>
+        Try searching just part of the name &mdash; e.g. <em>Little</em> or <em>Davidson</em> &mdash;
+        or check for spelling differences in the official station name.
       </div>`;
   }
 
