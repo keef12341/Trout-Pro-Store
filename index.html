@@ -565,7 +565,7 @@
 
 <!-- HERO -->
 <section class="hero" aria-label="Welcome to Trout Pro Store">
-  <div class="hero-left fade-up">
+  <div class="hero-left">
     <span class="hero-badge">Trout Pro Store</span>
     <h1>Flies, Rods &amp; Gear for <em>Serious</em> Trout Anglers</h1>
     <p class="hero-desc">Shop the best fly fishing products available — flies, rods, reels, line, leaders, and more. Plus 200+ real river reports from America's top trout streams.</p>
@@ -973,42 +973,12 @@
      Falls back through allorigins.win proxy if direct fetch is blocked.
   ════════════════════════════════════════════════ */
 
-  const PROXY = 'https://api.allorigins.win/raw?url=';
   const NEW_API = 'https://api.waterdata.usgs.gov/ogcapi/v0/collections';
 
-  const STATE_MAP = {
-    '01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California',
-    '08':'Colorado','09':'Connecticut','10':'Delaware','12':'Florida','13':'Georgia',
-    '15':'Hawaii','16':'Idaho','17':'Illinois','18':'Indiana','19':'Iowa',
-    '20':'Kansas','21':'Kentucky','22':'Louisiana','23':'Maine','24':'Maryland',
-    '25':'Massachusetts','26':'Michigan','27':'Minnesota','28':'Mississippi',
-    '29':'Missouri','30':'Montana','31':'Nebraska','32':'Nevada','33':'New Hampshire',
-    '34':'New Jersey','35':'New Mexico','36':'New York','37':'North Carolina',
-    '38':'North Dakota','39':'Ohio','40':'Oklahoma','41':'Oregon','42':'Pennsylvania',
-    '44':'Rhode Island','45':'South Carolina','46':'South Dakota','47':'Tennessee',
-    '48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington',
-    '54':'West Virginia','55':'Wisconsin','56':'Wyoming'
-  };
-
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function setLoading(query) {
-    document.getElementById('river-results').innerHTML = `
-      <div class="results-loading">
-        <div class="spinner"></div>
-        Searching for &ldquo;${esc(query)}&rdquo;&hellip;
-      </div>`;
-    const btn = document.getElementById('search-btn');
-    btn.disabled = true; btn.textContent = 'Searching…';
-  }
-
-  function resetBtn() {
-    const btn = document.getElementById('search-btn');
-    btn.disabled = false; btn.textContent = 'Search';
-  }
-
+  
+  
+  
+  
   async function apiFetch(url) {
     try {
       const r = await fetch(url);
