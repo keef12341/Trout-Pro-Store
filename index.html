@@ -998,8 +998,8 @@
     try {
       /* Step 1: search monitoring locations by name, stream sites only, limit 9 */
       const locUrl = NEW_API + '/monitoring-locations/items?f=json'
-        + '&monitoring_location_name=' + encodeURIComponent(query)
-        + '&site_type=Stream'
+        + '&monitoring_location_name__icontains=' + encodeURIComponent(query)
+        + '&site_type=ST'
         + '&limit=9';
 
       const locData = await apiFetch(locUrl);
