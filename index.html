@@ -34,6 +34,10 @@
     nav a{color:var(--cream);font-family:"Source Serif 4",serif;font-size:.88rem;font-weight:600;letter-spacing:.04em;padding:10px 15px;border-radius:4px;transition:color .2s,background .2s;white-space:nowrap}
     nav a:hover{color:var(--gold-light);background:rgba(255,255,255,.06)}
     nav .nav-cta{background:var(--gold);color:var(--forest)!important;margin-left:8px;padding:10px 20px;font-weight:700}
+    .cart-btn{position:relative;display:flex;align-items:center;padding:8px 12px;color:var(--cream);background:none;border:none;cursor:pointer;text-decoration:none}
+    .cart-btn svg{width:24px;height:24px;fill:none;stroke:var(--cream);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+    .cart-btn:hover svg{stroke:var(--gold-light)}
+    .cart-count{position:absolute;top:2px;right:4px;background:var(--gold);color:var(--forest);border-radius:50%;width:17px;height:17px;font-size:.62rem;font-weight:700;font-family:'Fira Mono',monospace;display:none;align-items:center;justify-content:center;line-height:1}
     nav .nav-cta:hover{background:var(--gold-light)}
     .hamburger{display:none;cursor:pointer;flex-direction:column;gap:5px;background:none;border:none;padding:6px}
     .hamburger span{width:24px;height:2px;background:var(--cream);display:block}
@@ -216,24 +220,31 @@
 <header id="site-header" role="banner">
   <div class="header-main">
     <a href="/" class="logo-wrap" aria-label="Trout Pro Store Home">
-      <img src="images/troutprostorelogo.png" alt="Trout Pro Store" width="210" height="54" />
+      <img src="images/troutprostorelogo.png" alt="Trout Pro Store" />
     </a>
     <button class="hamburger" id="hambBtn" aria-label="Open navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
     <nav role="navigation" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="products.html">Shop Products</a>
+      <a href="/" class="active">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="blog.html">Blog</a>
       <a href="#river-reports">River Reports</a>
       <a href="#contact">Contact</a>
+      <a href="cart.html" class="cart-btn" aria-label="Shopping cart">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-badge">0</span>
+      </a>
       <a href="products.html" class="nav-cta">Shop Now</a>
     </nav>
   </div>
   <div class="mobile-nav" id="mobileNav">
     <a href="/">Home</a>
-    <a href="products.html">Shop Products</a>
+    <a href="products.html">Shop</a>
+    <a href="blog.html">Blog</a>
     <a href="#river-reports">River Reports</a>
     <a href="#contact">Contact</a>
+    <a href="cart.html">🛒 Cart</a>
     <a href="products.html" style="color:var(--gold-light);margin-top:6px;">Shop Now &rarr;</a>
   </div>
 </header>
@@ -406,6 +417,17 @@
       hambBtn.setAttribute('aria-expanded', 'false');
     });
   });
+
+  /* ── Cart badge ── */
+  function getCart() { return JSON.parse(localStorage.getItem('tps_cart') || '[]'); }
+  function updateCartBadge() {
+    var badge = document.getElementById('cart-badge');
+    if (!badge) return;
+    var total = getCart().reduce(function(s,i){ return s + i.qty; }, 0);
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'flex' : 'none';
+  }
+  updateCartBadge();
 
   /* ── Scroll-hide header ── */
   var lastScroll = 0;
