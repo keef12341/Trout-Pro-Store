@@ -1002,6 +1002,8 @@
         + '&site_type=ST'
         + '&limit=9';
 
+      console.log('LOC URL:', locUrl);
+
       const locData = await apiFetch(locUrl);
       const features = locData.features || [];
 
