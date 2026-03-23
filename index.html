@@ -3,543 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Trout Pro Store | Fly Fishing Flies, Rods, Gear & River Reports</title>
-  <meta name="description" content="Trout Pro Store — shop fly fishing flies, fly rods, fly line, and gear. Plus 200+ real river reports across America's best trout streams." />
+  <title>Trout Pro Store | Fly Fishing Flies, Rods, Gear &amp; River Reports</title>
+  <meta name="description" content="Trout Pro Store - shop fly fishing flies, fly rods, fly line, and gear. Plus 200+ real river reports across America's best trout streams." />
   <meta name="keywords" content="fly fishing flies, fly rods, fly line, fly fishing gear, trout flies, dry flies, nymphs, streamers, river reports, trout fishing" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://website-c3a7a0c2.perfectflystore.com/" />
+  <link rel="canonical" href="https://troutprostore.jdevelopment.site/" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Trout Pro Store | Fly Fishing Flies, Rods & River Reports" />
+  <meta property="og:title" content="Trout Pro Store | Fly Fishing Flies, Rods &amp; River Reports" />
   <meta property="og:description" content="Shop flies, fly rods, fly line and gear. Read 200+ real river reports from expert anglers." />
-  <meta property="og:url" content="https://website-c3a7a0c2.perfectflystore.com/" />
-  <meta property="og:image" content="troutprostorelogo.png" />
+  <meta property="og:url" content="https://troutprostore.jdevelopment.site/" />
+  <meta property="og:image" content="images/troutprostorelogo.png" />
   <meta name="twitter:card" content="summary_large_image" />
-
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SportingGoodsStore","name":"Trout Pro Store","description":"Fly fishing flies, rods, line, gear and river reports for trout anglers.","url":"https://website-c3a7a0c2.perfectflystore.com/","logo":"troutprostorelogo.png","sameAs":["https://www.facebook.com/TroutProStore","https://twitter.com/troutprostore","https://www.instagram.com/troutprostore"]}
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:wght@300;400;600&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
   <style>
-    :root {
-      --forest:      #1a2e1a;
-      --moss:        #2d4a2d;
-      --sage:        #5a7a5a;
-      --river:       #2c5f6e;
-      --river-light: #3a7a8e;
-      --water:       #7eb8c9;
-      --stone:       #8a8070;
-      --sand:        #c8b898;
-      --cream:       #f5f0e8;
-      --gold:        #c8932a;
-      --gold-light:  #e6b84a;
-      --white:       #faf9f6;
-      --text:        #2a2520;
-      --text-muted:  #6b6358;
-      --border:      rgba(90,122,90,0.2);
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { font-family:'Source Serif 4',Georgia,serif; background:var(--white); color:var(--text); line-height:1.7; }
-    a { text-decoration:none; color:inherit; }
-    img { display:block; max-width:100%; }
-
-    /* ── HEADER ─────────────────────────────────── */
-    header {
-      background: var(--forest);
-      position: sticky; top: 0; z-index: 1000;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
-      transition: transform .3s ease, opacity .3s ease;
-    }
-    header.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-    .header-main {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding: 14px 40px;
-      max-width: 1400px; margin: 0 auto;
-    }
-    .logo-wrap img { height: 58px; width: auto; display: block; }
-    nav { display: flex; align-items: center; gap: 0; }
-    nav a {
-      color: var(--cream);
-      font-family: 'Source Serif 4', serif;
-      font-size: .88rem; font-weight: 600;
-      letter-spacing: .04em;
-      padding: 10px 15px; border-radius: 4px;
-      transition: color .2s, background .2s;
-      white-space: nowrap;
-    }
-    nav a:hover { color: var(--gold-light); background: rgba(255,255,255,.06); }
-    nav .nav-cta {
-      background: var(--gold); color: var(--forest) !important;
-      margin-left: 8px; padding: 10px 20px; font-weight: 700;
-    }
-    nav .nav-cta:hover { background: var(--gold-light); }
-    .hamburger {
-      display: none; cursor: pointer;
-      flex-direction: column; gap: 5px;
-      background: none; border: none; padding: 6px;
-    }
-    .hamburger span { width: 24px; height: 2px; background: var(--cream); display: block; }
-    .mobile-nav {
-      display: none; flex-direction: column;
-      background: var(--moss); padding: 16px 24px 24px;
-    }
-    .mobile-nav.open { display: flex; }
-    .mobile-nav a {
-      color: var(--cream); padding: 12px 0;
-      font-size: .95rem; font-weight: 600;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    /* ── HERO ───────────────────────────────────── */
-    .hero {
-      position: relative;
-      min-height: 92vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      overflow: hidden;
-      background: var(--forest);
-    }
-    .hero-left {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 80px 56px 80px 60px;
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(200,147,42,.2);
-      border: 1px solid var(--gold);
-      color: var(--gold-light);
-      font-family: 'Fira Mono', monospace;
-      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-      padding: 6px 16px; border-radius: 2px; margin-bottom: 24px;
-      width: fit-content;
-    }
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.4rem, 4vw, 4.2rem);
-      font-weight: 900; color: var(--white);
-      line-height: 1.08; margin-bottom: 24px;
-    }
-    .hero h1 em { font-style: italic; color: var(--gold-light); }
-    .hero-desc {
-      font-size: 1.05rem; color: var(--sand);
-      max-width: 460px; margin-bottom: 40px;
-      font-weight: 300; line-height: 1.8;
-    }
-    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--gold); color: var(--forest);
-      padding: 15px 34px;
-      font-family: 'Source Serif 4', serif;
-      font-weight: 700; font-size: .95rem;
-      letter-spacing: .05em; border: none;
-      cursor: pointer; display: inline-block;
-      transition: background .2s, transform .15s;
-    }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-    .btn-outline {
-      border: 1.5px solid rgba(200,184,152,.5); color: var(--cream);
-      padding: 14px 34px;
-      font-family: 'Source Serif 4', serif;
-      font-weight: 600; font-size: .95rem;
-      letter-spacing: .05em; display: inline-block;
-      transition: border-color .2s, background .2s;
-    }
-    .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(200,147,42,.07); }
-    .hero-stats {
-      display: flex; gap: 40px; flex-wrap: wrap;
-      margin-top: 52px; padding-top: 32px;
-      border-top: 1px solid rgba(200,184,152,.18);
-    }
-    .stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold-light); display:block; }
-    .stat-lbl { font-size:.74rem; color:var(--stone); font-family:'Fira Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
-
-    /* Right panel — hero image */
-    .hero-right {
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-right img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: center;
-      transition: transform 8s ease;
-    }
-    .hero:hover .hero-right img { transform: scale(1.04); }
-    .hero-right::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to right, rgba(26,46,26,1) 0%, rgba(26,46,26,0) 35%);
-      z-index: 1;
-    }
-    .hero-right::after {
-      content: '';
-      position: absolute;
-      top: 32px; right: 32px; bottom: 32px; left: 32px;
-      border: 1px solid rgba(200,147,42,.25);
-      z-index: 2;
-      pointer-events: none;
-    }
-    .hero-img-label {
-      position: absolute;
-      bottom: 52px; left: 52px;
-      z-index: 3;
-      background: rgba(10,20,10,.75);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(200,147,42,.35);
-      padding: 14px 20px;
-      max-width: 260px;
-    }
-    .hero-img-label p {
-      font-family: 'Fira Mono', monospace;
-      font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--gold-light); margin-bottom: 4px;
-    }
-    .hero-img-label span {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem; font-weight: 700; color: var(--white);
-      line-height: 1.3; display: block;
-    }
-
-    @media (max-width: 860px) {
-      .hero { grid-template-columns: 1fr; min-height: auto; }
-      .hero-right { height: 56vw; min-height: 280px; }
-      .hero-right::before { background: linear-gradient(to bottom, rgba(26,46,26,.7) 0%, transparent 60%); }
-      .hero-left { padding: 52px 24px 44px; }
-      .hero-img-label { bottom: 20px; left: 20px; }
-    }
-
-    /* ── SECTIONS ───────────────────────────────── */
-    section { padding: 90px 40px; }
-    .section-inner { max-width: 1300px; margin: 0 auto; }
-    .section-tag { font-family:'Fira Mono',monospace; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--river-light); display:block; margin-bottom:12px; }
-    .section-heading { font-family:'Playfair Display',serif; font-size:clamp(1.9rem,3.2vw,2.8rem); font-weight:900; color:var(--forest); line-height:1.15; margin-bottom:16px; }
-    .section-sub { font-size:1rem; color:var(--text-muted); max-width:540px; line-height:1.8; font-weight:300; }
-    .section-header { margin-bottom:52px; }
-
-    /* ── CATEGORIES ─────────────────────────────── */
-    .categories { background: var(--cream); }
-    .cat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
-    .cat-card {
-      position:relative; overflow:hidden; aspect-ratio:3/4;
-      cursor:pointer; text-decoration:none; display:block;
-      background:var(--moss);
-    }
-    .cat-card img {
-      position:absolute; inset:0;
-      width:100%; height:100%; object-fit:cover;
-      transition:transform .6s ease;
-    }
-    .cat-card:hover img { transform:scale(1.06); }
-    .cat-overlay {
-      position:absolute; inset:0;
-      background:linear-gradient(to top,rgba(10,20,10,.82) 0%,rgba(10,20,10,.15) 55%);
-      display:flex; flex-direction:column;
-      justify-content:flex-end; padding:28px 24px;
-    }
-    .cat-label { font-family:'Fira Mono',monospace; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light); margin-bottom:6px; }
-    .cat-name { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:700; color:var(--white); line-height:1.2; }
-
-    /* ── PRODUCT CARDS ──────────────────────────── */
-    .products-section { background: var(--white); }
-    .products-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:48px; flex-wrap:wrap; }
-    .tab-btn {
-      background:none; border:none; padding:13px 24px;
-      font-family:'Source Serif 4',serif; font-size:.9rem; font-weight:600;
-      color:var(--text-muted); cursor:pointer;
-      border-bottom:2px solid transparent; margin-bottom:-2px;
-      transition:color .2s,border-color .2s;
-    }
-    .tab-btn.active { color:var(--forest); border-bottom-color:var(--gold); }
-    .tab-btn:hover { color:var(--forest); }
-    .products-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
-    .product-card {
-      background:var(--cream); overflow:hidden;
-      text-decoration:none; color:inherit; display:block;
-      transition:transform .25s,box-shadow .25s;
-      border:1px solid var(--border);
-    }
-    .product-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(26,46,26,.12); }
-    .product-img { position:relative; aspect-ratio:1; overflow:hidden; background:#e0d8cc; }
-    .product-badge {
-      position:absolute; top:12px; left:12px;
-      background:var(--gold); color:var(--forest);
-      font-family:'Fira Mono',monospace; font-size:.64rem;
-      letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; font-weight:500;
-    }
-    .product-info { padding:20px; }
-    .product-type { font-family:'Fira Mono',monospace; font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--river-light); margin-bottom:6px; }
-    .product-name { font-family:'Playfair Display',serif; font-size:1.08rem; font-weight:700; color:var(--forest); margin-bottom:8px; line-height:1.3; }
-    .product-desc { font-size:.82rem; color:var(--text-muted); line-height:1.6; margin-bottom:16px; }
-    .product-footer { display:flex; align-items:center; justify-content:space-between; }
-    .product-price { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--forest); }
-    .product-price span { font-size:.75rem; color:var(--text-muted); font-family:'Source Serif 4',serif; font-weight:300; }
-    .add-btn {
-      background:var(--forest); color:var(--cream);
-      border:none; padding:9px 17px;
-      font-family:'Fira Mono',monospace; font-size:.72rem;
-      letter-spacing:.08em; cursor:pointer; transition:background .2s;
-    }
-    .add-btn:hover { background:var(--moss); }
-
-    /* ── RIVER SEARCH ───────────────────────────── */
-    .river-section { background: var(--forest); }
-    .river-section .section-heading { color:var(--white); }
-    .river-section .section-tag { color:var(--water); }
-    .river-section .section-sub { color:var(--sand); }
-
-    .river-search-box {
-      display: flex;
-      max-width: 680px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.4);
-    }
-    .river-search-box input {
-      flex: 1; min-width: 0;
-      padding: 16px 22px;
-      font-family: 'Source Serif 4', serif;
-      font-size: 1rem;
-      border: none; outline: none;
-      background: rgba(255,255,255,.95);
-      color: var(--text);
-    }
-    .river-search-box input::placeholder { color: var(--stone); }
-    .river-search-btn {
-      background: var(--gold); color: var(--forest);
-      border: none; padding: 16px 28px;
-      font-family: 'Fira Mono', monospace;
-      font-size: .82rem; font-weight: 500;
-      letter-spacing: .08em; text-transform: uppercase;
-      cursor: pointer; white-space: nowrap;
-      transition: background .2s;
-    }
-    .river-search-btn:hover { background: var(--gold-light); }
-    .river-search-btn:disabled { opacity:.6; cursor:not-allowed; }
-
-    .river-hint {
-      font-family: 'Fira Mono', monospace;
-      font-size: .72rem; color: var(--stone);
-      margin-bottom: 36px; letter-spacing: .04em;
-      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-    }
-    .hint-chip {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
-      padding: 4px 14px; cursor: pointer;
-      transition: background .18s, border-color .18s;
-      border-radius: 2px; color: var(--stone);
-      font-family: 'Fira Mono', monospace; font-size: .72rem;
-    }
-    .hint-chip:hover { background: rgba(200,147,42,.15); border-color: rgba(200,147,42,.4); color: var(--gold-light); }
-
-    /* Results */
-    #river-results { min-height: 20px; }
-
-    .results-loading {
-      color: var(--sand);
-      font-family: 'Fira Mono', monospace;
-      font-size: .82rem; letter-spacing: .06em;
-      display: flex; align-items: center; gap: 12px;
-      padding: 20px 0;
-    }
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,.15);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      flex-shrink: 0;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .results-error {
-      background: rgba(200,80,60,.1);
-      border: 1px solid rgba(200,80,60,.3);
-      color: #e88878;
-      padding: 18px 22px;
-      font-family: 'Fira Mono', monospace;
-      font-size: .82rem; line-height: 1.6;
-      max-width: 620px;
-    }
-    .results-count {
-      font-family: 'Fira Mono', monospace;
-      font-size: .72rem; color: var(--stone);
-      letter-spacing: .08em; margin-bottom: 20px;
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .gauge-card {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      padding: 24px;
-      transition: background .25s, border-color .25s;
-    }
-    .gauge-card:hover { background: rgba(255,255,255,.09); border-color: rgba(200,147,42,.35); }
-
-    .gauge-top {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 12px; gap: 10px;
-    }
-    .gauge-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem; font-weight: 700;
-      color: var(--white); line-height: 1.3; flex: 1;
-    }
-    .gauge-status {
-      font-family: 'Fira Mono', monospace;
-      font-size: .6rem; letter-spacing: .08em; text-transform: uppercase;
-      padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0;
-    }
-    .status-high   { background:rgba(200,80,60,.2);  color:#e88878; border:1px solid rgba(200,80,60,.35); }
-    .status-normal { background:rgba(80,160,80,.2);  color:#7dca7d; border:1px solid rgba(80,160,80,.3); }
-    .status-low    { background:rgba(200,147,42,.2); color:var(--gold-light); border:1px solid rgba(200,147,42,.35); }
-    .status-na     { background:rgba(255,255,255,.06); color:var(--stone); border:1px solid rgba(255,255,255,.1); }
-
-    .gauge-metrics {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 14px; margin-bottom: 14px;
-    }
-    .metric-label {
-      font-family: 'Fira Mono', monospace;
-      font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--stone); margin-bottom: 3px;
-    }
-    .metric-value {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem; font-weight: 700; color: var(--gold-light); line-height: 1;
-    }
-    .metric-unit { font-size: .65rem; color: var(--stone); font-family:'Fira Mono',monospace; margin-left:3px; }
-
-    .gauge-bar-wrap { margin-bottom: 12px; }
-    .gauge-bar-label {
-      display: flex; justify-content: space-between;
-      font-family: 'Fira Mono', monospace; font-size: .62rem;
-      color: var(--stone); margin-bottom: 5px;
-    }
-    .gauge-bar-track { height: 4px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; }
-    .gauge-bar-fill { height: 100%; border-radius: 3px; width: 0%; transition: width .9s ease; }
-    .fill-high   { background: #c85040; }
-    .fill-normal { background: #5aaa5a; }
-    .fill-low    { background: var(--gold); }
-    .fill-na     { background: var(--stone); }
-
-    .gauge-meta {
-      font-family: 'Fira Mono', monospace;
-      font-size: .62rem; color: var(--stone); line-height: 1.6;
-    }
-    .gauge-meta a { color: var(--water); transition: color .18s; }
-    .gauge-meta a:hover { color: var(--gold-light); }
-
-    .view-all-wrap { text-align:center; margin-top:44px; }
-    .btn-outline-light {
-      border:1.5px solid rgba(200,147,42,.5); color:var(--gold-light);
-      padding:14px 36px;
-      font-family:'Source Serif 4',serif; font-weight:600; font-size:.95rem;
-      letter-spacing:.05em; display:inline-block;
-      transition:border-color .2s,background .2s;
-    }
-    .btn-outline-light:hover { border-color:var(--gold-light); background:rgba(200,147,42,.08); }
-
-    /* ── BLOG ───────────────────────────────────── */
-    .blog-section { background:var(--cream); }
-    .blog-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
-    .blog-card { background:var(--white); border:1px solid var(--border); overflow:hidden; transition:transform .25s,box-shadow .25s; }
-    .blog-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(26,46,26,.1); }
-    .blog-img { aspect-ratio:16/9; background:#ddd8cc; }
-    .blog-body { padding:24px; }
-    .blog-tag { font-family:'Fira Mono',monospace; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--river-light); margin-bottom:8px; }
-    .blog-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; margin-bottom:10px; line-height:1.35; color:var(--forest); }
-    .blog-desc { font-size:.84rem; color:var(--text-muted); line-height:1.7; margin-bottom:16px; }
-    .blog-link { font-family:'Fira Mono',monospace; font-size:.72rem; letter-spacing:.08em; color:var(--moss); transition:color .2s; }
-    .blog-link:hover { color:var(--river); }
-
-    /* ── EMAIL ──────────────────────────────────── */
-    .email-section {
-      background:linear-gradient(135deg, var(--moss) 0%, var(--river) 100%);
-      text-align:center; color:var(--white);
-    }
-    .email-section h2 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:900; margin-bottom:14px; }
-    .email-section p { color:var(--sand); font-weight:300; max-width:480px; margin:0 auto 36px; }
-    .email-form { display:flex; justify-content:center; flex-wrap:wrap; }
-    .email-input { padding:14px 20px; font-size:.95rem; border:none; outline:none; font-family:'Source Serif 4',serif; background:rgba(255,255,255,.95); color:var(--text); min-width:280px; }
-    .email-btn { background:var(--gold); color:var(--forest); border:none; padding:14px 28px; font-family:'Source Serif 4',serif; font-weight:700; font-size:.9rem; letter-spacing:.05em; cursor:pointer; transition:background .2s; white-space:nowrap; }
-    .email-btn:hover { background:var(--gold-light); }
-
-    /* ── FOOTER ─────────────────────────────────── */
-    footer { background:#111a11; color:rgba(255,255,255,.6); }
-    .footer-inner { max-width:1300px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; padding:64px 40px 48px; }
-    .footer-brand img { height:46px; width:auto; filter:brightness(0) invert(1); opacity:.85; margin-bottom:20px; }
-    .footer-brand p { font-size:.86rem; line-height:1.75; max-width:270px; }
-    .social-links { display:flex; gap:10px; margin-top:20px; }
-    .social-links a { width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.7); font-size:.78rem; font-family:'Fira Mono',monospace; transition:background .2s; }
-    .social-links a:hover { background:var(--gold); color:var(--forest); }
-    .footer-col h4 { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.16em; color:var(--white); margin-bottom:18px; font-family:'Fira Mono',monospace; }
-    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
-    .footer-col ul a { font-size:.86rem; color:rgba(255,255,255,.5); transition:color .18s; }
-    .footer-col ul a:hover { color:var(--gold-light); }
-    .footer-bottom { max-width:1300px; margin:0 auto; padding:22px 40px; border-top:1px solid rgba(255,255,255,.07); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:.78rem; }
-
-    /* ── FADE-UP ────────────────────────────────── */
-    .fade-up { opacity:0; transform:translateY(22px); transition:opacity .55s ease,transform .55s ease; }
-    .fade-up.visible { opacity:1; transform:none; }
-
-    /* ── RESPONSIVE ─────────────────────────────── */
-    @media (max-width:1024px) {
-      .products-grid { grid-template-columns:repeat(2,1fr); }
-      .cat-grid { grid-template-columns:repeat(2,1fr); }
-      .results-grid { grid-template-columns:repeat(2,1fr); }
-      .blog-grid { grid-template-columns:repeat(2,1fr); }
-      .footer-inner { grid-template-columns:1fr 1fr; gap:32px; }
-    }
-    @media (max-width:768px) {
-      section { padding:60px 20px; }
-      nav { display:none; }
-      .hamburger { display:flex; }
-      .header-main { padding:12px 20px; }
-      .logo-wrap img { height:48px; }
-      .hero-stats { gap:24px; }
-      .hero-stats .stat-num { font-size:1.7rem; }
-      .footer-inner { padding:40px 20px 32px; }
-      .footer-bottom { padding:18px 20px; }
-      .email-input { min-width:220px; width:100%; }
-      .email-form { flex-direction:column; align-items:center; }
-      .email-btn { width:100%; max-width:320px; }
-      .river-search-box { flex-direction:column; }
-      .river-search-btn { width:100%; padding:14px; text-align:center; }
-    }
-    @media (max-width:540px) {
-      .products-grid { grid-template-columns:1fr; }
-      .results-grid { grid-template-columns:1fr; }
-      .blog-grid { grid-template-columns:1fr; }
-      .footer-inner { grid-template-columns:1fr; gap:28px; }
-      .hero h1 { font-size:2.2rem; }
-      .hero-btns { flex-direction:column; }
-      .btn-primary,.btn-outline { width:100%; text-align:center; }
-      .hero-stats { gap:20px; }
-    }
+    :root{--forest:#1a2e1a;--moss:#2d4a2d;--sage:#5a7a5a;--river:#2c5f6e;--river-light:#3a7a8e;--water:#7eb8c9;--stone:#8a8070;--sand:#c8b898;--cream:#f5f0e8;--gold:#c8932a;--gold-light:#e6b84a;--white:#faf9f6;--text:#2a2520;--text-muted:#6b6358;--border:rgba(90,122,90,0.2)}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{font-family:"Source Serif 4",Georgia,serif;background:var(--white);color:var(--text);line-height:1.7}
+    a{text-decoration:none;color:inherit}
+    img{display:block;max-width:100%}
+    header{background:var(--forest);position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,0,0,.4);transition:transform .3s ease,opacity .3s ease}
+    header.hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
+    .header-main{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;max-width:1400px;margin:0 auto}
+    .logo-wrap img{height:58px;width:auto;display:block}
+    nav{display:flex;align-items:center;gap:0}
+    nav a{color:var(--cream);font-family:"Source Serif 4",serif;font-size:.88rem;font-weight:600;letter-spacing:.04em;padding:10px 15px;border-radius:4px;transition:color .2s,background .2s;white-space:nowrap}
+    nav a:hover{color:var(--gold-light);background:rgba(255,255,255,.06)}
+    nav .nav-cta{background:var(--gold);color:var(--forest)!important;margin-left:8px;padding:10px 20px;font-weight:700}
+    nav .nav-cta:hover{background:var(--gold-light)}
+    .hamburger{display:none;cursor:pointer;flex-direction:column;gap:5px;background:none;border:none;padding:6px}
+    .hamburger span{width:24px;height:2px;background:var(--cream);display:block}
+    .mobile-nav{display:none;flex-direction:column;background:var(--moss);padding:16px 24px 24px}
+    .mobile-nav.open{display:flex}
+    .mobile-nav a{color:var(--cream);padding:12px 0;font-size:.95rem;font-weight:600;border-bottom:1px solid rgba(255,255,255,.08)}
+    .hero{display:grid;grid-template-columns:1fr 1fr;background:var(--forest);min-height:88vh}
+    .hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 56px 80px 60px;position:relative;z-index:2}
+    .hero-badge{display:inline-block;background:rgba(200,147,42,.2);border:1px solid var(--gold);color:var(--gold-light);font-family:"Fira Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;border-radius:2px;margin-bottom:24px;width:fit-content}
+    .hero h1{font-family:"Playfair Display",serif;font-size:clamp(2.4rem,4vw,4.2rem);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:24px}
+    .hero h1 em{font-style:italic;color:var(--gold-light)}
+    .hero-desc{font-size:1.05rem;color:var(--sand);max-width:460px;margin-bottom:40px;font-weight:300;line-height:1.8}
+    .hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+    .btn-primary{background:var(--gold);color:var(--forest);padding:15px 34px;font-family:"Source Serif 4",serif;font-weight:700;font-size:.95rem;letter-spacing:.05em;border:none;cursor:pointer;display:inline-block;transition:background .2s,transform .15s}
+    .btn-primary:hover{background:var(--gold-light);transform:translateY(-2px)}
+    .btn-outline{border:1.5px solid rgba(200,184,152,.5);color:var(--cream);padding:14px 34px;font-family:"Source Serif 4",serif;font-weight:600;font-size:.95rem;letter-spacing:.05em;display:inline-block;transition:border-color .2s,background .2s}
+    .btn-outline:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(200,147,42,.07)}
+    .hero-stats{display:flex;gap:40px;flex-wrap:wrap;margin-top:52px;padding-top:32px;border-top:1px solid rgba(200,184,152,.18)}
+    .stat-num{font-family:"Playfair Display",serif;font-size:2rem;font-weight:700;color:var(--gold-light);display:block}
+    .stat-lbl{font-size:.74rem;color:var(--stone);font-family:"Fira Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+    .hero-right{position:relative;overflow:hidden;min-height:400px}
+    .hero-right img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform 8s ease}
+    .hero:hover .hero-right img{transform:scale(1.04)}
+    .hero-right::before{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(26,46,26,1) 0%,rgba(26,46,26,0) 35%);z-index:1;pointer-events:none}
+    .hero-right::after{content:"";position:absolute;top:32px;right:32px;bottom:32px;left:32px;border:1px solid rgba(200,147,42,.25);z-index:2;pointer-events:none}
+    .hero-img-label{position:absolute;bottom:52px;left:52px;z-index:3;background:rgba(10,20,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(200,147,42,.35);padding:14px 20px;max-width:260px}
+    .hero-img-label p{font-family:"Fira Mono",monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light);margin-bottom:4px}
+    .hero-img-label span{font-family:"Playfair Display",serif;font-size:1.05rem;font-weight:700;color:var(--white);line-height:1.3;display:block}
+    @media(max-width:860px){.hero{grid-template-columns:1fr;min-height:auto}.hero-right{height:60vw;min-height:260px}.hero-left{padding:52px 24px 44px}.hero-img-label{bottom:20px;left:20px}}
+    section{padding:90px 40px}
+    .section-inner{max-width:1300px;margin:0 auto}
+    .section-tag{font-family:"Fira Mono",monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--river-light);display:block;margin-bottom:12px}
+    .section-heading{font-family:"Playfair Display",serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:900;color:var(--forest);line-height:1.15;margin-bottom:16px}
+    .section-sub{font-size:1rem;color:var(--text-muted);max-width:540px;line-height:1.8;font-weight:300}
+    .section-header{margin-bottom:52px}
+    .categories{background:var(--cream)}
+    .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    .cat-card{position:relative;overflow:hidden;aspect-ratio:3/4;cursor:pointer;text-decoration:none;display:block;background:var(--moss)}
+    .cat-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+    .cat-card:hover img{transform:scale(1.06)}
+    .cat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,20,10,.82) 0%,rgba(10,20,10,.15) 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px}
+    .cat-label{font-family:"Fira Mono",monospace;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);margin-bottom:6px}
+    .cat-name{font-family:"Playfair Display",serif;font-size:1.45rem;font-weight:700;color:var(--white);line-height:1.2}
+    .products-section{background:var(--white)}
+    .products-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:48px;flex-wrap:wrap}
+    .tab-btn{background:none;border:none;padding:13px 24px;font-family:"Source Serif 4",serif;font-size:.9rem;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s,border-color .2s}
+    .tab-btn.active{color:var(--forest);border-bottom-color:var(--gold)}
+    .tab-btn:hover{color:var(--forest)}
+    .products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+    .product-card{background:var(--cream);overflow:hidden;text-decoration:none;color:inherit;display:block;transition:transform .25s,box-shadow .25s;border:1px solid var(--border)}
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,46,26,.12)}
+    .product-img{position:relative;aspect-ratio:1;overflow:hidden;background:#e0d8cc}
+    .product-badge{position:absolute;top:12px;left:12px;background:var(--gold);color:var(--forest);font-family:"Fira Mono",monospace;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;font-weight:500}
+    .product-info{padding:20px}
+    .product-type{font-family:"Fira Mono",monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--river-light);margin-bottom:6px}
+    .product-name{font-family:"Playfair Display",serif;font-size:1.08rem;font-weight:700;color:var(--forest);margin-bottom:8px;line-height:1.3}
+    .product-desc{font-size:.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:16px}
+    .product-footer{display:flex;align-items:center;justify-content:space-between}
+    .product-price{font-family:"Playfair Display",serif;font-size:1.2rem;font-weight:700;color:var(--forest)}
+    .product-price span{font-size:.75rem;color:var(--text-muted);font-family:"Source Serif 4",serif;font-weight:300}
+    .add-btn{background:var(--forest);color:var(--cream);border:none;padding:9px 17px;font-family:"Fira Mono",monospace;font-size:.72rem;letter-spacing:.08em;cursor:pointer;transition:background .2s}
+    .add-btn:hover{background:var(--moss)}
+    .river-section{background:var(--forest)}
+    .river-section .section-heading{color:var(--white)}
+    .river-section .section-tag{color:var(--water)}
+    .river-section .section-sub{color:var(--sand)}
+    .river-search-box{display:flex;max-width:680px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+    .river-search-box input{flex:1;min-width:0;padding:16px 22px;font-family:"Source Serif 4",serif;font-size:1rem;border:none;outline:none;background:rgba(255,255,255,.95);color:var(--text)}
+    .river-search-box input::placeholder{color:var(--stone)}
+    .river-search-btn{background:var(--gold);color:var(--forest);border:none;padding:16px 28px;font-family:"Fira Mono",monospace;font-size:.82rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s}
+    .river-search-btn:hover{background:var(--gold-light)}
+    .river-search-btn:disabled{opacity:.6;cursor:not-allowed}
+    .river-hint{font-family:"Fira Mono",monospace;font-size:.72rem;color:var(--stone);margin-bottom:36px;letter-spacing:.04em;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .hint-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:4px 14px;cursor:pointer;transition:background .18s,border-color .18s;border-radius:2px;color:var(--stone);font-family:"Fira Mono",monospace;font-size:.72rem}
+    .hint-chip:hover{background:rgba(200,147,42,.15);border-color:rgba(200,147,42,.4);color:var(--gold-light)}
+    #river-results{min-height:20px}
+    .results-count{font-family:"Fira Mono",monospace;font-size:.72rem;color:var(--stone);letter-spacing:.08em;margin-bottom:16px}
+    .usgs-embed-wrap{margin-top:4px}
+    .usgs-embed-wrap iframe{width:100%;height:520px;border:1px solid rgba(255,255,255,.15);display:block;background:#0a120a}
+    .embed-footer{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
+    .embed-link{font-family:"Fira Mono",monospace;font-size:.72rem;letter-spacing:.06em;color:var(--water);transition:color .18s}
+    .embed-link:hover{color:var(--gold-light)}
+    .usgs-fallback{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:48px 40px;text-align:center;max-width:560px}
+    .usgs-fallback h3{font-family:"Playfair Display",serif;font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:12px}
+    .usgs-fallback p{font-size:.9rem;color:var(--sand);line-height:1.7;max-width:420px;margin:0 auto}
+    .view-all-wrap{text-align:center;margin-top:44px}
+    .btn-outline-light{border:1.5px solid rgba(200,147,42,.5);color:var(--gold-light);padding:14px 36px;font-family:"Source Serif 4",serif;font-weight:600;font-size:.95rem;letter-spacing:.05em;display:inline-block;transition:border-color .2s,background .2s}
+    .btn-outline-light:hover{border-color:var(--gold-light);background:rgba(200,147,42,.08)}
+    .blog-section{background:var(--cream)}
+    .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+    .blog-card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:transform .25s,box-shadow .25s}
+    .blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,46,26,.1)}
+    .blog-img{aspect-ratio:16/9;background:#ddd8cc}
+    .blog-body{padding:24px}
+    .blog-tag{font-family:"Fira Mono",monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--river-light);margin-bottom:8px}
+    .blog-title{font-family:"Playfair Display",serif;font-size:1.15rem;font-weight:700;margin-bottom:10px;line-height:1.35;color:var(--forest)}
+    .blog-desc{font-size:.84rem;color:var(--text-muted);line-height:1.7;margin-bottom:16px}
+    .blog-link{font-family:"Fira Mono",monospace;font-size:.72rem;letter-spacing:.08em;color:var(--moss);transition:color .2s}
+    .blog-link:hover{color:var(--river)}
+    .email-section{background:linear-gradient(135deg,var(--moss) 0%,var(--river) 100%);text-align:center;color:var(--white)}
+    .email-section h2{font-family:"Playfair Display",serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;margin-bottom:14px}
+    .email-section p{color:var(--sand);font-weight:300;max-width:480px;margin:0 auto 36px}
+    .email-form{display:flex;justify-content:center;flex-wrap:wrap}
+    .email-input{padding:14px 20px;font-size:.95rem;border:none;outline:none;font-family:"Source Serif 4",serif;background:rgba(255,255,255,.95);color:var(--text);min-width:280px}
+    .email-btn{background:var(--gold);color:var(--forest);border:none;padding:14px 28px;font-family:"Source Serif 4",serif;font-weight:700;font-size:.9rem;letter-spacing:.05em;cursor:pointer;transition:background .2s;white-space:nowrap}
+    .email-btn:hover{background:var(--gold-light)}
+    footer{background:#111a11;color:rgba(255,255,255,.6)}
+    .footer-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding:64px 40px 48px}
+    .footer-brand img{height:46px;width:auto;filter:brightness(0) invert(1);opacity:.85;margin-bottom:20px}
+    .footer-brand p{font-size:.86rem;line-height:1.75;max-width:270px}
+    .social-links{display:flex;gap:10px;margin-top:20px}
+    .social-links a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:.78rem;font-family:"Fira Mono",monospace;transition:background .2s}
+    .social-links a:hover{background:var(--gold);color:var(--forest)}
+    .footer-col h4{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--white);margin-bottom:18px;font-family:"Fira Mono",monospace}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .footer-col ul a{font-size:.86rem;color:rgba(255,255,255,.5);transition:color .18s}
+    .footer-col ul a:hover{color:var(--gold-light)}
+    .footer-bottom{max-width:1300px;margin:0 auto;padding:22px 40px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.78rem}
+    .fade-up{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+    .fade-up.visible{opacity:1;transform:none}
+    @media(max-width:1024px){.products-grid{grid-template-columns:repeat(2,1fr)}.cat-grid{grid-template-columns:repeat(2,1fr)}.blog-grid{grid-template-columns:repeat(2,1fr)}.footer-inner{grid-template-columns:1fr 1fr;gap:32px}}
+    @media(max-width:768px){section{padding:60px 20px}nav{display:none}.hamburger{display:flex}.header-main{padding:12px 20px}.logo-wrap img{height:48px}.hero-stats{gap:24px}.hero-stats .stat-num{font-size:1.7rem}.footer-inner{padding:40px 20px 32px}.footer-bottom{padding:18px 20px}.email-input{min-width:220px;width:100%}.email-form{flex-direction:column;align-items:center}.email-btn{width:100%;max-width:320px}.river-search-box{flex-direction:column}.river-search-btn{width:100%;padding:14px;text-align:center}.usgs-embed-wrap iframe{height:360px}.usgs-fallback{padding:32px 20px}}
+    @media(max-width:540px){.products-grid{grid-template-columns:1fr}.blog-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr;gap:28px}.hero h1{font-size:2.2rem}.hero-btns{flex-direction:column}.btn-primary,.btn-outline{width:100%;text-align:center}.hero-stats{gap:20px}}
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header id="site-header" role="banner">
   <div class="header-main">
-    <a href="/" class="logo-wrap" aria-label="Trout Pro Store — Home">
-      <img src="images/troutprostorelogo.png"
-           alt="Trout Pro Store — Fly Fishing Flies, Rods &amp; River Reports"
-           width="210" height="54" />
+    <a href="/" class="logo-wrap" aria-label="Trout Pro Store Home">
+      <img src="images/troutprostorelogo.png" alt="Trout Pro Store" width="210" height="54" />
     </a>
     <button class="hamburger" id="hambBtn" aria-label="Open navigation" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -552,23 +175,22 @@
       <a href="#shop" class="nav-cta">Shop Now</a>
     </nav>
   </div>
-  <div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+  <div class="mobile-nav" id="mobileNav">
     <a href="/">Home</a>
     <a href="#shop">Shop Products</a>
     <a href="#river-reports">River Reports</a>
     <a href="#contact">Contact</a>
-    <a href="#shop" style="color:var(--gold-light);margin-top:6px;">Shop Now →</a>
+    <a href="#shop" style="color:var(--gold-light);margin-top:6px;">Shop Now &rarr;</a>
   </div>
 </header>
 
 <main>
 
-<!-- HERO -->
 <section class="hero" aria-label="Welcome to Trout Pro Store">
   <div class="hero-left">
     <span class="hero-badge">Trout Pro Store</span>
     <h1>Flies, Rods &amp; Gear for <em>Serious</em> Trout Anglers</h1>
-    <p class="hero-desc">Shop the best fly fishing products available — flies, rods, reels, line, leaders, and more. Plus 200+ real river reports from America's top trout streams.</p>
+    <p class="hero-desc">Shop the best fly fishing products available &mdash; flies, rods, reels, line, leaders, and more. Plus 200+ real river reports from America&rsquo;s top trout streams.</p>
     <div class="hero-btns">
       <a href="#shop" class="btn-primary">Shop Products</a>
       <a href="#river-reports" class="btn-outline">River Reports</a>
@@ -580,63 +202,30 @@
     </div>
   </div>
   <div class="hero-right" aria-hidden="true">
-    <img src="images/hero.png"
-         alt="Fly fishing on a mountain trout stream" />
+    <img src="images/hero.png" alt="Fly fishing on a mountain trout stream" />
     <div class="hero-img-label">
       <p>Trout Pro Store</p>
-      <span>America's Fly Fishing Destination</span>
+      <span>America&rsquo;s Fly Fishing Destination</span>
     </div>
   </div>
 </section>
 
-<!-- SHOP CATEGORIES -->
 <section class="categories" id="shop" aria-labelledby="cats-heading">
   <div class="section-inner">
     <div class="section-header fade-up">
       <span class="section-tag">Browse the Store</span>
       <h2 class="section-heading" id="cats-heading">Shop Products</h2>
-      <p class="section-sub">Everything you need on the water — flies, rods, reels, fly line, leaders, tippet, accessories, and more.</p>
+      <p class="section-sub">Everything you need on the water &mdash; flies, rods, reels, fly line, leaders, tippet, accessories, and more.</p>
     </div>
     <div class="cat-grid">
-
-      <a href="https://www.troutprostore.com/store/flies" class="cat-card" aria-label="Shop flies">
-        <img src="images/flies.png" alt="Fly fishing flies" loading="lazy" />
-        <div class="cat-overlay">
-          <span class="cat-label">Most Popular</span>
-          <div class="cat-name">Flies</div>
-        </div>
-      </a>
-
-      <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop fly rods">
-        <img src="images/flyrod.png" alt="Fly fishing rods" loading="lazy" />
-        <div class="cat-overlay">
-          <span class="cat-label">Gear</span>
-          <div class="cat-name">Fly Rods</div>
-        </div>
-      </a>
-
-      <!-- flyline.png and flyacc.png are in the root, same folder as index.html -->
-      <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop fly line and leaders">
-        <img src="images/flyline.png" alt="Fly fishing line and leaders" loading="lazy" />
-        <div class="cat-overlay">
-          <span class="cat-label">Gear</span>
-          <div class="cat-name">Fly Line &amp; Leaders</div>
-        </div>
-      </a>
-
-      <a href="https://www.troutprostore.com/products" class="cat-card" aria-label="Shop accessories">
-        <img src="images/flyacc.png" alt="Fly fishing accessories" loading="lazy" />
-        <div class="cat-overlay">
-          <span class="cat-label">Gear</span>
-          <div class="cat-name">Accessories</div>
-        </div>
-      </a>
-
+      <a href="https://www.troutprostore.com/store/flies" class="cat-card"><img src="images/flies.png" alt="Fly fishing flies" loading="lazy" /><div class="cat-overlay"><span class="cat-label">Most Popular</span><div class="cat-name">Flies</div></div></a>
+      <a href="https://www.troutprostore.com/products" class="cat-card"><img src="images/flyrod.png" alt="Fly rods" loading="lazy" /><div class="cat-overlay"><span class="cat-label">Gear</span><div class="cat-name">Fly Rods</div></div></a>
+      <a href="https://www.troutprostore.com/products" class="cat-card"><img src="images/flyline.png" alt="Fly line" loading="lazy" /><div class="cat-overlay"><span class="cat-label">Gear</span><div class="cat-name">Fly Line &amp; Leaders</div></div></a>
+      <a href="https://www.troutprostore.com/products" class="cat-card"><img src="images/flyacc.png" alt="Accessories" loading="lazy" /><div class="cat-overlay"><span class="cat-label">Gear</span><div class="cat-name">Accessories</div></div></a>
     </div>
   </div>
 </section>
 
-<!-- FEATURED PRODUCTS -->
 <section class="products-section" aria-labelledby="products-heading">
   <div class="section-inner">
     <div class="section-header fade-up">
@@ -644,84 +233,35 @@
       <h2 class="section-heading" id="products-heading">Best-Selling Products</h2>
       <p class="section-sub">Our most popular flies and gear chosen by trout anglers across the country.</p>
     </div>
-    <div class="products-tabs" role="tablist" aria-label="Product filter tabs">
+    <div class="products-tabs" role="tablist">
       <button class="tab-btn active" role="tab" aria-selected="true">Flies</button>
       <button class="tab-btn" role="tab" aria-selected="false">Rods &amp; Reels</button>
       <button class="tab-btn" role="tab" aria-selected="false">Line &amp; Leaders</button>
       <button class="tab-btn" role="tab" aria-selected="false">Accessories</button>
     </div>
     <div class="products-grid">
-      <article class="product-card" itemscope itemtype="https://schema.org/Product">
-        <div class="product-img"><span class="product-badge">Best Seller</span></div>
-        <div class="product-info">
-          <p class="product-type">Dry Fly</p>
-          <h3 class="product-name" itemprop="name">Example</h3>
-          <p class="product-desc">Example</p>
-          <div class="product-footer">
-            <div class="product-price"><span>from </span>$2.49</div>
-            <button class="add-btn">Add to Cart</button>
-          </div>
-        </div>
-      </article>
-      <article class="product-card" itemscope itemtype="https://schema.org/Product">
-        <div class="product-img"><span class="product-badge">Top Rated</span></div>
-        <div class="product-info">
-          <p class="product-type">Nymph</p>
-          <h3 class="product-name" itemprop="name">Example</h3>
-          <p class="product-desc">Example.</p>
-          <div class="product-footer">
-            <div class="product-price"><span>from </span>$1.99</div>
-            <button class="add-btn">Add to Cart</button>
-          </div>
-        </div>
-      </article>
-      <article class="product-card" itemscope itemtype="https://schema.org/Product">
-        <div class="product-img"></div>
-        <div class="product-info">
-          <p class="product-type">Streamer</p>
-          <h3 class="product-name" itemprop="name">example</h3>
-          <p class="product-desc">example</p>
-          <div class="product-footer">
-            <div class="product-price"><span>from </span>$2.99</div>
-            <button class="add-btn">Add to Cart</button>
-          </div>
-        </div>
-      </article>
-      <article class="product-card" itemscope itemtype="https://schema.org/Product">
-        <div class="product-img"><span class="product-badge">New Stock</span></div>
-        <div class="product-info">
-          <p class="product-type">Dry Fly</p>
-          <h3 class="product-name" itemprop="name">Adams Parachute</h3>
-          <p class="product-desc">example.</p>
-          <div class="product-footer">
-            <div class="product-price"><span>from </span>$2.29</div>
-            <button class="add-btn">Add to Cart</button>
-          </div>
-        </div>
-      </article>
+      <article class="product-card"><div class="product-img"><span class="product-badge">Best Seller</span></div><div class="product-info"><p class="product-type">Dry Fly</p><h3 class="product-name">Example</h3><p class="product-desc">Example</p><div class="product-footer"><div class="product-price"><span>from </span>$2.49</div><button class="add-btn">Add to Cart</button></div></div></article>
+      <article class="product-card"><div class="product-img"><span class="product-badge">Top Rated</span></div><div class="product-info"><p class="product-type">Nymph</p><h3 class="product-name">Example</h3><p class="product-desc">Example.</p><div class="product-footer"><div class="product-price"><span>from </span>$1.99</div><button class="add-btn">Add to Cart</button></div></div></article>
+      <article class="product-card"><div class="product-img"></div><div class="product-info"><p class="product-type">Streamer</p><h3 class="product-name">Example</h3><p class="product-desc">Example</p><div class="product-footer"><div class="product-price"><span>from </span>$2.99</div><button class="add-btn">Add to Cart</button></div></div></article>
+      <article class="product-card"><div class="product-img"><span class="product-badge">New Stock</span></div><div class="product-info"><p class="product-type">Dry Fly</p><h3 class="product-name">Adams Parachute</h3><p class="product-desc">Example.</p><div class="product-footer"><div class="product-price"><span>from </span>$2.29</div><button class="add-btn">Add to Cart</button></div></div></article>
     </div>
     <div class="view-all-wrap" style="margin-top:44px;">
-      <a href="https://www.troutprostore.com/products" class="btn-primary">View All Products →</a>
+      <a href="https://www.troutprostore.com/products" class="btn-primary">View All Products &rarr;</a>
     </div>
   </div>
 </section>
 
-<!-- LIVE RIVER SEARCH -->
 <section class="river-section" id="river-reports" aria-labelledby="reports-heading">
   <div class="section-inner">
     <div class="section-header fade-up">
-      <span class="section-tag">Live USGS Data · 200+ Reports Available</span>
+      <span class="section-tag">Live USGS Data &middot; 200+ Reports Available</span>
       <h2 class="section-heading" id="reports-heading">Search River Conditions</h2>
-      <p class="section-sub" style="color:var(--sand)">Type any river or creek name to pull live streamflow and gauge data from the USGS national monitoring network.</p>
+      <p class="section-sub" style="color:var(--sand)">Search any river to see live USGS streamflow data, or click a quick link below for popular trout streams.</p>
     </div>
-
     <div class="river-search-box" role="search">
-      <input type="text" id="river-input"
-             placeholder="e.g. Little River, Davidson, Yellowstone, Spring Creek…"
-             aria-label="River name" autocomplete="off" />
+      <input type="text" id="river-input" placeholder="e.g. Davidson, Yellowstone, Little River, Gunnison&hellip;" aria-label="River name" autocomplete="off" />
       <button class="river-search-btn" id="search-btn" onclick="searchRiver()">Search</button>
     </div>
-
     <div class="river-hint">
       <span>Try:</span>
       <button class="hint-chip" onclick="quickSearch('Davidson')">Davidson River, NC</button>
@@ -730,16 +270,13 @@
       <button class="hint-chip" onclick="quickSearch('Gunnison')">Gunnison River, CO</button>
       <button class="hint-chip" onclick="quickSearch('Little River')">Little River, TN</button>
     </div>
-
-    <div id="river-results" aria-live="polite" aria-atomic="true"></div>
-
+    <div id="river-results"></div>
     <div class="view-all-wrap">
-      <a href="https://perfectflystore.com/your-streams/" class="btn-outline-light" target="_blank" rel="noopener">View All 200+ River Reports →</a>
+      <a href="https://perfectflystore.com/your-streams/" class="btn-outline-light" target="_blank" rel="noopener">View All 200+ River Reports &rarr;</a>
     </div>
   </div>
 </section>
 
-<!-- BLOG -->
 <section class="blog-section" id="blog" aria-labelledby="blog-heading">
   <div class="section-inner">
     <div class="section-header fade-up">
@@ -748,46 +285,21 @@
       <p class="section-sub">Fly fishing stories, tips, and destinations.</p>
     </div>
     <div class="blog-grid">
-      <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
-        <div class="blog-img"></div>
-        <div class="blog-body">
-          <p class="blog-tag">Technique</p>
-          <h3 class="blog-title" itemprop="name">How to Read a Trout Stream</h3>
-          <p class="blog-desc" itemprop="description">Understand riffles, runs, pools, and seams to put yourself in the right spot every time.</p>
-          <a href="https://www.troutprostore.com/blogs" class="blog-link" rel="noopener">Read More →</a>
-        </div>
-      </article>
-      <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
-        <div class="blog-img"></div>
-        <div class="blog-body">
-          <p class="blog-tag">Destinations</p>
-          <h3 class="blog-title" itemprop="name">Late Fall Trout in the Smoky Mountains</h3>
-          <p class="blog-desc" itemprop="description">Steve's guide to targeting wild browns and brookies in Great Smoky Mountains National Park.</p>
-          <a href="https://www.troutprostore.com/blog/late-fall-trout-fishing-great-smoky-mountains-national-park" class="blog-link" rel="noopener">Read More →</a>
-        </div>
-      </article>
-      <article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
-        <div class="blog-img"></div>
-        <div class="blog-body">
-          <p class="blog-tag">Flies</p>
-          <h3 class="blog-title" itemprop="name">See Flies Through a Trout's Eyes</h3>
-          <p class="blog-desc" itemprop="description">Understanding trout vision can change how you choose and present your flies entirely.</p>
-          <a href="https://www.troutprostore.com/blog/see-flies-through-trouts-eyes-how-trout-see-flies" class="blog-link" rel="noopener">Read More →</a>
-        </div>
-      </article>
+      <article class="blog-card"><div class="blog-img"></div><div class="blog-body"><p class="blog-tag">Technique</p><h3 class="blog-title">How to Read a Trout Stream</h3><p class="blog-desc">Understand riffles, runs, pools, and seams to put yourself in the right spot every time.</p><a href="https://www.troutprostore.com/blogs" class="blog-link">Read More &rarr;</a></div></article>
+      <article class="blog-card"><div class="blog-img"></div><div class="blog-body"><p class="blog-tag">Destinations</p><h3 class="blog-title">Late Fall Trout in the Smoky Mountains</h3><p class="blog-desc">Steve&rsquo;s guide to targeting wild browns and brookies in Great Smoky Mountains National Park.</p><a href="https://www.troutprostore.com/blog/late-fall-trout-fishing-great-smoky-mountains-national-park" class="blog-link">Read More &rarr;</a></div></article>
+      <article class="blog-card"><div class="blog-img"></div><div class="blog-body"><p class="blog-tag">Flies</p><h3 class="blog-title">See Flies Through a Trout&rsquo;s Eyes</h3><p class="blog-desc">Understanding trout vision can change how you choose and present your flies entirely.</p><a href="https://www.troutprostore.com/blog/see-flies-through-trouts-eyes-how-trout-see-flies" class="blog-link">Read More &rarr;</a></div></article>
     </div>
     <div class="view-all-wrap">
-      <a href="https://www.troutprostore.com/blogs" class="btn-primary">View All Blog Posts →</a>
+      <a href="https://www.troutprostore.com/blogs" class="btn-primary">View All Blog Posts &rarr;</a>
     </div>
   </div>
 </section>
 
-<!-- EMAIL SIGNUP -->
 <section class="email-section" aria-labelledby="email-heading">
   <div style="max-width:640px;margin:0 auto;">
     <h2 id="email-heading">Stay in the Loop</h2>
     <p>Subscribe for new river reports, product launches, and fly fishing news delivered to your inbox.</p>
-    <div class="email-form" role="form" aria-label="Email newsletter signup">
+    <div class="email-form">
       <input type="email" class="email-input" placeholder="Your email address" aria-label="Email address" />
       <button class="email-btn" type="button" onclick="handleSub()">Subscribe</button>
     </div>
@@ -796,341 +308,210 @@
 
 </main>
 
-<!-- FOOTER -->
 <footer id="contact" role="contentinfo">
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="images/troutprostorelogo.png"
-           alt="Trout Pro Store" />
-      <p>America's destination for fly fishing flies, rods, gear, and 200+ river reports.</p>
-      <div class="social-links" aria-label="Social media links">
-        <a href="https://www.facebook.com/TroutProStore" aria-label="Facebook" rel="noopener noreferrer" target="_blank">fb</a>
-        <a href="https://twitter.com/troutprostore" aria-label="Twitter" rel="noopener noreferrer" target="_blank">tw</a>
-        <a href="https://www.instagram.com/troutprostore" aria-label="Instagram" rel="noopener noreferrer" target="_blank">ig</a>
-        <a href="https://www.youtube.com/user/troutuprof" aria-label="YouTube" rel="noopener noreferrer" target="_blank">yt</a>
+      <img src="images/troutprostorelogo.png" alt="Trout Pro Store" />
+      <p>America&rsquo;s destination for fly fishing flies, rods, gear, and 200+ river reports.</p>
+      <div class="social-links">
+        <a href="https://www.facebook.com/TroutProStore" aria-label="Facebook" target="_blank" rel="noopener noreferrer">fb</a>
+        <a href="https://twitter.com/troutprostore" aria-label="Twitter" target="_blank" rel="noopener noreferrer">tw</a>
+        <a href="https://www.instagram.com/troutprostore" aria-label="Instagram" target="_blank" rel="noopener noreferrer">ig</a>
+        <a href="https://www.youtube.com/user/troutuprof" aria-label="YouTube" target="_blank" rel="noopener noreferrer">yt</a>
       </div>
     </div>
-    <div class="footer-col">
-      <h4>Shop</h4>
-      <ul>
-        <li><a href="https://www.troutprostore.com/store/flies">Flies</a></li>
-        <li><a href="https://www.troutprostore.com/products">Fly Rods</a></li>
-        <li><a href="https://www.troutprostore.com/products">Fly Line</a></li>
-        <li><a href="https://www.troutprostore.com/products">Leaders &amp; Tippet</a></li>
-        <li><a href="https://www.troutprostore.com/its-rigged">Pre-Rigged Sets</a></li>
-        <li><a href="https://www.troutprostore.com/products">All Products</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>River Reports</h4>
-      <ul>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">All River Reports</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Search by River</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Spring Creek, PA</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Smith River, MT</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Gunnison River, CO</a></li>
-        <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Chattahoochee, GA</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="https://www.troutprostore.com/sale_lead">About Us</a></li>
-        <li><a href="https://www.troutprostore.com/contact-us">Contact Us</a></li>
-        <li><a href="https://www.troutprostore.com/customer_service">Customer Service</a></li>
-        <li><a href="https://www.troutprostore.com/faq">FAQ</a></li>
-        <li><a href="https://www.troutprostore.com/terms_use">Terms of Use</a></li>
-        <li><a href="https://www.troutprostore.com/blogs">Blog</a></li>
-      </ul>
-    </div>
+    <div class="footer-col"><h4>Shop</h4><ul>
+      <li><a href="https://www.troutprostore.com/store/flies">Flies</a></li>
+      <li><a href="https://www.troutprostore.com/products">Fly Rods</a></li>
+      <li><a href="https://www.troutprostore.com/products">Fly Line</a></li>
+      <li><a href="https://www.troutprostore.com/products">Leaders &amp; Tippet</a></li>
+      <li><a href="https://www.troutprostore.com/its-rigged">Pre-Rigged Sets</a></li>
+      <li><a href="https://www.troutprostore.com/products">All Products</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>River Reports</h4><ul>
+      <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">All River Reports</a></li>
+      <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Spring Creek, PA</a></li>
+      <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Smith River, MT</a></li>
+      <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Gunnison River, CO</a></li>
+      <li><a href="https://perfectflystore.com/your-streams/" target="_blank" rel="noopener">Chattahoochee, GA</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Company</h4><ul>
+      <li><a href="https://www.troutprostore.com/sale_lead">About Us</a></li>
+      <li><a href="https://www.troutprostore.com/contact-us">Contact Us</a></li>
+      <li><a href="https://www.troutprostore.com/customer_service">Customer Service</a></li>
+      <li><a href="https://www.troutprostore.com/faq">FAQ</a></li>
+      <li><a href="https://www.troutprostore.com/terms_use">Terms of Use</a></li>
+      <li><a href="https://www.troutprostore.com/blogs">Blog</a></li>
+    </ul></div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Trout Pro Store. All rights reserved. Powered by <a href="https://perfectflystore.com" style="color:var(--gold);" rel="noopener">Perfect Fly Store</a>.</span>
-    <span style="color:rgba(255,255,255,.3);">SSL Secured · Secure Checkout</span>
+    <span>&copy; 2026 Trout Pro Store. All rights reserved. Powered by <a href="https://perfectflystore.com" style="color:var(--gold)" rel="noopener">Perfect Fly Store</a>.</span>
+    <span style="color:rgba(255,255,255,.3)">SSL Secured &middot; Secure Checkout</span>
   </div>
 </footer>
 
 <script>
-  /* ── Mobile nav ── */
-  const hambBtn   = document.getElementById('hambBtn');
-  const mobileNav = document.getElementById('mobileNav');
-  hambBtn.addEventListener('click', () => {
-    const open = mobileNav.classList.toggle('open');
+  /* ── Nav ── */
+  var hambBtn = document.getElementById('hambBtn');
+  var mobileNav = document.getElementById('mobileNav');
+  hambBtn.addEventListener('click', function() {
+    var open = mobileNav.classList.toggle('open');
     hambBtn.setAttribute('aria-expanded', open);
   });
-  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    mobileNav.classList.remove('open');
-    hambBtn.setAttribute('aria-expanded', false);
-  }));
+  mobileNav.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      mobileNav.classList.remove('open');
+      hambBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
 
   /* ── Scroll-hide header ── */
-  let lastScroll = 0;
-  const siteHeader = document.getElementById('site-header');
-  window.addEventListener('scroll', () => {
-    const cur = window.scrollY;
-    siteHeader.classList.toggle('hidden', cur > lastScroll && cur > 80);
+  var lastScroll = 0;
+  var siteHeader = document.getElementById('site-header');
+  window.addEventListener('scroll', function() {
+    var cur = window.scrollY;
+    if (cur > lastScroll && cur > 80) { siteHeader.classList.add('hidden'); }
+    else { siteHeader.classList.remove('hidden'); }
     lastScroll = cur;
   }, { passive: true });
 
   /* ── Fade-up ── */
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+  document.querySelectorAll('.fade-up').forEach(function(el) { obs.observe(el); });
 
   /* ── Product tabs ── */
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(function(b) {
+        b.classList.remove('active'); b.setAttribute('aria-selected','false');
+      });
       btn.classList.add('active'); btn.setAttribute('aria-selected','true');
     });
   });
 
-  /* ── Email subscribe ── */
+  /* ── Email ── */
   function handleSub() {
-    const inp = document.querySelector('.email-input');
-    if (!inp.value || !inp.value.includes('@')) { inp.focus(); return; }
-    const btn = document.querySelector('.email-btn');
-    btn.textContent = '✓ Subscribed!'; btn.style.background = '#2d7a3a'; inp.value = '';
-    setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3500);
+    var inp = document.querySelector('.email-input');
+    if (!inp.value || inp.value.indexOf('@') === -1) { inp.focus(); return; }
+    var btn = document.querySelector('.email-btn');
+    btn.textContent = '\u2713 Subscribed!'; btn.style.background = '#2d7a3a'; inp.value = '';
+    setTimeout(function() { btn.textContent = 'Subscribe'; btn.style.background = ''; }, 3500);
   }
 
-  /* ── River search keyboard ── */
-  document.getElementById('river-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchRiver(); });
-
+  /* ── River search ── */
+  document.getElementById('river-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') searchRiver();
+  });
   function quickSearch(term) {
     document.getElementById('river-input').value = term;
     searchRiver();
   }
 
-  /* ════════════════════════════════════════════════
-     LIVE RIVER SEARCH — USGS Water Services API
-     
-     Strategy: try direct fetch first (works in most browsers).
-     If blocked (GitHub Pages, some hosts), auto-retry through
-     the allorigins.win CORS proxy — no setup needed.
-  ════════════════════════════════════════════════ */
-
-  const STATE_MAP = {
-    '01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California',
-    '08':'Colorado','09':'Connecticut','10':'Delaware','12':'Florida','13':'Georgia',
-    '15':'Hawaii','16':'Idaho','17':'Illinois','18':'Indiana','19':'Iowa',
-    '20':'Kansas','21':'Kentucky','22':'Louisiana','23':'Maine','24':'Maryland',
-    '25':'Massachusetts','26':'Michigan','27':'Minnesota','28':'Mississippi',
-    '29':'Missouri','30':'Montana','31':'Nebraska','32':'Nevada','33':'New Hampshire',
-    '34':'New Jersey','35':'New Mexico','36':'New York','37':'North Carolina',
-    '38':'North Dakota','39':'Ohio','40':'Oklahoma','41':'Oregon','42':'Pennsylvania',
-    '44':'Rhode Island','45':'South Carolina','46':'South Dakota','47':'Tennessee',
-    '48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington',
-    '54':'West Virginia','55':'Wisconsin','56':'Wyoming'
-  };
-
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function setLoading(query) {
-    document.getElementById('river-results').innerHTML = `
-      <div class="results-loading">
-        <div class="spinner"></div>
-        Searching USGS gauges for &ldquo;${esc(query)}&rdquo;&hellip;
-      </div>`;
-    const btn = document.getElementById('search-btn');
-    btn.disabled = true; btn.textContent = 'Searching…';
+  var STATE_MAP = {'01':'Alabama','02':'Alaska','04':'Arizona','05':'Arkansas','06':'California','08':'Colorado','09':'Connecticut','10':'Delaware','12':'Florida','13':'Georgia','15':'Hawaii','16':'Idaho','17':'Illinois','18':'Indiana','19':'Iowa','20':'Kansas','21':'Kentucky','22':'Louisiana','23':'Maine','24':'Maryland','25':'Massachusetts','26':'Michigan','27':'Minnesota','28':'Mississippi','29':'Missouri','30':'Montana','31':'Nebraska','32':'Nevada','33':'New Hampshire','34':'New Jersey','35':'New Mexico','36':'New York','37':'North Carolina','38':'North Dakota','39':'Ohio','40':'Oklahoma','41':'Oregon','42':'Pennsylvania','44':'Rhode Island','45':'South Carolina','46':'South Dakota','47':'Tennessee','48':'Texas','49':'Utah','50':'Vermont','51':'Virginia','53':'Washington','54':'West Virginia','55':'Wisconsin','56':'Wyoming'};
+
+  /* ═══════════════════════════════════════════════════════
+     RIVER SEARCH
+     Loads river-data.json — a file in this same repo,
+     updated every hour by a GitHub Actions workflow.
+     No external API calls, no CORS issues, works everywhere.
+  ═══════════════════════════════════════════════════════ */
+
+  var riverData = null;      // cached after first load
+  var riverDataLoading = false;
+
+  function loadRiverData(cb) {
+    if (riverData) { cb(null, riverData); return; }
+    if (riverDataLoading) { setTimeout(function(){ loadRiverData(cb); }, 200); return; }
+    riverDataLoading = true;
+    fetch('river-data.json')
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        riverData = data;
+        riverDataLoading = false;
+        cb(null, data);
+      })
+      .catch(function(err) {
+        riverDataLoading = false;
+        cb(err, null);
+      });
   }
 
-  function resetBtn() {
-    const btn = document.getElementById('search-btn');
-    btn.disabled = false; btn.textContent = 'Search';
-  }
-
-  /* Fetch helper — tries direct first, falls back to CORS proxy */
-  const PROXY = 'https://api.allorigins.win/raw?url=';
-
-  async function fetchWithFallback(url, asJson = false) {
-    /* 1. Try direct */
-    try {
-      const r = await fetch(url, { mode: 'cors' });
-      if (r.ok) return asJson ? r.json() : r.text();
-    } catch (_) { /* blocked — fall through to proxy */ }
-
-    /* 2. Try via allorigins proxy */
-    const proxied = PROXY + encodeURIComponent(url);
-    const r2 = await fetch(proxied);
-    if (!r2.ok) throw new Error(`Proxy HTTP ${r2.status}`);
-    return asJson ? r2.json() : r2.text();
-  }
-
-  /* ════════════════════════════════════════════════
-     LIVE RIVER SEARCH
-     Uses the NEW USGS Water Data API (api.waterdata.usgs.gov)
-     The legacy waterservices.usgs.gov is being decommissioned.
-     
-     Two calls:
-       1. /monitoring-locations  — search sites by name (stream type)
-       2. /latest-continuous     — get most recent discharge + gage height
-     
-     Falls back through allorigins.win proxy if direct fetch is blocked.
-  ════════════════════════════════════════════════ */
-
-  const NEW_API = 'https://api.waterdata.usgs.gov/ogcapi/v0/collections';
-
-  
-  
-  
-  
-  async function apiFetch(url) {
-    try {
-      const r = await fetch(url);
-      if (r.ok) return r.json();
-    } catch (_) {}
-    /* fallback: CORS proxy */
-    const r2 = await fetch(PROXY + encodeURIComponent(url));
-    if (!r2.ok) throw new Error('Proxy failed: ' + r2.status);
-    return r2.json();
-  }
-
-  async function searchRiver() {
-    const query = document.getElementById('river-input').value.trim();
+  function searchRiver() {
+    var query = document.getElementById('river-input').value.trim();
     if (!query) return;
-    setLoading(query);
 
-    try {
-      /* Step 1: search monitoring locations by name, stream sites only, limit 9 */
-      const locUrl = NEW_API + '/monitoring-locations/items?f=json'
-        + '&monitoring_location_name__icontains=' + encodeURIComponent(query)
-        + '&site_type=ST'
-        + '&limit=9';
+    var el  = document.getElementById('river-results');
+    var btn = document.getElementById('search-btn');
+    el.innerHTML = '<div class="results-loading"><div class="spinner"></div>Searching for \u201c' + esc(query) + '\u201d\u2026</div>';
+    btn.disabled = true; btn.textContent = 'Searching\u2026';
 
-      console.log('LOC URL:', locUrl);
+    loadRiverData(function(err, data) {
+      btn.disabled = false; btn.textContent = 'Search';
 
-      const locData = await apiFetch(locUrl);
-      const features = locData.features || [];
-
-      if (!features.length) {
-        showNoResults(query);
-        resetBtn();
+      if (err) {
+        el.innerHTML = '<div class="results-error">'
+          + 'River data hasn\u2019t been generated yet.<br>'
+          + 'Go to your GitHub repo \u2192 Actions \u2192 <strong>Fetch River Data</strong> \u2192 click <strong>Run workflow</strong> to generate it now.'
+          + '</div>';
         return;
       }
 
-      /* Build site ID list for the latest-continuous call */
-      const siteIds = features.map(f => f.properties.monitoring_location_id);
+      var q = query.toUpperCase();
+      var matches = data.stations.filter(function(s) {
+        return s.name && s.name.toUpperCase().indexOf(q) !== -1;
+      }).slice(0, 9);
 
-      /* Step 2: fetch latest continuous readings (discharge 00060, gage height 00065) */
-      const ivUrl = NEW_API + '/latest-continuous/items?f=json'
-        + '&monitoring_location_id=' + siteIds.join(',')
-        + '&parameter_code=00060,00065'
-        + '&limit=100';
+      if (!matches.length) {
+        el.innerHTML = '<div class="results-error">No stream gauges found for \u201c' + esc(query) + '\u201d. Try a shorter term like <em>Yellowstone</em> or <em>Davidson</em>.</div>';
+        return;
+      }
 
-      const ivData = await apiFetch(ivUrl);
-      const readings = {};
+      var updated = data.updated ? new Date(data.updated).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
+      var cards = matches.map(function(s) { return buildCard(s); }).join('');
+      el.innerHTML = '<div class="results-count">Found ' + matches.length + ' gauge' + (matches.length !== 1 ? 's' : '') + ' matching \u201c' + esc(query) + '\u201d' + (updated ? ' &middot; Data updated ' + updated : '') + '</div>'
+        + '<div class="results-grid">' + cards + '</div>';
 
-      (ivData.features || []).forEach(feat => {
-        const p    = feat.properties;
-        const id   = p.monitoring_location_id;
-        const code = p.parameter_code;
-        const val  = parseFloat(p.value);
-        if (!id || isNaN(val)) return;
-        if (!readings[id]) readings[id] = { dt: p.time };
-        if (code === '00060') readings[id].cfs = val;
-        if (code === '00065') readings[id].ft  = val;
+      requestAnimationFrame(function() {
+        el.querySelectorAll('.gauge-bar-fill[data-pct]').forEach(function(b) { b.style.width = b.dataset.pct + '%'; });
       });
-
-      /* Step 3: render */
-      const cards = features.map(f => buildCard(f.properties, readings[f.properties.monitoring_location_id] || {})).join('');
-      const el = document.getElementById('river-results');
-      el.innerHTML = `
-        <div class="results-count">
-          Found ${features.length} USGS gauge${features.length !== 1 ? 's' : ''} matching &ldquo;${esc(query)}&rdquo;
-        </div>
-        <div class="results-grid">${cards}</div>`;
-
-      requestAnimationFrame(() => {
-        el.querySelectorAll('.gauge-bar-fill[data-pct]').forEach(b => { b.style.width = b.dataset.pct + '%'; });
-      });
-
-    } catch (err) {
-      console.error('River search error:', err);
-      document.getElementById('river-results').innerHTML = `
-        <div class="results-error">
-          Could not load river data &mdash; please try again in a moment.<br>
-          <a href="https://waterdata.usgs.gov/nwis/rt" target="_blank" rel="noopener" style="color:var(--water)">Search on waterdata.usgs.gov &rarr;</a>
-        </div>`;
-    }
-    resetBtn();
+    });
   }
 
-  function showNoResults(query) {
-    document.getElementById('river-results').innerHTML = `
-      <div class="results-error">
-        No USGS stream gauges found for &ldquo;${esc(query)}&rdquo;.<br>
-        Try a partial name &mdash; e.g. <em>Little</em> or <em>Davidson</em>.
-      </div>`;
-  }
-
-  function buildCard(p, r) {
-    const hasCfs = r.cfs != null && !isNaN(r.cfs);
-    const hasFt  = r.ft  != null && !isNaN(r.ft);
-
-    let status = 'na', label = 'No Data';
+  function buildCard(s) {
+    var hasCfs = s.cfs != null && !isNaN(s.cfs);
+    var hasFt  = s.ft  != null && !isNaN(s.ft);
+    var status = 'na', label = 'No Data';
     if (hasCfs) {
-      if      (r.cfs > 5000) { status = 'high';   label = 'High Flow'; }
-      else if (r.cfs < 50)   { status = 'low';    label = 'Low Flow';  }
+      if      (s.cfs > 5000) { status = 'high';   label = 'High Flow'; }
+      else if (s.cfs < 50)   { status = 'low';    label = 'Low Flow';  }
       else                   { status = 'normal'; label = 'Normal';    }
     }
-
-    const pct = hasCfs
-      ? Math.min(100, Math.round(Math.log10(Math.max(r.cfs, 1) + 1) / Math.log10(10001) * 100))
-      : 0;
-
-    const dtStr = r.dt
-      ? new Date(r.dt).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' })
-      : '—';
-
-    /* Extract site number from monitoring_location_id e.g. "USGS-03161000" */
-    const siteNo    = (p.monitoring_location_id || '').replace('USGS-', '');
-    const stateCd   = p.state_code || '';
-    const stateName = STATE_MAP[stateCd] || stateCd;
-    const usgsLink  = `https://waterdata.usgs.gov/monitoring-location/${siteNo}/`;
-    const siteName  = p.monitoring_location_name || 'Unknown Station';
-
-    return `
-      <div class="gauge-card">
-        <div class="gauge-top">
-          <div class="gauge-name">${esc(siteName)}</div>
-          <span class="gauge-status status-${status}">${label}</span>
-        </div>
-        <div class="gauge-metrics">
-          <div>
-            <div class="metric-label">Discharge</div>
-            <div class="metric-value">
-              ${hasCfs ? r.cfs.toLocaleString() : '—'}
-              <span class="metric-unit">${hasCfs ? 'cfs' : ''}</span>
-            </div>
-          </div>
-          <div>
-            <div class="metric-label">Gage Height</div>
-            <div class="metric-value">
-              ${hasFt ? r.ft.toFixed(2) : '—'}
-              <span class="metric-unit">${hasFt ? 'ft' : ''}</span>
-            </div>
-          </div>
-        </div>
-        <div class="gauge-bar-wrap">
-          <div class="gauge-bar-label">
-            <span>Flow Level</span>
-            <span>${hasCfs ? pct + '%' : 'No reading'}</span>
-          </div>
-          <div class="gauge-bar-track">
-            <div class="gauge-bar-fill fill-${status}" data-pct="${pct}" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="gauge-meta">
-          ${stateName ? stateName + ' &middot; ' : ''}Site #${esc(siteNo)}<br>
-          Updated ${dtStr} &middot;
-          <a href="${usgsLink}" target="_blank" rel="noopener">View on USGS &rarr;</a>
-        </div>
-      </div>`;
+    var pct   = hasCfs ? Math.min(100, Math.round(Math.log10(Math.max(s.cfs,1)+1) / Math.log10(10001) * 100)) : 0;
+    var dtStr = s.dt ? new Date(s.dt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '\u2014';
+    var sname = STATE_MAP[s.state] || s.state || '';
+    var link  = 'https://waterdata.usgs.gov/monitoring-location/' + esc(s.siteNo) + '/';
+    return '<div class="gauge-card">'
+      + '<div class="gauge-top"><div class="gauge-name">' + esc(s.name) + '</div>'
+      + '<span class="gauge-status status-' + status + '">' + label + '</span></div>'
+      + '<div class="gauge-metrics">'
+      + '<div><div class="metric-label">Discharge</div><div class="metric-value">' + (hasCfs ? s.cfs.toLocaleString() : '\u2014') + '<span class="metric-unit">' + (hasCfs?'cfs':'') + '</span></div></div>'
+      + '<div><div class="metric-label">Gage Height</div><div class="metric-value">' + (hasFt ? s.ft.toFixed(2) : '\u2014') + '<span class="metric-unit">' + (hasFt?'ft':'') + '</span></div></div>'
+      + '</div>'
+      + '<div class="gauge-bar-wrap"><div class="gauge-bar-label"><span>Flow Level</span><span>' + (hasCfs ? pct+'%' : 'No reading') + '</span></div>'
+      + '<div class="gauge-bar-track"><div class="gauge-bar-fill fill-' + status + '" data-pct="' + pct + '" style="width:0%"></div></div></div>'
+      + '<div class="gauge-meta">' + (sname ? sname + ' &middot; ' : '') + 'Site #' + esc(s.siteNo) + '<br>Updated ' + dtStr + ' &middot; <a href="' + link + '" target="_blank" rel="noopener">View on USGS \u2192</a></div>'
+      + '</div>';
   }
 </script>
 </body>
