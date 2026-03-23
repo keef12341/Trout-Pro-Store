@@ -40,6 +40,10 @@
 <body>
 
 <div id="header-mount"></div>
+<div style="background:#1a2e1a;color:#e6b84a;text-align:center;padding:10px 20px;font-family:'Fira Mono',monospace;font-size:.78rem;letter-spacing:.06em">
+  🎣 &nbsp; We're setting up our new store — ordering available very soon! &nbsp; 🎣
+</div>
+
 
 <div class="page-banner">
   <h1>Checkout</h1>
@@ -90,7 +94,7 @@
     + '<h2>Payment</h2>'
     + '<div class="form-group"><label>Card Number</label><div id="card-container" class="sq-wrap"></div></div>'
     + '<div id="payment-error"></div>'
-    + '<button class="pay-btn" id="pay-btn" onclick="handlePay()">Pay $' + total.toFixed(2) + '</button>'
+    + '<button class="pay-btn" id="pay-btn" disabled style="background:#888;cursor:not-allowed">Checkout Temporarily Unavailable</button>'
     + '<div class="secure-note">&#x1F512; Secured by Square &middot; SSL Encrypted</div>'
     + '</div>'
 
