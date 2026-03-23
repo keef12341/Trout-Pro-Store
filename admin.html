@@ -314,28 +314,127 @@
 <script>
   /* ── AUTH — Supabase Auth (no password in code) ── */
 
+  /* ── Brute force protection ──
+     Max 5 attempts, then 15 minute lockout.
+     Stored in localStorage so it persists across page refreshes.
+  ── */
+  var MAX_ATTEMPTS  = 5;
+  var LOCKOUT_MS    = 15 * 60 * 1000; /* 15 minutes */
+
+  function getAttempts() {
+    try { return JSON.parse(localStorage.getItem('tps_login_attempts') || '{"count":0,"time":0}'); }
+    catch(e) { return { count: 0, time: 0 }; }
+  }
+
+  function setAttempts(count, time) {
+    localStorage.setItem('tps_login_attempts', JSON.stringify({ count: count, time: time }));
+  }
+
+  function resetAttempts() {
+    localStorage.removeItem('tps_login_attempts');
+  }
+
+  function isLockedOut() {
+    var a = getAttempts();
+    if (a.count >= MAX_ATTEMPTS) {
+      var remaining = LOCKOUT_MS - (Date.now() - a.time);
+      if (remaining > 0) return Math.ceil(remaining / 60000); /* minutes remaining */
+      resetAttempts(); /* lockout expired */
+    }
+    return false;
+  }
+
+  /* Check lockout on page load */
+  (function checkLockout() {
+    var mins = isLockedOut();
+    if (mins) {
+      var errEl = document.getElementById('login-err');
+      var btn   = document.querySelector('.login-btn');
+      var inp   = document.getElementById('login-pass');
+      if (errEl) errEl.textContent = 'Too many failed attempts. Try again in ' + mins + ' minute' + (mins !== 1 ? 's' : '') + '.';
+      if (btn)   { btn.disabled = true; btn.textContent = 'Locked'; }
+      if (inp)   inp.disabled = true;
+      document.getElementById('login-email').disabled = true;
+      /* Recheck every 30 seconds and re-enable when lockout expires */
+      var interval = setInterval(function() {
+        var m = isLockedOut();
+        if (!m) {
+          clearInterval(interval);
+          if (errEl) errEl.textContent = '';
+          if (btn)   { btn.disabled = false; btn.textContent = 'Log In'; }
+          if (inp)   inp.disabled = false;
+          document.getElementById('login-email').disabled = false;
+        } else {
+          if (errEl) errEl.textContent = 'Too many failed attempts. Try again in ' + m + ' minute' + (m !== 1 ? 's' : '') + '.';
+        }
+      }, 30000);
+    }
+  })();
+
+  /* ── Brute force protection ── */
+  var MAX_ATTEMPTS = 5;
+  var LOCKOUT_MS   = 15 * 60 * 1000;
+
+  function getLockout() {
+    try { return JSON.parse(localStorage.getItem('tps_lockout') || '{}'); }
+    catch(e) { return {}; }
+  }
+  function setLockout(d) { localStorage.setItem('tps_lockout', JSON.stringify(d)); }
+  function clearFailures() { setLockout({}); }
+
+  function checkLocked() {
+    var d = getLockout();
+    if (d.until && Date.now() < d.until) {
+      var mins = Math.ceil((d.until - Date.now()) / 60000);
+      return 'Too many failed attempts. Try again in ' + mins + ' minute' + (mins !== 1 ? 's' : '') + '.';
+    }
+    if (d.until && Date.now() >= d.until) setLockout({});
+    return null;
+  }
+
+  function recordFailure() {
+    var d = getLockout();
+    d.attempts = (d.attempts || 0) + 1;
+    if (d.attempts >= MAX_ATTEMPTS) {
+      d.until = Date.now() + LOCKOUT_MS;
+      d.attempts = 0;
+    }
+    setLockout(d);
+    return MAX_ATTEMPTS - (d.attempts || 0);
+  }
+
   async function doLogin() {
     var email = document.getElementById('login-email').value.trim();
     var pass  = document.getElementById('login-pass').value;
     var errEl = document.getElementById('login-err');
     var btn   = document.querySelector('.login-btn');
 
+    errEl.style.color = '';
+    errEl.textContent = '';
+
     if (!email || !pass) {
       errEl.textContent = 'Please enter your email and password.';
       return;
     }
 
+    /* Check lockout before even trying */
+    var locked = checkLocked();
+    if (locked) {
+      errEl.textContent = locked;
+      errEl.style.color = '#c85040';
+      return;
+    }
+
     btn.textContent = 'Logging in…';
     btn.disabled = true;
-    errEl.textContent = '';
+
+    /* 800ms delay slows down automated attacks */
+    await new Promise(function(r) { setTimeout(r, 800); });
 
     try {
       var resp = await fetch(SUPA_URL + '/auth/v1/token?grant_type=password', {
         method: 'POST',
-        headers: {
-          'apikey': SUPA_ANON,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'apikey': SUPA_ANON, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: pass })
       });
 
@@ -345,15 +444,24 @@
         throw new Error(data.error_description || data.msg || 'Invalid email or password.');
       }
 
-      /* Store the session token — expires automatically */
-      sessionStorage.setItem('tps_token',      data.access_token);
-      sessionStorage.setItem('tps_token_exp',  Date.now() + (data.expires_in * 1000));
+      /* Success */
+      clearFailures();
+      sessionStorage.setItem('tps_token',       data.access_token);
+      sessionStorage.setItem('tps_token_exp',   Date.now() + (data.expires_in * 1000));
       sessionStorage.setItem('tps_admin_email', email);
-
       showAdmin();
 
-    } catch (e) {
-      errEl.textContent = e.message || 'Login failed. Please try again.';
+    } catch(e) {
+      var remaining = recordFailure();
+      var locked2   = checkLocked();
+      if (locked2) {
+        errEl.textContent = locked2;
+        errEl.style.color = '#c85040';
+      } else {
+        var r = Math.max(0, remaining);
+        errEl.textContent = 'Incorrect email or password. ' + r + ' attempt' + (r !== 1 ? 's' : '') + ' remaining before 15-minute lockout.';
+        errEl.style.color = '#e6b84a';
+      }
       btn.textContent = 'Log In';
       btn.disabled = false;
     }
@@ -395,6 +503,43 @@
     if (token && exp && Date.now() < parseInt(exp)) {
       showAdmin();
     }
+    /* Show lockout warning on login screen if currently locked */
+    var locked = checkLocked();
+    if (locked) {
+      var errEl = document.getElementById('login-err');
+      if (errEl) {
+        errEl.textContent = locked;
+        errEl.style.color = '#c85040';
+        var btn = document.querySelector('.login-btn');
+        if (btn) btn.disabled = true;
+        /* Re-enable when lockout expires */
+        var d = getLockout();
+        if (d.until) {
+          setTimeout(function() {
+            clearFailures();
+            errEl.textContent = 'Lockout expired. You may try again.';
+            errEl.style.color = '#e6b84a';
+            if (btn) btn.disabled = false;
+          }, d.until - Date.now());
+        }
+      }
+    }
+  })();
+
+  /* Auto-logout when session token expires */
+  (function watchSession() {
+    setInterval(function() {
+      var exp = sessionStorage.getItem('tps_token_exp');
+      if (exp && Date.now() > parseInt(exp)) {
+        sessionStorage.removeItem('tps_token');
+        sessionStorage.removeItem('tps_token_exp');
+        sessionStorage.removeItem('tps_admin_email');
+        if (document.getElementById('admin-wrap').style.display !== 'none') {
+          alert('Your session has expired. Please log in again.');
+          location.reload();
+        }
+      }
+    }, 60000); /* check every minute */
   })();
 
   /* ── TABS ── */
