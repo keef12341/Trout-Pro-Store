@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop Products | Trout Pro Store</title>
+  <meta name="description" content="Shop fly fishing flies, rods, reels, line, leaders, and accessories at Trout Pro Store." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='30' cy='32' rx='22' ry='11' fill='%23c8860a'/%3E%3Cellipse cx='30' cy='35' rx='18' ry='6' fill='%23e8b84a'/%3E%3Ccircle cx='22' cy='29' r='2' fill='%23a06020' opacity='.7'/%3E%3Ccircle cx='30' cy='27' r='1.5' fill='%23a06020' opacity='.7'/%3E%3Ccircle cx='38' cy='30' r='1.8' fill='%23a06020' opacity='.7'/%3E%3Cpath d='M52 32 L62 22 L64 32 L62 42 Z' fill='%23a06020'/%3E%3Ccircle cx='12' cy='31' r='3' fill='%23111'/%3E%3Ccircle cx='11' cy='30' r='1' fill='white'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:wght@300;400;600&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+
+<div id="header-mount"></div>
+
+<div class="page-banner">
+  <span class="section-tag" style="color:var(--water);justify-content:center;display:block;margin-bottom:10px">Trout Pro Store</span>
+  <h1>Shop Products</h1>
+  <p>The best fly fishing gear available — flies, rods, reels, line, leaders, tippet, and accessories.</p>
+</div>
+
+<main class="section">
+  <div class="section-inner">
+
+    <!-- Search + Filter -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;align-items:center">
+      <input type="text" id="search-input" placeholder="Search products…"
+        style="flex:1;min-width:200px;padding:12px 18px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;outline:none;background:var(--white);color:var(--text);border-radius:2px"
+        oninput="filterProducts()" />
+      <select id="sort-select" onchange="filterProducts()"
+        style="padding:12px 18px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);cursor:pointer;border-radius:2px">
+        <option value="name">Sort: Name A–Z</option>
+        <option value="price_asc">Sort: Price Low–High</option>
+        <option value="price_desc">Sort: Price High–Low</option>
+        <option value="newest">Sort: Newest</option>
+      </select>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="filter-bar" id="cat-bar">
+      <button class="filter-btn active" onclick="setCat('all',this)">All Products</button>
+      <button class="filter-btn" onclick="setCat('flies',this)">Flies</button>
+      <button class="filter-btn" onclick="setCat('rods',this)">Fly Rods</button>
+      <button class="filter-btn" onclick="setCat('reels',this)">Reels</button>
+      <button class="filter-btn" onclick="setCat('line',this)">Fly Line</button>
+      <button class="filter-btn" onclick="setCat('leaders',this)">Leaders &amp; Tippet</button>
+      <button class="filter-btn" onclick="setCat('accessories',this)">Accessories</button>
+    </div>
+
+    <div id="products-count" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);margin-bottom:20px"></div>
+    <div id="products-grid" class="product-grid">
+      <div class="loading"><div class="spinner"></div>Loading products…</div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-mount"></div>
+<div class="toast" id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+  var allProducts = [];
+  var currentCat  = 'all';
+
+  document.getElementById('header-mount').innerHTML = renderHeader('Shop');
+  document.getElementById('footer-mount').innerHTML = renderFooter();
+  initHeader();
+
+  /* Check for category in URL */
+  var urlCat = new URLSearchParams(location.search).get('cat');
+  if (urlCat) {
+    currentCat = urlCat;
+    document.querySelectorAll('.filter-btn').forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('onclick').includes("'" + urlCat + "'"));
+    });
+  }
+
+  /* Load products */
+  sbGet('products', 'in_stock=eq.true&order=name')
+    .then(function(data) {
+      allProducts = data;
+      filterProducts();
+      initFadeUp();
+    })
+    .catch(function() {
+      document.getElementById('products-grid').innerHTML =
+        '<div class="empty-state"><h3>Could not load products</h3><p>Please try again in a moment.</p></div>';
+    });
+
+  function setCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    filterProducts();
+  }
+
+  function filterProducts() {
+    var q    = document.getElementById('search-input').value.toLowerCase();
+    var sort = document.getElementById('sort-select').value;
+    var list = allProducts.filter(function(p) {
+      var matchCat  = currentCat === 'all' || p.category === currentCat;
+      var matchText = !q || p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
+      return matchCat && matchText;
+    });
+    /* Sort */
+    if (sort === 'price_asc')  list.sort(function(a,b){ return a.price - b.price; });
+    if (sort === 'price_desc') list.sort(function(a,b){ return b.price - a.price; });
+    if (sort === 'newest')     list.sort(function(a,b){ return new Date(b.created_at) - new Date(a.created_at); });
+    if (sort === 'name')       list.sort(function(a,b){ return a.name.localeCompare(b.name); });
+
+    document.getElementById('products-count').textContent =
+      list.length + ' product' + (list.length !== 1 ? 's' : '');
+
+    if (!list.length) {
+      document.getElementById('products-grid').innerHTML =
+        '<div class="empty-state"><h3>No products found</h3><p>Try a different search or category.</p></div>';
+      return;
+    }
+    document.getElementById('products-grid').innerHTML = list.map(cardHTML).join('');
+    initFadeUp();
+  }
+
+  function cardHTML(p) {
+    var img = p.image_url
+      ? '<img src="' + p.image_url + '" alt="' + esc(p.name) + '" loading="lazy" />'
+      : '';
+    return '<div class="product-card fade-up" onclick="location.href=\'product.html?id=' + p.id + '\'">'
+      + '<div class="product-card-img">'
+      + img
+      + '</div>'
+      + '<div class="product-card-body">'
+      + '<div class="product-card-cat">' + esc(p.category) + '</div>'
+      + '<div class="product-card-name">' + esc(p.name) + '</div>'
+      + '<div class="product-card-desc">' + esc((p.description||'').substring(0,80)) + (p.description && p.description.length > 80 ? '…' : '') + '</div>'
+      + '<div class="product-card-footer">'
+      + '<div class="product-card-price">$' + Number(p.price).toFixed(2) + '</div>'
+      + '<button class="add-to-cart-btn" onclick="event.stopPropagation();handleAdd(' + JSON.stringify(p).replace(/"/g,'&quot;') + ')">Add to Cart</button>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  }
+
+  function handleAdd(p) {
+    addToCart(p);
+    showToast(p.name + ' added to cart');
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2800);
+  }
+
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function initFadeUp() {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-up:not(.visible)').forEach(function(el) { obs.observe(el); });
+  }
+</script>
+</body>
+</html>
