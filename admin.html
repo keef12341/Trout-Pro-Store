@@ -28,7 +28,7 @@
     /* ADMIN LAYOUT */
     .admin-wrap{display:none}
     .admin-header{background:var(--forest);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
-    .admin-header img{height:44px}
+    .admin-header img{height:64px}
     .admin-header-right{display:flex;align-items:center;gap:16px}
     .admin-header a{color:var(--sand);font-family:'Fira Mono',monospace;font-size:.76rem;letter-spacing:.06em}
     .logout-btn{background:rgba(255,255,255,.1);color:var(--cream);border:none;padding:8px 16px;font-family:'Fira Mono',monospace;font-size:.74rem;cursor:pointer;border-radius:2px}
@@ -47,6 +47,10 @@
 
     /* CARDS */
     .admin-card{background:var(--white);border:1px solid var(--border);padding:28px;margin-bottom:24px}
+    .product-search-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .product-search-bar input,.product-search-bar select{padding:11px 16px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.9rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;flex:1;min-width:140px}
+    .product-search-bar input:focus,.product-search-bar select:focus{border-color:var(--gold)}
+    .search-count{font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);padding:4px 0}
     .admin-card h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--forest);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 
     /* FORM */
@@ -196,6 +200,24 @@
 
       <div class="admin-card">
         <h2>All Products <span id="product-count" style="font-family:'Fira Mono',monospace;font-size:.8rem;color:var(--stone);font-weight:400"></span></h2>
+        <div class="product-search-bar">
+          <input type="text" id="prod-search" placeholder="Search by name…" oninput="filterProductTable()" />
+          <select id="prod-cat-filter" onchange="filterProductTable()">
+            <option value="">All Categories</option>
+            <option value="flies">Flies</option>
+            <option value="rods">Fly Rods</option>
+            <option value="reels">Reels</option>
+            <option value="line">Fly Line</option>
+            <option value="leaders">Leaders &amp; Tippet</option>
+            <option value="accessories">Accessories</option>
+          </select>
+          <select id="prod-stock-filter" onchange="filterProductTable()">
+            <option value="">All Stock</option>
+            <option value="in">In Stock</option>
+            <option value="out">Out of Stock</option>
+          </select>
+        </div>
+        <div class="search-count" id="search-count"></div>
         <div id="products-table"><div class="loading"><div class="spinner"></div>Loading…</div></div>
       </div>
     </div>
@@ -266,9 +288,18 @@
       <div class="a-form-group"><label>Image URL</label><input type="url" id="ep-img" /></div>
     </div>
     <div class="a-form-group"><label>Description</label><textarea id="ep-desc"></textarea></div>
-    <div class="toggle-wrap" style="margin-bottom:20px">
-      <label class="toggle"><input type="checkbox" id="ep-stock" /><span class="toggle-slider"></span></label>
-      <span class="toggle-label">In Stock</span>
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Fira Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-bottom:10px">Stock Status</div>
+      <div style="display:flex;gap:10px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 18px;border:1.5px solid var(--border);border-radius:2px;flex:1;transition:all .2s" id="stock-yes-label">
+          <input type="radio" name="ep-stock-radio" id="ep-stock-yes" value="yes" style="accent-color:var(--green)" onchange="updateStockLabel()" />
+          <span style="font-family:'Fira Mono',monospace;font-size:.82rem;font-weight:600;color:#2d7a3a">✓ In Stock</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 18px;border:1.5px solid var(--border);border-radius:2px;flex:1;transition:all .2s" id="stock-no-label">
+          <input type="radio" name="ep-stock-radio" id="ep-stock-no" value="no" style="accent-color:var(--red)" onchange="updateStockLabel()" />
+          <span style="font-family:'Fira Mono',monospace;font-size:.82rem;font-weight:600;color:var(--red)">✗ Out of Stock</span>
+        </label>
+      </div>
     </div>
     <div style="display:flex;gap:12px">
       <button class="save-btn" onclick="updateProduct()">Save Changes</button>
@@ -609,24 +640,52 @@
     sbGet('products','order=name').then(function(data) {
       products = data;
       document.getElementById('product-count').textContent = '(' + data.length + ')';
-      if (!data.length) {
-        document.getElementById('products-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No products yet. Add one above.</p>';
-        return;
-      }
-      var rows = data.map(function(p) {
-        var img = p.image_url ? '<img src="' + p.image_url + '" alt="" />' : '<div style="width:48px;height:48px;background:var(--cream);border:1px solid var(--border)"></div>';
-        return '<tr>'
-          + '<td>' + img + '</td>'
-          + '<td><strong>' + esc(p.name) + '</strong></td>'
-          + '<td style="font-family:Fira Mono,monospace;font-size:.76rem">' + esc(p.category) + '</td>'
-          + '<td><strong>$' + Number(p.price).toFixed(2) + '</strong></td>'
-          + '<td><span class="badge ' + (p.in_stock?'badge-in-stock':'badge-out') + '">' + (p.in_stock?'In Stock':'Out') + '</span></td>'
-          + '<td><button class="edit-btn" onclick="openEditProduct(\'' + p.id + '\')">Edit</button></td>'
-          + '</tr>';
-      }).join('');
-      document.getElementById('products-table').innerHTML =
-        '<table class="admin-table"><thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+      renderProductTable(data);
+    }).catch(function() {
+      document.getElementById('products-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">Could not load products.</p>';
     });
+  }
+
+  function renderProductTable(data) {
+    if (!data.length) {
+      document.getElementById('products-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No products match your search.</p>';
+      document.getElementById('search-count').textContent = '';
+      return;
+    }
+    document.getElementById('search-count').textContent = data.length + ' product' + (data.length !== 1 ? 's' : '');
+    var rows = data.map(function(p) {
+      var img = p.image_url
+        ? '<img src="' + p.image_url + '" alt="" style="width:48px;height:48px;object-fit:cover;border:1px solid var(--border)" />'
+        : '<div style="width:48px;height:48px;background:var(--cream);border:1px solid var(--border)"></div>';
+      var stockBadge = p.in_stock
+        ? '<span class="badge badge-in-stock">✓ In Stock</span>'
+        : '<span class="badge badge-out">✗ Out of Stock</span>';
+      return '<tr>'
+        + '<td>' + img + '</td>'
+        + '<td><strong>' + esc(p.name) + '</strong></td>'
+        + '<td style="font-family:Fira Mono,monospace;font-size:.74rem;text-transform:capitalize">' + esc(p.category) + '</td>'
+        + '<td><strong>' + (p.price > 0 ? '$' + Number(p.price).toFixed(2) : '<span style="color:var(--stone)">No price</span>') + '</strong></td>'
+        + '<td>' + stockBadge + '</td>'
+        + '<td><button class="edit-btn" onclick="openEditProduct('' + p.id + '')">Edit</button></td>'
+        + '</tr>';
+    }).join('');
+    document.getElementById('products-table').innerHTML =
+      '<table class="admin-table"><thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function filterProductTable() {
+    var q     = (document.getElementById('prod-search').value || '').toLowerCase();
+    var cat   = document.getElementById('prod-cat-filter').value;
+    var stock = document.getElementById('prod-stock-filter').value;
+    var filtered = products.filter(function(p) {
+      var matchName  = !q   || p.name.toLowerCase().includes(q);
+      var matchCat   = !cat || p.category === cat;
+      var matchStock = !stock
+        || (stock === 'in'  &&  p.in_stock)
+        || (stock === 'out' && !p.in_stock);
+      return matchName && matchCat && matchStock;
+    });
+    renderProductTable(filtered);
   }
 
   function saveProduct() {
@@ -654,6 +713,14 @@
     });
   }
 
+  function updateStockLabel() {
+    var yes = document.getElementById('ep-stock-yes').checked;
+    document.getElementById('stock-yes-label').style.borderColor = yes ? '#2d7a3a' : 'var(--border)';
+    document.getElementById('stock-yes-label').style.background  = yes ? 'rgba(45,122,58,.06)' : '';
+    document.getElementById('stock-no-label').style.borderColor  = !yes ? 'var(--red)' : 'var(--border)';
+    document.getElementById('stock-no-label').style.background   = !yes ? 'rgba(200,80,60,.05)' : '';
+  }
+
   function openEditProduct(id) {
     var p = products.find(function(x){ return x.id === id; });
     if (!p) return;
@@ -663,7 +730,9 @@
     document.getElementById('ep-cat').value   = p.category;
     document.getElementById('ep-img').value   = p.image_url || '';
     document.getElementById('ep-desc').value  = p.description || '';
-    document.getElementById('ep-stock').checked = p.in_stock;
+    document.getElementById('ep-stock-yes').checked = p.in_stock;
+    document.getElementById('ep-stock-no').checked  = !p.in_stock;
+    updateStockLabel();
     openModal('edit-product-modal');
   }
 
@@ -675,7 +744,7 @@
       category:    document.getElementById('ep-cat').value,
       image_url:   document.getElementById('ep-img').value.trim() || null,
       description: document.getElementById('ep-desc').value.trim() || null,
-      in_stock:    document.getElementById('ep-stock').checked
+      in_stock:    document.getElementById('ep-stock-yes').checked
     }).then(function() {
       toast('Product updated!');
       closeModal('edit-product-modal');
