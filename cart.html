@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart | Trout Pro Store</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='30' cy='32' rx='22' ry='11' fill='%23c8860a'/%3E%3Cellipse cx='30' cy='35' rx='18' ry='6' fill='%23e8b84a'/%3E%3Cpath d='M52 32 L62 22 L64 32 L62 42 Z' fill='%23a06020'/%3E%3Ccircle cx='12' cy='31' r='3' fill='%23111'/%3E%3Ccircle cx='11' cy='30' r='1' fill='white'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:wght@300;400;600&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .cart-wrap{max-width:900px;margin:0 auto;padding:56px 40px}
+    .cart-table{width:100%;border-collapse:collapse;margin-bottom:32px}
+    .cart-table th{font-family:'Fira Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);padding:12px 16px;border-bottom:2px solid var(--border);text-align:left}
+    .cart-table td{padding:16px;border-bottom:1px solid var(--border);vertical-align:middle}
+    .cart-item-img{width:64px;height:64px;object-fit:cover;background:var(--cream);border:1px solid var(--border)}
+    .cart-item-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--forest)}
+    .cart-item-cat{font-family:'Fira Mono',monospace;font-size:.64rem;color:var(--stone);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+    .cart-qty{width:56px;padding:8px;text-align:center;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;border-radius:2px}
+    .cart-remove{background:none;border:none;color:var(--stone);cursor:pointer;font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.06em;padding:6px;transition:color .2s}
+    .cart-remove:hover{color:#c85040}
+    .cart-summary{background:var(--cream);border:1px solid var(--border);padding:28px 32px;max-width:380px;margin-left:auto}
+    .summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:.95rem}
+    .summary-row.total{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--forest);padding-top:16px;border-top:2px solid var(--border);margin-top:8px}
+    @media(max-width:768px){.cart-wrap{padding:32px 20px}.cart-table th:nth-child(3),.cart-table td:nth-child(3){display:none}}
+  </style>
+</head>
+<body>
+
+<div id="header-mount"></div>
+
+<div class="page-banner">
+  <h1>Your Cart</h1>
+</div>
+
+<main>
+  <div class="cart-wrap">
+    <div id="cart-body"></div>
+  </div>
+</main>
+
+<div id="footer-mount"></div>
+
+<script src="shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = renderHeader('');
+  document.getElementById('footer-mount').innerHTML = renderFooter();
+  initHeader();
+  renderCart();
+
+  function renderCart() {
+    var cart = getCart();
+    var el   = document.getElementById('cart-body');
+
+    if (!cart.length) {
+      el.innerHTML = '<div class="empty-state"><h3>Your cart is empty</h3><p>Head to the shop and find something you love.</p><a href="products.html" class="btn-primary" style="margin-top:8px">Shop Now</a></div>';
+      return;
+    }
+
+    var rows = cart.map(function(item, idx) {
+      var img = item.image_url
+        ? '<img class="cart-item-img" src="' + item.image_url + '" alt="' + esc(item.name) + '" />'
+        : '<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--stone)">No img</div>';
+      return '<tr>'
+        + '<td>' + img + '</td>'
+        + '<td><div class="cart-item-name">' + esc(item.name) + '</div><div class="cart-item-cat">' + esc(item.category||'') + '</div></td>'
+        + '<td>$' + Number(item.price).toFixed(2) + '</td>'
+        + '<td><input type="number" class="cart-qty" value="' + item.qty + '" min="1" max="99" onchange="updateQty(' + idx + ',this.value)" /></td>'
+        + '<td>$' + (item.price * item.qty).toFixed(2) + '</td>'
+        + '<td><button class="cart-remove" onclick="removeItem(' + idx + ')">&times; Remove</button></td>'
+        + '</tr>';
+    }).join('');
+
+    var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
+    var shipping = subtotal >= 75 ? 0 : 6.95;
+    var total    = subtotal + shipping;
+
+    el.innerHTML =
+      '<table class="cart-table">'
+      + '<thead><tr><th></th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>'
+      + '<tbody>' + rows + '</tbody>'
+      + '</table>'
+      + '<div class="cart-summary">'
+      + '<div class="summary-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
+      + '<div class="summary-row"><span>Shipping</span><span>' + (shipping === 0 ? '<span style="color:#5aaa5a">Free</span>' : '$' + shipping.toFixed(2)) + '</span></div>'
+      + (shipping > 0 ? '<div style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone);margin-bottom:8px">Add $' + (75 - subtotal).toFixed(2) + ' more for free shipping</div>' : '')
+      + '<div class="summary-row total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>'
+      + '<a href="checkout.html" class="btn-primary" style="display:block;text-align:center;margin-top:20px;padding:16px">Proceed to Checkout</a>'
+      + '<a href="products.html" style="display:block;text-align:center;margin-top:12px;font-family:Fira Mono,monospace;font-size:.74rem;color:var(--stone)">&larr; Continue Shopping</a>'
+      + '</div>';
+  }
+
+  function updateQty(idx, val) {
+    var cart = getCart();
+    cart[idx].qty = Math.max(1, parseInt(val) || 1);
+    saveCart(cart);
+    renderCart();
+  }
+
+  function removeItem(idx) {
+    var cart = getCart();
+    cart.splice(idx, 1);
+    saveCart(cart);
+    renderCart();
+  }
+
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
