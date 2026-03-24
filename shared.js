@@ -98,7 +98,7 @@ function renderHeader(activePage) {
       <nav role="navigation" aria-label="Main navigation">
         ${nav}
         <a href="/cart.html" class="cart-btn" aria-label="Shopping cart">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cream);transition:color .2s"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--cream);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61H19a2 2 0 001.98-1.72L22 6H6"/></svg>
           <span class="cart-count" id="cart-badge">0</span>
         </a>
         <a href="/products.html" class="nav-cta">Shop Now</a>
@@ -137,14 +137,14 @@ function renderFooter() {
       <div class="footer-col"><h4>Learn</h4><ul>
         <li><a href="/blog.html">Blog</a></li>
         <li><a href="/#river-reports">River Reports</a></li>
-        <li><a href="/about.html">About Us</a></li>
-        <li><a href="/contact.html">Contact</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
       </ul></div>
       <div class="footer-col"><h4>Help</h4><ul>
-        <li><a href="/faq.html">FAQ</a></li>
-        <li><a href="/shipping.html">Shipping</a></li>
-        <li><a href="/returns.html">Returns</a></li>
-        <li><a href="/terms.html">Terms of Use</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Terms of Use</a></li>
       </ul></div>
     </div>
     <div class="footer-bottom">
