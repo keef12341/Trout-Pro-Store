@@ -27,9 +27,10 @@ async function sbPost(table, body) {
     body: JSON.stringify(body)
   });
   if (!r.ok) throw new Error('DB error ' + r.status);
-  /* return=minimal gives 204 with no body */
-  if (r.status === 204) return {};
-  return r.json();
+  /* return=minimal gives 204 with no body — handle safely */
+  const text = await r.text();
+  if (!text || text.trim() === '') return {};
+  try { return JSON.parse(text); } catch(e) { return {}; };
 }
 
 async function sbPatch(table, id, body) {
