@@ -272,17 +272,42 @@
 
   /* Initialize Square card */
   var squareCard;
+
   async function initSquare() {
-    if (!window.Square) return;
+    /* Wait for Square SDK to be ready */
+    var attempts = 0;
+    while (!window.Square && attempts < 20) {
+      await new Promise(function(r){ setTimeout(r, 250); });
+      attempts++;
+    }
+    if (!window.Square) {
+      document.getElementById('card-container').innerHTML =
+        '<p style="color:#c85040;font-family:Fira Mono,monospace;font-size:.8rem">Payment system failed to load. Please refresh the page.</p>';
+      return;
+    }
     try {
       var payments = Square.payments(SQ_APP_ID, SQ_LOC_ID);
-      squareCard = await payments.card();
+      squareCard   = await payments.card({
+        style: {
+          input: { fontSize: '16px', fontFamily: 'Source Serif 4, Georgia, serif' },
+          '.input-container': { borderColor: 'rgba(90,122,90,0.2)', borderRadius: '2px' },
+          '.input-container.is-focus': { borderColor: '#c8932a' },
+        }
+      });
       await squareCard.attach('#card-container');
     } catch(e) {
       console.error('Square init error:', e);
+      document.getElementById('card-container').innerHTML =
+        '<p style="color:#c85040;font-family:Fira Mono,monospace;font-size:.8rem">Could not load payment form: ' + e.message + '</p>';
     }
   }
-  initSquare();
+
+  /* Wait for DOM to be ready before init */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSquare);
+  } else {
+    setTimeout(initSquare, 100);
+  }
 
   async function handlePay() {
     var btn   = document.getElementById('pay-btn');
