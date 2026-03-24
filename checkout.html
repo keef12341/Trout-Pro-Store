@@ -33,6 +33,14 @@
     .pay-btn:disabled{opacity:.6;cursor:not-allowed}
     #payment-error{color:#c85040;font-family:'Fira Mono',monospace;font-size:.78rem;margin-top:10px;display:none}
     .secure-note{font-family:'Fira Mono',monospace;font-size:.66rem;color:var(--stone);text-align:center;margin-top:12px}
+    .promo-row{display:flex;gap:10px;margin-bottom:20px}
+    .promo-row input{flex:1;padding:11px 16px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.9rem;outline:none;border-radius:2px}
+    .promo-row input:focus{border-color:var(--gold)}
+    .promo-apply-btn{background:var(--forest);color:var(--cream);border:none;padding:11px 20px;font-family:'Fira Mono',monospace;font-size:.76rem;letter-spacing:.06em;cursor:pointer;border-radius:2px;white-space:nowrap}
+    .promo-apply-btn:hover{background:var(--moss)}
+    .promo-msg{font-family:'Fira Mono',monospace;font-size:.76rem;margin-bottom:12px;padding:8px 12px;border-radius:2px}
+    .promo-msg.ok{background:rgba(45,122,58,.1);color:#2d7a3a;border:1px solid rgba(45,122,58,.25)}
+    .promo-msg.err{background:rgba(200,80,60,.1);color:#c85040;border:1px solid rgba(200,80,60,.25)}
     @media(max-width:860px){.checkout-wrap{grid-template-columns:1fr}.order-summary{position:static}}
     @media(max-width:540px){.checkout-wrap{padding:32px 20px}.form-row{grid-template-columns:1fr}}
   </style>
@@ -65,11 +73,9 @@
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
 
-  /* Shipping options */
+  /* Shipping — flat rate, options coming soon */
   var SHIPPING_OPTIONS = [
     { id: 'standard', label: 'Standard Shipping (5-7 business days)', price: 6.95 },
-    { id: 'expedited', label: 'Expedited Shipping (2-3 business days)', price: 14.95 },
-    { id: 'overnight', label: 'Overnight Shipping (1 business day)', price: 29.95 },
     { id: 'free', label: 'Free Shipping (5-7 business days)', price: 0, minOrder: 75 }
   ];
 
@@ -98,14 +104,91 @@
     return STATE_TAX[(stateCode||'').toUpperCase().trim()] || 0;
   }
 
+  /* ── Promo codes — validated against Supabase, nothing hardcoded ── */
+  var appliedPromo = null;
+
+  async function applyPromo() {
+    var code  = (document.getElementById('promo-input').value || '').trim().toUpperCase();
+    var msgEl = document.getElementById('promo-msg');
+    var btn   = document.querySelector('.promo-apply-btn');
+
+    msgEl.style.display = 'none';
+    msgEl.textContent   = '';
+
+    if (!code) {
+      msgEl.className     = 'promo-msg err';
+      msgEl.textContent   = 'Please enter a promo code.';
+      msgEl.style.display = 'block';
+      return;
+    }
+
+    btn.textContent = 'Checking…';
+    btn.disabled    = true;
+
+    try {
+      /* Look up code in Supabase — only active codes are returned by RLS */
+      var data = await sbGet('promo_codes', 'code=eq.' + encodeURIComponent(code) + '&active=eq.true');
+
+      if (!data || !data.length) {
+        msgEl.className     = 'promo-msg err';
+        msgEl.textContent   = 'Invalid or expired promo code.';
+        msgEl.style.display = 'block';
+        appliedPromo        = null;
+        updateOrderSummary();
+      } else {
+        var p = data[0];
+        appliedPromo = {
+          type:     p.discount_type,
+          discount: parseFloat(p.discount_value),
+          label:    p.label || 'Discount applied'
+        };
+        msgEl.className     = 'promo-msg ok';
+        msgEl.textContent   = '✓ ' + appliedPromo.label;
+        msgEl.style.display = 'block';
+        updateOrderSummary();
+      }
+    } catch(e) {
+      msgEl.className     = 'promo-msg err';
+      msgEl.textContent   = 'Could not validate code. Please try again.';
+      msgEl.style.display = 'block';
+    }
+
+    btn.textContent = 'Apply';
+    btn.disabled    = false;
+  }
+
   function updateOrderSummary() {
     var stateVal  = (document.getElementById('state') || {value:''}).value;
     var shipping  = getShippingPrice();
     var taxRate   = getTaxRate(stateVal);
     var tax       = subtotal * taxRate;
-    var total     = subtotal + shipping + tax;
+
+    /* Apply promo discount */
+    var discount = 0;
+    if (appliedPromo) {
+      if (appliedPromo.type === 'fixed') {
+        /* Fixed price override — charge exactly that amount */
+        discount = Math.max(0, subtotal + shipping + tax - appliedPromo.discount);
+      } else if (appliedPromo.type === 'percent') {
+        discount = subtotal * appliedPromo.discount;
+      } else if (appliedPromo.type === 'shipping') {
+        discount = shipping;
+      }
+    }
+
+    var total = Math.max(0.01, subtotal + shipping + tax - discount);
 
     document.getElementById('sum-shipping').textContent = shipping === 0 ? 'Free' : '$' + shipping.toFixed(2);
+    /* Show/hide discount row */
+    var discRow = document.getElementById('sum-discount-row');
+    if (discRow) {
+      if (discount > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('sum-discount').textContent = '-$' + discount.toFixed(2);
+      } else {
+        discRow.style.display = 'none';
+      }
+    }
     document.getElementById('sum-tax').textContent = taxRate > 0
       ? '$' + tax.toFixed(2) + ' (' + (taxRate * 100).toFixed(2) + '%)'
       : stateVal.length === 2 ? 'No tax' : 'Enter state for tax';
@@ -144,11 +227,12 @@
     + '<div class="form-group"><label>State</label><input type="text" id="state" maxlength="2" placeholder="TN" required oninput="updateOrderSummary()" /></div>'
     + '</div>'
     + '<div class="form-group"><label>ZIP Code</label><input type="text" id="zip" maxlength="10" required /></div>'
-    + '<hr style="border:none;border-top:1px solid var(--border);margin:24px 0" />'
-    + '<h2>Shipping Method</h2>'
-    + '<div id="shipping-opts" style="margin-bottom:24px">' + shippingOpts + '</div>'
+    + '<div style="background:var(--cream);border:1px solid var(--border);padding:14px 18px;margin-bottom:24px;font-family:Fira Mono,monospace;font-size:.82rem;color:var(--text-muted)">'
+    + '<div style="background:var(--cream);border:1px solid var(--border);padding:14px 18px;margin-bottom:24px;font-family:Fira Mono,monospace;font-size:.82rem;color:var(--text-muted)" id="shipping-note"></div>'
+    + '</div>'
     + '<hr style="border:none;border-top:1px solid var(--border);margin:24px 0" />'
     + '<h2>Payment</h2>'
+    + '<div style="margin-bottom:20px"><div style="font-family:Fira Mono,monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-bottom:8px">Promo Code</div><div class="promo-row"><input type="text" id="promo-input" placeholder="Enter promo code" /><button class="promo-apply-btn" onclick="applyPromo()">Apply</button></div><div class="promo-msg" id="promo-msg" style="display:none"></div></div>'
     + '<div class="form-group"><label>Card Details</label><div id="card-container" class="sq-wrap"></div></div>'
     + '<div id="payment-error"></div>'
     + '<button class="pay-btn" id="pay-btn" onclick="handlePay()">Complete Order</button>'
@@ -161,6 +245,7 @@
     + '<hr class="order-divider" />'
     + '<div class="order-total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
     + '<div class="order-total-row"><span>Shipping</span><span id="sum-shipping">calculating…</span></div>'
+    + '<div class="order-total-row" id="sum-discount-row" style="display:none;color:#2d7a3a"><span>Discount</span><span id="sum-discount"></span></div>'
     + '<div class="order-total-row"><span>Tax</span><span id="sum-tax">Enter state</span></div>'
     + '<div class="order-total-row grand"><span>Total</span><span id="sum-total">$' + subtotal.toFixed(2) + '</span></div>'
     + '</div>';
@@ -177,7 +262,12 @@
   /* Initial render */
   setTimeout(function() {
     updateOrderSummary();
-    highlightShipping();
+    var note = document.getElementById('shipping-note');
+    if (note) {
+      note.textContent = subtotal >= 75
+        ? 'Free shipping on your order!'
+        : 'Shipping: $6.95 · Free on orders over $75';
+    }
   }, 50);
 
   /* Initialize Square card */
