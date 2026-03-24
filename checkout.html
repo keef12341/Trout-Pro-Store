@@ -287,13 +287,7 @@
     }
     try {
       var payments = Square.payments(SQ_APP_ID, SQ_LOC_ID);
-      squareCard   = await payments.card({
-        style: {
-          input: { fontSize: '16px', fontFamily: 'Source Serif 4, Georgia, serif' },
-          '.input-container': { borderColor: 'rgba(90,122,90,0.2)', borderRadius: '2px' },
-          '.input-container.is-focus': { borderColor: '#c8932a' },
-        }
-      });
+      squareCard = await payments.card();
       await squareCard.attach('#card-container');
     } catch(e) {
       console.error('Square init error:', e);
