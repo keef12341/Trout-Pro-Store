@@ -666,7 +666,7 @@
         + '<td style="font-family:Fira Mono,monospace;font-size:.74rem;text-transform:capitalize">' + esc(p.category) + '</td>'
         + '<td><strong>' + (p.price > 0 ? '$' + Number(p.price).toFixed(2) : '<span style="color:var(--stone)">No price</span>') + '</strong></td>'
         + '<td>' + stockBadge + '</td>'
-        + '<td><button class="edit-btn" onclick="openEditProduct('' + p.id + '')">Edit</button></td>'
+        + '<td><button class="edit-btn" data-id="' + p.id + '" onclick="openEditProduct(this.dataset.id)">Edit</button></td>'
         + '</tr>';
     }).join('');
     document.getElementById('products-table').innerHTML =
@@ -780,7 +780,7 @@
           + '<td style="font-family:Fira Mono,monospace;font-size:.74rem">' + esc(p.tag||'') + '</td>'
           + '<td><span class="badge ' + (p.published?'badge-in-stock':'badge-out') + '">' + (p.published?'Live':'Draft') + '</span></td>'
           + '<td style="font-family:Fira Mono,monospace;font-size:.72rem;color:var(--stone)">' + date + '</td>'
-          + '<td><button class="edit-btn" onclick="openEditPost(\'' + p.id + '\')">Edit</button></td>'
+          + '<td><button class="edit-btn" data-id="' + p.id + '" onclick="openEditPost(this.dataset.id)">Edit</button></td>'
           + '</tr>';
       }).join('');
       document.getElementById('posts-table').innerHTML =
