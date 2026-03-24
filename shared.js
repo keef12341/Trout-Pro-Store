@@ -14,17 +14,21 @@ async function sbGet(table, params = '') {
 }
 
 async function sbPost(table, body) {
+  /* Use minimal headers for anon inserts — no return=representation
+     which requires SELECT permission the anon role may not have */
   const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
     method: 'POST',
     headers: {
       'apikey': SUPA_ANON,
       'Authorization': `Bearer ${SUPA_ANON}`,
       'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
+      'Prefer': 'return=minimal'
     },
     body: JSON.stringify(body)
   });
   if (!r.ok) throw new Error('DB error ' + r.status);
+  /* return=minimal gives 204 with no body */
+  if (r.status === 204) return {};
   return r.json();
 }
 
