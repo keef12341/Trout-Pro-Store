@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:wght@300;400;600&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="shared.css" />
   <!-- Square Web Payments SDK -->
-  <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+  <script src="https://web.squarecdn.com/v1/square.js"></script>
   <style>
     .checkout-wrap{display:grid;grid-template-columns:1fr 420px;gap:48px;max-width:1100px;margin:0 auto;padding:56px 40px}
     .form-section h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--forest);margin-bottom:20px}
@@ -40,9 +40,6 @@
 <body>
 
 <div id="header-mount"></div>
-<div style="background:#1a2e1a;color:#e6b84a;text-align:center;padding:10px 20px;font-family:'Fira Mono',monospace;font-size:.78rem;letter-spacing:.06em">
-  🎣 &nbsp; We're setting up our new store — ordering available very soon! &nbsp; 🎣
-</div>
 
 
 <div class="page-banner">
@@ -67,16 +64,73 @@
   if (!cart.length) { location.href = 'cart.html'; }
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
-  var shipping = subtotal >= 75 ? 0 : 6.95;
-  var total    = subtotal + shipping;
 
-  /* Render page */
+  /* Shipping options */
+  var SHIPPING_OPTIONS = [
+    { id: 'standard', label: 'Standard Shipping (5-7 business days)', price: 6.95 },
+    { id: 'expedited', label: 'Expedited Shipping (2-3 business days)', price: 14.95 },
+    { id: 'overnight', label: 'Overnight Shipping (1 business day)', price: 29.95 },
+    { id: 'free', label: 'Free Shipping (5-7 business days)', price: 0, minOrder: 75 }
+  ];
+
+  /* Tax rate — 7% default, recalculated when state is entered */
+  /* Common US state tax rates */
+  var STATE_TAX = {
+    'AL':0.04,'AK':0,'AZ':0.056,'AR':0.065,'CA':0.0725,'CO':0.029,
+    'CT':0.0635,'DE':0,'FL':0.06,'GA':0.04,'HI':0.04,'ID':0.06,
+    'IL':0.0625,'IN':0.07,'IA':0.06,'KS':0.065,'KY':0.06,'LA':0.0445,
+    'ME':0.055,'MD':0.06,'MA':0.0625,'MI':0.06,'MN':0.06875,'MS':0.07,
+    'MO':0.04225,'MT':0,'NE':0.055,'NV':0.0685,'NH':0,'NJ':0.06625,
+    'NM':0.05125,'NY':0.04,'NC':0.0475,'ND':0.05,'OH':0.0575,'OK':0.045,
+    'OR':0,'PA':0.06,'RI':0.07,'SC':0.06,'SD':0.045,'TN':0.07,
+    'TX':0.0625,'UT':0.0485,'VT':0.06,'VA':0.053,'WA':0.065,
+    'WV':0.06,'WI':0.05,'WY':0.04,'DC':0.06
+  };
+
+  var selectedShipping = subtotal >= 75 ? 'free' : 'standard';
+
+  function getShippingPrice() {
+    var opt = SHIPPING_OPTIONS.find(function(o){ return o.id === selectedShipping; });
+    return opt ? opt.price : 6.95;
+  }
+
+  function getTaxRate(stateCode) {
+    return STATE_TAX[(stateCode||'').toUpperCase().trim()] || 0;
+  }
+
+  function updateOrderSummary() {
+    var stateVal  = (document.getElementById('state') || {value:''}).value;
+    var shipping  = getShippingPrice();
+    var taxRate   = getTaxRate(stateVal);
+    var tax       = subtotal * taxRate;
+    var total     = subtotal + shipping + tax;
+
+    document.getElementById('sum-shipping').textContent = shipping === 0 ? 'Free' : '$' + shipping.toFixed(2);
+    document.getElementById('sum-tax').textContent = taxRate > 0
+      ? '$' + tax.toFixed(2) + ' (' + (taxRate * 100).toFixed(2) + '%)'
+      : stateVal.length === 2 ? 'No tax' : 'Enter state for tax';
+    document.getElementById('sum-total').textContent = '$' + total.toFixed(2);
+    var btn = document.getElementById('pay-btn');
+    if (btn) btn.textContent = 'Pay $' + total.toFixed(2);
+    return { shipping: shipping, tax: tax, total: total, taxRate: taxRate };
+  }
+
   var itemRows = cart.map(function(i) {
-    return '<div class="order-item"><span class="order-item-name">' + esc(i.name) + '<span class="order-item-qty">x' + i.qty + '</span></span><span>$' + (i.price * i.qty).toFixed(2) + '</span></div>';
+    return '<div class="order-item"><span class="order-item-name">' + esc(i.name) + '<span class="order-item-qty"> x' + i.qty + '</span></span><span>$' + (i.price * i.qty).toFixed(2) + '</span></div>';
+  }).join('');
+
+  /* Build shipping options HTML */
+  var shippingOpts = SHIPPING_OPTIONS.filter(function(o){
+    return !o.minOrder || subtotal >= o.minOrder;
+  }).map(function(o) {
+    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);margin-bottom:8px;cursor:pointer;border-radius:2px;transition:border-color .2s" class="ship-opt-label">'
+      + '<input type="radio" name="shipping" value="' + o.id + '"' + (o.id === selectedShipping ? ' checked' : '') + ' onchange="selectedShipping=this.value;updateOrderSummary();highlightShipping()" style="accent-color:var(--forest)" />'
+      + '<span style="flex:1;font-size:.88rem">' + o.label + '</span>'
+      + '<strong>' + (o.price === 0 ? 'FREE' : '$' + o.price.toFixed(2)) + '</strong>'
+      + '</label>';
   }).join('');
 
   document.getElementById('checkout-body').innerHTML =
-    /* Left — form */
     '<div class="form-section">'
     + '<h2>Contact &amp; Shipping</h2>'
     + '<div class="form-row">'
@@ -87,26 +141,44 @@
     + '<div class="form-group"><label>Address</label><input type="text" id="address" required /></div>'
     + '<div class="form-row">'
     + '<div class="form-group"><label>City</label><input type="text" id="city" required /></div>'
-    + '<div class="form-group"><label>State</label><input type="text" id="state" maxlength="2" required /></div>'
+    + '<div class="form-group"><label>State</label><input type="text" id="state" maxlength="2" placeholder="TN" required oninput="updateOrderSummary()" /></div>'
     + '</div>'
     + '<div class="form-group"><label>ZIP Code</label><input type="text" id="zip" maxlength="10" required /></div>'
     + '<hr style="border:none;border-top:1px solid var(--border);margin:24px 0" />'
+    + '<h2>Shipping Method</h2>'
+    + '<div id="shipping-opts" style="margin-bottom:24px">' + shippingOpts + '</div>'
+    + '<hr style="border:none;border-top:1px solid var(--border);margin:24px 0" />'
     + '<h2>Payment</h2>'
-    + '<div class="form-group"><label>Card Number</label><div id="card-container" class="sq-wrap"></div></div>'
+    + '<div class="form-group"><label>Card Details</label><div id="card-container" class="sq-wrap"></div></div>'
     + '<div id="payment-error"></div>'
-    + '<button class="pay-btn" id="pay-btn" disabled style="background:#888;cursor:not-allowed">Checkout Temporarily Unavailable</button>'
+    + '<button class="pay-btn" id="pay-btn" onclick="handlePay()">Complete Order</button>'
     + '<div class="secure-note">&#x1F512; Secured by Square &middot; SSL Encrypted</div>'
     + '</div>'
 
-    /* Right — order summary */
     + '<div class="order-summary">'
     + '<h2>Order Summary</h2>'
     + itemRows
     + '<hr class="order-divider" />'
     + '<div class="order-total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
-    + '<div class="order-total-row"><span>Shipping</span><span>' + (shipping === 0 ? 'Free' : '$' + shipping.toFixed(2)) + '</span></div>'
-    + '<div class="order-total-row grand"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>'
+    + '<div class="order-total-row"><span>Shipping</span><span id="sum-shipping">calculating…</span></div>'
+    + '<div class="order-total-row"><span>Tax</span><span id="sum-tax">Enter state</span></div>'
+    + '<div class="order-total-row grand"><span>Total</span><span id="sum-total">$' + subtotal.toFixed(2) + '</span></div>'
     + '</div>';
+
+  /* Highlight selected shipping option */
+  function highlightShipping() {
+    document.querySelectorAll('.ship-opt-label').forEach(function(l) {
+      var radio = l.querySelector('input[type=radio]');
+      l.style.borderColor = radio && radio.checked ? 'var(--gold)' : 'var(--border)';
+      l.style.background  = radio && radio.checked ? 'rgba(200,147,42,.05)' : '';
+    });
+  }
+
+  /* Initial render */
+  setTimeout(function() {
+    updateOrderSummary();
+    highlightShipping();
+  }, 50);
 
   /* Initialize Square card */
   var squareCard;
@@ -123,49 +195,82 @@
   initSquare();
 
   async function handlePay() {
-    var btn = document.getElementById('pay-btn');
+    var btn   = document.getElementById('pay-btn');
     var errEl = document.getElementById('payment-error');
     errEl.style.display = 'none';
+    errEl.textContent   = '';
 
     /* Validate form */
     var required = ['fname','lname','email','address','city','state','zip'];
     for (var i = 0; i < required.length; i++) {
       if (!document.getElementById(required[i]).value.trim()) {
-        errEl.textContent = 'Please fill in all fields.';
+        errEl.textContent = 'Please fill in all required fields.';
         errEl.style.display = 'block';
         return;
       }
     }
 
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Processing…';
 
     try {
-      /* Tokenize card */
+      /* Step 1 — Tokenize the card via Square Web Payments SDK */
       var result = await squareCard.tokenize();
       if (result.status !== 'OK') {
-        throw new Error(result.errors ? result.errors[0].message : 'Card error');
+        throw new Error(
+          result.errors && result.errors[0]
+            ? result.errors[0].message
+            : 'Card error. Please check your details.'
+        );
       }
 
-      /* Save order to Supabase */
+      /* Step 2 — Calculate final order totals */
+      var orderTotals = updateOrderSummary();
+
+      /* Step 3 — Send token + amount to Supabase Edge Function
+         The Edge Function holds the Square Access Token securely
+         and processes the actual charge server-side */
+      var edgeResp = await fetch(
+        'https://elvbbqozynshrebfqkgf.supabase.co/functions/v1/process-payment',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sourceId:      result.token,
+            amount:        orderTotals.total,
+            currency:      'USD',
+            customerEmail: document.getElementById('email').value.trim(),
+            note:          'Trout Pro Store — ' + cart.length + ' item(s)'
+          })
+        }
+      );
+
+      var edgeData = await edgeResp.json();
+
+      if (!edgeResp.ok || !edgeData.success) {
+        throw new Error(edgeData.error || 'Payment failed. Please try again.');
+      }
+
+      /* Step 4 — Save order to Supabase database */
       await sbPost('orders', {
-        customer_name:  document.getElementById('fname').value + ' ' + document.getElementById('lname').value,
-        customer_email: document.getElementById('email').value,
-        items:          cart,
-        total:          total,
-        status:         'paid',
-        square_token:   result.token
+        customer_name:    document.getElementById('fname').value.trim() + ' ' + document.getElementById('lname').value.trim(),
+        customer_email:   document.getElementById('email').value.trim(),
+        items:            cart,
+        total:            orderTotals.total,
+        status:           'paid',
+        square_order_id:  edgeData.paymentId
       });
 
-      /* Clear cart and redirect to thank you */
+      /* Step 5 — Clear cart and go to thank you page */
       saveCart([]);
       location.href = 'thankyou.html';
 
     } catch(e) {
-      errEl.textContent = e.message || 'Payment failed. Please try again.';
+      errEl.textContent   = e.message || 'Payment failed. Please try again.';
       errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Pay $' + total.toFixed(2);
+      btn.disabled        = false;
+      var totals = updateOrderSummary();
+      btn.textContent = 'Pay $' + totals.total.toFixed(2);
     }
   }
 
