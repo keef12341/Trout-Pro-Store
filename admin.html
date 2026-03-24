@@ -150,6 +150,7 @@
     <div class="admin-tab" onclick="showTab('products',this)">Products</div>
     <div class="admin-tab" onclick="showTab('blog',this)">Blog Posts</div>
     <div class="admin-tab" onclick="showTab('orders',this)">Orders</div>
+    <div class="admin-tab" onclick="showTab('promos',this)">Promo Codes</div>
   </div>
 
   <div class="admin-content">
@@ -258,6 +259,37 @@
       <div class="admin-card">
         <h2>All Orders</h2>
         <div id="orders-table"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- PROMO CODES -->
+    <div class="admin-panel" id="tab-promos">
+      <div class="admin-card">
+        <h2>Add New Promo Code</h2>
+        <div class="a-form-row">
+          <div class="a-form-group"><label>Code *</label><input type="text" id="pr-code" placeholder="e.g. SUMMER20" style="text-transform:uppercase" /></div>
+          <div class="a-form-group"><label>Type *</label>
+            <select id="pr-type" onchange="updatePromoLabel()">
+              <option value="percent">Percent Off (%)</option>
+              <option value="fixed">Fixed Price Override ($)</option>
+              <option value="shipping">Free Shipping</option>
+            </select>
+          </div>
+        </div>
+        <div class="a-form-row">
+          <div class="a-form-group"><label id="pr-value-label">Discount Value *</label><input type="number" id="pr-value" placeholder="e.g. 10 for 10%" step="0.01" min="0" /></div>
+          <div class="a-form-group"><label>Display Label</label><input type="text" id="pr-label" placeholder="e.g. 10% off your order" /></div>
+        </div>
+        <div class="toggle-wrap" style="margin-bottom:20px">
+          <label class="toggle"><input type="checkbox" id="pr-active" checked /><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Active</span>
+        </div>
+        <button class="save-btn" onclick="savePromo()">Save Promo Code</button>
+      </div>
+
+      <div class="admin-card">
+        <h2>All Promo Codes</h2>
+        <div id="promos-table"><div class="loading"><div class="spinner"></div>Loading&hellip;</div></div>
       </div>
     </div>
 
@@ -582,6 +614,7 @@
     if (name === 'products') loadProducts();
     if (name === 'blog')     loadPosts();
     if (name === 'orders')   loadOrders();
+    if (name === 'promos')   loadPromos();
   }
 
   /* ── TOAST ── */
@@ -864,6 +897,67 @@
       document.getElementById('orders-table').innerHTML =
         '<table class="admin-table"><thead><tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>';
     });
+  }
+
+  /* ── PROMO CODES ── */
+  var promos = [];
+
+  function updatePromoLabel() {
+    var type  = document.getElementById('pr-type').value;
+    var label = document.getElementById('pr-value-label');
+    var input = document.getElementById('pr-value');
+    if (type === 'percent')  { label.textContent = 'Percent Off (e.g. 10 = 10%)'; input.placeholder = '10'; }
+    if (type === 'fixed')    { label.textContent = 'Fixed Total Price ($)';        input.placeholder = '0.99'; }
+    if (type === 'shipping') { label.textContent = 'Value (enter 0)';              input.placeholder = '0'; }
+  }
+
+  function loadPromos() {
+    document.getElementById('promos-table').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
+    sbGet('promo_codes', 'order=created_at.desc').then(function(data) {
+      promos = data;
+      if (!data.length) {
+        document.getElementById('promos-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No promo codes yet.</p>';
+        return;
+      }
+      var rows = data.map(function(p) {
+        return '<tr>'
+          + '<td><strong style="font-family:Fira Mono,monospace;letter-spacing:.06em">' + esc(p.code) + '</strong></td>'
+          + '<td style="font-family:Fira Mono,monospace;font-size:.74rem">' + esc(p.discount_type) + '</td>'
+          + '<td><strong>' + (p.discount_type === 'shipping' ? 'Free' : p.discount_type === 'percent' ? (p.discount_value * 100).toFixed(0) + '%' : '$' + Number(p.discount_value).toFixed(2)) + '</strong></td>'
+          + '<td>' + esc(p.label || '') + '</td>'
+          + '<td><span class="badge ' + (p.active ? 'badge-in-stock' : 'badge-out') + '">' + (p.active ? 'Active' : 'Inactive') + '</span></td>'
+          + '<td><button class="delete-btn" data-id="' + p.id + '" onclick="deletePromo(this.dataset.id)">Delete</button></td>'
+          + '</tr>';
+      }).join('');
+      document.getElementById('promos-table').innerHTML =
+        '<table class="admin-table"><thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Label</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+    });
+  }
+
+  function savePromo() {
+    var code  = document.getElementById('pr-code').value.trim().toUpperCase();
+    var type  = document.getElementById('pr-type').value;
+    var value = parseFloat(document.getElementById('pr-value').value) || 0;
+    var label = document.getElementById('pr-label').value.trim();
+    if (!code) { toast('Please enter a code'); return; }
+    /* Convert percent from whole number to decimal */
+    if (type === 'percent' && value > 1) value = value / 100;
+    sbAdminPost('promo_codes', {
+      code: code, discount_type: type, discount_value: value,
+      label: label || null, active: document.getElementById('pr-active').checked
+    }).then(function() {
+      toast('Promo code saved!');
+      ['pr-code','pr-value','pr-label'].forEach(function(id){ document.getElementById(id).value = ''; });
+      loadPromos();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  }
+
+  function deletePromo(id) {
+    if (!confirm('Delete this promo code?')) return;
+    sbAdminDelete('promo_codes', id).then(function() {
+      toast('Promo code deleted.');
+      loadPromos();
+    }).catch(function(e){ toast('Error: ' + e.message); });
   }
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
