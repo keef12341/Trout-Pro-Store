@@ -175,14 +175,14 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
    LOGO — final override, applies everywhere
 ═══════════════════════════════════════ */
 .logo-wrap img {
-  height: 200px !important;
+  height: 64px !important;
   width: auto !important;
-  max-width: 400px !important;
+  max-width: 240px !important;
   display: block !important;
   object-fit: contain !important;
 }
 .header-main {
-  min-height: 200px !important;
+  min-height: 80px !important;
   padding: 8px 40px !important;
 }
 .footer-brand img {
@@ -214,14 +214,14 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
 @media(max-width: 600px) {
   /* Logo */
   .logo-wrap img {
-  height: 200px !important;
+  height: 64px !important;
   width: auto !important;
-  max-width: 400px !important;
+  max-width: 240px !important;
   display: block !important;
   object-fit: contain !important;
 }
   .header-main {
-  min-height: 200px !important;
+  min-height: 80px !important;
   padding: 8px 40px !important;
 }
 
