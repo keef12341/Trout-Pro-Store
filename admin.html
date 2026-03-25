@@ -631,9 +631,9 @@
   /* ── DASHBOARD ── */
   function loadDashboard() {
     Promise.all([
-      sbGet('products','select=id'),
-      sbGet('posts','select=id'),
-      sbGet('orders','select=id,total,status')
+      sbAdminGet('products','select=id'),
+      sbAdminGet('posts','select=id'),
+      sbAdminGet('orders','select=id,total,status')
     ]).then(function(results) {
       document.getElementById('stat-products').textContent = results[0].length;
       document.getElementById('stat-posts').textContent    = results[1].length;
@@ -649,7 +649,7 @@
       document.getElementById('recent-orders').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No orders yet.</p>';
       return;
     }
-    sbGet('orders','order=created_at.desc&limit=5').then(function(data) {
+    sbAdminGet('orders','order=created_at.desc&limit=5').then(function(data) {
       var rows = data.map(function(o) {
         var date = o.created_at ? new Date(o.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
         return '<tr>'
@@ -878,7 +878,7 @@
   /* ── ORDERS ── */
   function loadOrders() {
     document.getElementById('orders-table').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
-    sbGet('orders','order=created_at.desc').then(function(data) {
+    sbAdminGet('orders','order=created_at.desc').then(function(data) {
       if (!data.length) {
         document.getElementById('orders-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No orders yet.</p>';
         return;
@@ -913,7 +913,7 @@
 
   function loadPromos() {
     document.getElementById('promos-table').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
-    sbGet('promo_codes', 'order=created_at.desc').then(function(data) {
+    sbAdminGet('promo_codes', 'order=created_at.desc').then(function(data) {
       promos = data;
       if (!data.length) {
         document.getElementById('promos-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No promo codes yet.</p>';
@@ -958,6 +958,20 @@
       toast('Promo code deleted.');
       loadPromos();
     }).catch(function(e){ toast('Error: ' + e.message); });
+  }
+
+  /* sbAdminGet — uses session token so authenticated RLS policies work */
+  function sbAdminGet(table, params) {
+    var token = sessionStorage.getItem('tps_token') || SUPA_ANON;
+    return fetch(SUPA_URL + '/rest/v1/' + table + '?' + (params || ''), {
+      headers: {
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(function(r) {
+      if (!r.ok) throw new Error('DB error ' + r.status);
+      return r.json();
+    });
   }
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
