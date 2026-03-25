@@ -361,14 +361,26 @@
       }
 
       /* Step 4 — Save order to Supabase database */
-      await sbPost('orders', {
-        customer_name:    document.getElementById('fname').value.trim() + ' ' + document.getElementById('lname').value.trim(),
-        customer_email:   document.getElementById('email').value.trim(),
-        items:            cart,
-        total:            orderTotals.total,
-        status:           'paid',
-        square_order_id:  edgeData.paymentId
+      var orderResp = await fetch(SUPA_URL + '/rest/v1/orders', {
+        method: 'POST',
+        headers: {
+          'apikey':        SUPA_ANON,
+          'Authorization': 'Bearer ' + SUPA_ANON,
+          'Content-Type':  'application/json',
+          'Prefer':        'return=minimal'
+        },
+        body: JSON.stringify({
+          customer_name:   document.getElementById('fname').value.trim() + ' ' + document.getElementById('lname').value.trim(),
+          customer_email:  document.getElementById('email').value.trim(),
+          items:           cart,
+          total:           orderTotals.total,
+          status:          'paid',
+          square_order_id: edgeData.paymentId
+        })
       });
+      if (!orderResp.ok) {
+        console.warn('Order save failed:', orderResp.status, 'but payment succeeded');
+      }
 
       /* Step 5 — Clear cart and go to thank you page */
       saveCart([]);
