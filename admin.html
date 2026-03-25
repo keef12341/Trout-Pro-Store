@@ -114,6 +114,21 @@
     .modal{background:var(--white);padding:32px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative}
     .modal h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:20px;color:var(--forest)}
     .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--stone)}
+    .order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+    .order-detail-box{background:var(--cream);padding:16px;border:1px solid var(--border)}
+    .order-detail-box h4{font-family:'Fira Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-bottom:10px}
+    .order-detail-box p{font-size:.9rem;line-height:1.7;color:var(--text)}
+    .order-items-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+    .order-items-table th{font-family:'Fira Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);padding:8px 10px;border-bottom:2px solid var(--border);text-align:left}
+    .order-items-table td{padding:10px;border-bottom:1px solid var(--border);font-size:.88rem}
+    .refund-btn{background:none;border:1.5px solid var(--red);color:var(--red);padding:10px 20px;font-family:'Fira Mono',monospace;font-size:.76rem;cursor:pointer;border-radius:2px;transition:all .2s;width:100%;margin-top:8px}
+    .refund-btn:hover{background:var(--red);color:white}
+    .refund-btn:disabled{opacity:.5;cursor:not-allowed}
+    .refund-amount-row{display:flex;gap:10px;margin-top:12px;align-items:center}
+    .refund-amount-row input{flex:1;padding:10px 14px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.9rem;outline:none;border-radius:2px}
+    .refund-amount-row input:focus{border-color:var(--red)}
+    .status-refunded{background:rgba(200,80,60,.12);color:var(--red)}
+    .status-shipped{background:rgba(44,95,110,.12);color:#2c5f6e}
 
     @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}.a-form-row{grid-template-columns:1fr}.admin-content{padding:20px}}
     @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.admin-tabs{overflow-x:auto;white-space:nowrap}}
@@ -372,6 +387,15 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-bg" id="order-modal">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-close" onclick="closeModal('order-modal')">&times;</button>
+    <h3 id="om-title">Order Details</h3>
+    <div id="om-body"></div>
+  </div>
+</div>
 
 <script src="shared.js"></script>
 <script>
@@ -876,9 +900,12 @@
   }
 
   /* ── ORDERS ── */
+  var allOrders = [];
+
   function loadOrders() {
     document.getElementById('orders-table').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
     sbAdminGet('orders','order=created_at.desc').then(function(data) {
+      allOrders = data;
       if (!data.length) {
         document.getElementById('orders-table').innerHTML = '<p style="color:var(--muted);font-family:Fira Mono,monospace;font-size:.82rem">No orders yet.</p>';
         return;
@@ -886,17 +913,117 @@
       var rows = data.map(function(o) {
         var date  = o.created_at ? new Date(o.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
         var items = Array.isArray(o.items) ? o.items.map(function(i){ return i.name + ' x' + i.qty; }).join(', ') : '—';
-        return '<tr>'
+        var statusClass = o.status === 'paid' ? 'badge-paid' : o.status === 'refunded' ? 'status-refunded' : o.status === 'shipped' ? 'status-shipped' : 'badge-pending';
+        return '<tr style="cursor:pointer" onclick="openOrder(this.dataset.oid)" data-oid=' + o.id + '>'
           + '<td style="font-family:Fira Mono,monospace;font-size:.72rem">' + date + '</td>'
           + '<td><strong>' + esc(o.customer_name||'—') + '</strong><br><span style="font-family:Fira Mono,monospace;font-size:.7rem;color:var(--stone)">' + esc(o.customer_email||'') + '</span></td>'
-          + '<td style="font-size:.82rem;max-width:220px;color:var(--muted)">' + esc(items) + '</td>'
+          + '<td style="font-size:.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">' + esc(items) + '</td>'
           + '<td><strong>$' + Number(o.total||0).toFixed(2) + '</strong></td>'
-          + '<td><span class="badge badge-' + (o.status==='paid'?'paid':'pending') + '">' + esc(o.status||'pending') + '</span></td>'
+          + '<td><span class="badge ' + statusClass + '">' + esc(o.status||'pending') + '</span></td>'
+          + '<td><button class="edit-btn" data-id="' + o.id + '" onclick="event.stopPropagation();openOrder(this.dataset.id)">View</button></td>'
           + '</tr>';
       }).join('');
       document.getElementById('orders-table').innerHTML =
-        '<table class="admin-table"><thead><tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>';
+        '<table class="admin-table"><thead><tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
     });
+  }
+
+  function openOrder(id) {
+    var o = allOrders.find(function(x){ return x.id === id; });
+    if (!o) return;
+
+    var date  = o.created_at ? new Date(o.created_at).toLocaleString('en-US',{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}) : '—';
+    var items = Array.isArray(o.items) ? o.items : [];
+    var addr  = o.shipping_address || {};
+
+    /* Items table */
+    var itemRows = items.map(function(i) {
+      return '<tr>'
+        + '<td>' + esc(i.name) + (i.selectedSize ? ' <span style="font-family:Fira Mono,monospace;font-size:.7rem;color:var(--stone)">Size ' + esc(i.selectedSize) + '</span>' : '') + '</td>'
+        + '<td style="text-align:center">' + (i.qty||1) + '</td>'
+        + '<td style="text-align:right">$' + Number(i.price||0).toFixed(2) + '</td>'
+        + '<td style="text-align:right">$' + (Number(i.price||0) * (i.qty||1)).toFixed(2) + '</td>'
+        + '</tr>';
+    }).join('');
+
+    /* Shipping address */
+    var addrHtml = addr.address
+      ? esc(addr.address) + '<br>' + esc(addr.city) + ', ' + esc(addr.state) + ' ' + esc(addr.zip)
+      : o.shipping_address && typeof o.shipping_address === 'string'
+        ? esc(o.shipping_address)
+        : '<span style="color:var(--stone)">No address saved</span>';
+
+    var statusBtns = '';
+    if (o.status !== 'shipped') {
+      statusBtns += '<button class="save-btn" style="margin-right:8px" data-oid="' + o.id + '" onclick="updateOrderStatus(this.dataset.oid,&quot;shipped&quot;)">Mark as Shipped</button>';
+    }
+    if (o.status !== 'refunded' && o.square_order_id) {
+      statusBtns += '<div class="refund-amount-row">'
+        + '<input type="number" id="refund-amt" placeholder="Refund amount e.g. ' + Number(o.total||0).toFixed(2) + '" step="0.01" min="0.01" max="' + Number(o.total||0).toFixed(2) + '" />'
+      statusBtns += '<div class="refund-amount-row"><input type="number" id="refund-amt" placeholder="Refund amount" step="0.01" min="0.01" max="' + Number(o.total||0).toFixed(2) + '" /><button class="refund-btn" data-pid="' + (o.square_order_id||'') + '" data-oid="' + o.id + '" data-max="' + Number(o.total||0).toFixed(2) + '" onclick="processRefund(this.dataset.oid,this.dataset.pid,parseFloat(this.dataset.max))">Issue Refund</button></div>';
+        + '</div>';
+    }
+
+    document.getElementById('om-title').textContent = 'Order #' + o.id.substring(0,8).toUpperCase();
+    document.getElementById('om-body').innerHTML =
+      '<div class="order-detail-grid">'
+      + '<div class="order-detail-box"><h4>Customer</h4><p><strong>' + esc(o.customer_name||'—') + '</strong><br>' + esc(o.customer_email||'') + '</p></div>'
+      + '<div class="order-detail-box"><h4>Shipping Address</h4><p>' + addrHtml + '</p></div>'
+      + '<div class="order-detail-box"><h4>Order Date</h4><p>' + date + '</p></div>'
+      + '<div class="order-detail-box"><h4>Status</h4><p><span class="badge badge-' + (o.status==='paid'?'paid':'pending') + '">' + esc(o.status||'pending') + '</span>'
+      + (o.square_order_id ? '<br><span style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone);margin-top:6px;display:block">Square ID: ' + esc(o.square_order_id) + '</span>' : '') + '</p></div>'
+      + '</div>'
+      + '<table class="order-items-table">'
+      + '<thead><tr><th>Product</th><th style="text-align:center">Qty</th><th style="text-align:right">Price</th><th style="text-align:right">Total</th></tr></thead>'
+      + '<tbody>' + (itemRows || '<tr><td colspan="4" style="color:var(--muted)">No items</td></tr>') + '</tbody>'
+      + '<tfoot><tr><td colspan="3" style="text-align:right;padding:10px;font-weight:600">Order Total</td><td style="text-align:right;padding:10px;font-family:Playfair Display,serif;font-size:1.1rem;font-weight:700">$' + Number(o.total||0).toFixed(2) + '</td></tr></tfoot>'
+      + '</table>'
+      + '<div style="margin-top:8px">' + statusBtns + '</div>';
+
+    openModal('order-modal');
+  }
+
+  function updateOrderStatus(id, status) {
+    sbAdminPatch('orders', id, { status: status }).then(function() {
+      toast('Order marked as ' + status);
+      closeModal('order-modal');
+      loadOrders();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  }
+
+  async function processRefund(orderId, paymentId, maxAmount) {
+    var amtInput = document.getElementById('refund-amt');
+    var amt = parseFloat(amtInput.value);
+    if (!amt || amt <= 0 || amt > maxAmount) {
+      toast('Enter a valid refund amount (max $' + maxAmount.toFixed(2) + ')');
+      return;
+    }
+    if (!confirm('Refund $' + amt.toFixed(2) + ' to the customer? This cannot be undone.')) return;
+
+    var btn = document.querySelector('.refund-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+
+    try {
+      /* Call Edge Function to process refund via Square */
+      var resp = await fetch(SUPA_URL + '/functions/v1/process-refund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId: paymentId, amount: amt })
+      });
+      var data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.error || 'Refund failed');
+
+      /* Update order status in database */
+      await sbAdminPatch('orders', orderId, { status: 'refunded' });
+      toast('Refund of $' + amt.toFixed(2) + ' processed successfully');
+      closeModal('order-modal');
+      loadOrders();
+    } catch(e) {
+      toast('Refund error: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = 'Issue Refund';
+    }
   }
 
   /* ── PROMO CODES ── */
