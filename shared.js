@@ -84,11 +84,11 @@ function renderHeader(activePage) {
     { href: '/', label: 'Home' },
     { href: '/products.html', label: 'Shop' },
     { href: '/blog.html', label: 'Blog' },
-    { href: '/river-reports.html', label: 'River Reports' },
+    { href: 'https://perfectflystore.com/your-streams/', label: 'River Reports', external: true },
     { href: '/contact.html', label: 'Contact' }
   ];
   const nav = pages.map(p =>
-    `<a href="${p.href}" ${activePage === p.label ? 'class="active"' : ''}>${p.label}</a>`
+    `<a href="${p.href}" ${activePage === p.label ? 'class="active"' : ''} ${p.external ? 'target="_blank" rel="noopener"' : ''}>${p.label}</a>`
   ).join('');
 
   return `
@@ -139,17 +139,15 @@ function renderFooter() {
         <li><a href="/products.html?cat=accessories">Accessories</a></li>
         <li><a href="/products.html">All Products</a></li>
       </ul></div>
-      <div class="footer-col"><h4>Learn</h4><ul>
+      <div class="footer-col"><h4>Company</h4><ul>
+        <li><a href="/about.html">About Us</a></li>
+        <li><a href="/contact.html">Contact Us</a></li>
         <li><a href="/blog.html">Blog</a></li>
-        <li><a href="/#river-reports">River Reports</a></li>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact</a></li>
       </ul></div>
-      <div class="footer-col"><h4>Help</h4><ul>
-        <li><a href="#">FAQ</a></li>
-        <li><a href="#">Shipping</a></li>
-        <li><a href="#">Returns</a></li>
-        <li><a href="#">Terms of Use</a></li>
+      <div class="footer-col"><h4>Company</h4><ul>
+        <li><a href="/about.html">About Us</a></li>
+        <li><a href="/contact.html">Contact Us</a></li>
+        <li><a href="/blog.html">Blog</a></li>
       </ul></div>
     </div>
     <div class="footer-bottom">
