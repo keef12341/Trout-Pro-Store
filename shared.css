@@ -303,3 +303,134 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
   .email-input { width: 100%; min-width: 0 !important; }
   .email-btn { width: 100%; }
 }
+
+
+/* ═══════════════════════════════════════
+   iPHONE SPECIFIC FIXES
+   Tested against iPhone SE, 13, 14, 15
+═══════════════════════════════════════ */
+@media(max-width: 480px) {
+
+  /* Prevent text overflow */
+  * { -webkit-text-size-adjust: 100%; }
+
+  /* Header */
+  .header-main { padding: 8px 14px !important; min-height: 74px !important; }
+  .logo-wrap img { height: 54px !important; max-width: 160px !important; }
+
+  /* Page banners */
+  .page-banner { padding: 32px 16px !important; }
+  .page-banner h1 { font-size: 1.7rem !important; }
+  .page-banner p { font-size: .9rem; }
+
+  /* Sections */
+  .section { padding: 40px 16px !important; }
+  .section-heading { font-size: 1.6rem !important; }
+
+  /* Product grid */
+  .product-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .product-card-body { padding: 12px !important; }
+  .product-card-name { font-size: .95rem !important; }
+  .product-card-desc { display: none; }
+  .product-card-price { font-size: 1rem !important; }
+  .add-to-cart-btn { padding: 7px 10px !important; font-size: .66rem !important; }
+
+  /* Product detail */
+  .product-detail { padding: 20px 16px !important; gap: 20px !important; }
+  .product-detail-name { font-size: 1.5rem !important; }
+  .product-detail-price { font-size: 1.6rem !important; }
+  .product-detail-desc { font-size: .9rem; }
+  .size-grid { gap: 6px; }
+  .size-btn { padding: 8px 12px !important; font-size: .76rem !important; min-width: 44px; }
+
+  /* Cart */
+  .cart-wrap { padding: 20px 16px !important; }
+  .cart-table { font-size: .82rem; }
+  .cart-table th, .cart-table td { padding: 10px 8px !important; }
+  .cart-table th:nth-child(3),
+  .cart-table td:nth-child(3),
+  .cart-table th:nth-child(5),
+  .cart-table td:nth-child(5) { display: none; }
+  .cart-item-img { width: 48px !important; height: 48px !important; }
+  .cart-summary { padding: 20px !important; }
+
+  /* Checkout */
+  .checkout-wrap { padding: 20px 16px !important; }
+  .form-row { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .form-group input, .form-group select { font-size: 16px !important; } /* prevents iOS zoom */
+  .pay-btn { padding: 16px !important; font-size: .9rem !important; }
+  .order-summary { padding: 20px !important; }
+  .order-detail-grid { grid-template-columns: 1fr !important; }
+
+  /* Blog */
+  .blog-grid { grid-template-columns: 1fr !important; }
+  .blog-card-body { padding: 16px !important; }
+  .blog-card-title { font-size: 1rem !important; }
+
+  /* Post */
+  .post-wrap { padding: 24px 16px !important; }
+  .post-title { font-size: 1.7rem !important; }
+  .post-content { font-size: .95rem; }
+
+  /* Admin */
+  .admin-header { padding: 10px 16px !important; }
+  .admin-header img { height: 44px !important; }
+  .admin-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-content { padding: 14px !important; }
+  .admin-card { padding: 18px !important; }
+  .a-form-row { grid-template-columns: 1fr !important; }
+  .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .stat-card { padding: 16px !important; }
+  .stat-card-value { font-size: 1.6rem !important; }
+  .admin-table { font-size: .8rem; }
+  .admin-table th, .admin-table td { padding: 8px !important; }
+  .admin-table td:first-child { display: none; } /* hide image column */
+  .modal { padding: 18px 16px !important; margin: 10px; }
+
+  /* Footer */
+  .footer-inner { grid-template-columns: 1fr !important; padding: 28px 16px 20px !important; gap: 20px !important; }
+  .footer-brand img { height: 52px !important; }
+  .footer-bottom { padding: 14px 16px !important; flex-direction: column; font-size: .74rem; }
+
+  /* River section */
+  .river-section .section-heading { font-size: 1.5rem !important; }
+  .river-search-box { flex-direction: column; }
+  .river-search-btn { width: 100%; padding: 14px !important; }
+  .hint-chip { font-size: .64rem !important; padding: 4px 8px !important; }
+  .results-grid { grid-template-columns: 1fr !important; }
+  .gauge-header { padding: 12px 14px !important; }
+  .gauge-name { font-size: .88rem !important; }
+  .gbs-value { font-size: 1.4rem !important; }
+  .gauge-arc-row { padding: 10px 14px !important; }
+  .gauge-bars, .gauge-footer { padding: 10px 14px !important; }
+
+  /* Inputs — prevent iOS zoom on focus (must be 16px+) */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="tel"],
+  select,
+  textarea { font-size: 16px !important; }
+
+  /* Buttons — make touch targets bigger */
+  button, .btn-primary, .btn-secondary, .filter-btn {
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Fix touch scrolling */
+  .admin-tabs, .filter-bar, .products-tabs {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+  }
+
+  /* Contact page */
+  .contact-wrap { padding: 24px 16px !important; }
+  .contact-form { padding: 20px 16px !important; }
+
+  /* About page */
+  .about-section { padding: 32px 16px !important; }
+  .about-stats { grid-template-columns: 1fr !important; gap: 12px; }
+}
