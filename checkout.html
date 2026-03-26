@@ -73,32 +73,36 @@
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
 
-  /* Shipping — flat rate, options coming soon */
-  var SHIPPING_OPTIONS = [
-    { id: 'standard', label: 'Standard Shipping (5-7 business days)', price: 6.95 },
-    { id: 'free', label: 'Free Shipping (5-7 business days)', price: 0, minOrder: 75 }
-  ];
-
-  /* Tax rate — 7% default, recalculated when state is entered */
-  /* Common US state tax rates */
-  var STATE_TAX = {
-    'AL':0.04,'AK':0,'AZ':0.056,'AR':0.065,'CA':0.0725,'CO':0.029,
-    'CT':0.0635,'DE':0,'FL':0.06,'GA':0.04,'HI':0.04,'ID':0.06,
-    'IL':0.0625,'IN':0.07,'IA':0.06,'KS':0.065,'KY':0.06,'LA':0.0445,
-    'ME':0.055,'MD':0.06,'MA':0.0625,'MI':0.06,'MN':0.06875,'MS':0.07,
-    'MO':0.04225,'MT':0,'NE':0.055,'NV':0.0685,'NH':0,'NJ':0.06625,
-    'NM':0.05125,'NY':0.04,'NC':0.0475,'ND':0.05,'OH':0.0575,'OK':0.045,
-    'OR':0,'PA':0.06,'RI':0.07,'SC':0.06,'SD':0.045,'TN':0.07,
-    'TX':0.0625,'UT':0.0485,'VT':0.06,'VA':0.053,'WA':0.065,
-    'WV':0.06,'WI':0.05,'WY':0.04,'DC':0.06
-  };
-
-  var selectedShipping = subtotal >= 75 ? 'free' : 'standard';
-
+  /* ── Smart flat rate shipping based on cart contents ──
+     Rate calculated automatically — no options shown to customer.
+  ── */
   function getShippingPrice() {
-    var opt = SHIPPING_OPTIONS.find(function(o){ return o.id === selectedShipping; });
-    return opt ? opt.price : 6.95;
+    if (subtotal >= 75) return 0;
+    var items = getCart();
+    var hasRod  = items.some(function(i){ return i.category === 'rods'; });
+    var hasReel = items.some(function(i){ return i.category === 'reels'; });
+    var hasGear = items.some(function(i){
+      return i.category === 'line' || i.category === 'leaders' || i.category === 'accessories';
+    });
+    var fliesOnly = items.every(function(i){ return i.category === 'flies'; });
+    if (hasRod)      return 14.95;
+    if (hasReel)     return 9.95;
+    if (hasGear)     return 9.95;
+    if (fliesOnly)   return subtotal >= 30 ? 6.95 : 4.95;
+    return 6.95;
   }
+
+  function getShippingLabel() {
+    if (subtotal >= 75) return 'Free Shipping';
+    var items = getCart();
+    var hasRod     = items.some(function(i){ return i.category === 'rods'; });
+    var fliesOnly  = items.every(function(i){ return i.category === 'flies'; });
+    if (hasRod)    return 'USPS Priority Mail';
+    if (fliesOnly) return 'USPS First Class';
+    return 'USPS Priority Mail';
+  }
+
+  
 
   function getTaxRate(stateCode) {
     return STATE_TAX[(stateCode||'').toUpperCase().trim()] || 0;
@@ -160,8 +164,15 @@
   function updateOrderSummary() {
     var stateVal  = (document.getElementById('state') || {value:''}).value;
     var shipping  = getShippingPrice();
+    var shipLabel = getShippingLabel();
     var taxRate   = getTaxRate(stateVal);
     var tax       = subtotal * taxRate;
+
+    /* Update shipping label and price display */
+    var shipLabelEl = document.getElementById('ship-label');
+    var shipPriceEl = document.getElementById('ship-price-display');
+    if (shipLabelEl) shipLabelEl.textContent = shipLabel;
+    if (shipPriceEl) shipPriceEl.textContent = shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2);
 
     /* Apply promo discount */
     var discount = 0;
@@ -179,6 +190,9 @@
     var total = Math.max(0.01, subtotal + shipping + tax - discount);
 
     document.getElementById('sum-shipping').textContent = shipping === 0 ? 'Free' : '$' + shipping.toFixed(2);
+    /* Update shipping label */
+    var shipLbl = document.getElementById('sum-shipping-label');
+    if (shipLbl) shipLbl.textContent = getShippingLabel();
     /* Show/hide discount row */
     var discRow = document.getElementById('sum-discount-row');
     if (discRow) {
@@ -202,16 +216,7 @@
     return '<div class="order-item"><span class="order-item-name">' + esc(i.name) + '<span class="order-item-qty"> x' + i.qty + '</span></span><span>$' + (i.price * i.qty).toFixed(2) + '</span></div>';
   }).join('');
 
-  /* Build shipping options HTML */
-  var shippingOpts = SHIPPING_OPTIONS.filter(function(o){
-    return !o.minOrder || subtotal >= o.minOrder;
-  }).map(function(o) {
-    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);margin-bottom:8px;cursor:pointer;border-radius:2px;transition:border-color .2s" class="ship-opt-label">'
-      + '<input type="radio" name="shipping" value="' + o.id + '"' + (o.id === selectedShipping ? ' checked' : '') + ' onchange="selectedShipping=this.value;updateOrderSummary();highlightShipping()" style="accent-color:var(--forest)" />'
-      + '<span style="flex:1;font-size:.88rem">' + o.label + '</span>'
-      + '<strong>' + (o.price === 0 ? 'FREE' : '$' + o.price.toFixed(2)) + '</strong>'
-      + '</label>';
-  }).join('');
+  /* Shipping calculated automatically based on cart contents */
 
   document.getElementById('checkout-body').innerHTML =
     '<div class="form-section">'
@@ -244,30 +249,17 @@
     + itemRows
     + '<hr class="order-divider" />'
     + '<div class="order-total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
-    + '<div class="order-total-row"><span>Shipping</span><span id="sum-shipping">calculating…</span></div>'
+    + '<div class="order-total-row"><span>Shipping <span id="sum-shipping-label" style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone)"></span></span><span id="sum-shipping">calculating…</span></div>'
     + '<div class="order-total-row" id="sum-discount-row" style="display:none;color:#2d7a3a"><span>Discount</span><span id="sum-discount"></span></div>'
     + '<div class="order-total-row"><span>Tax</span><span id="sum-tax">Enter state</span></div>'
     + '<div class="order-total-row grand"><span>Total</span><span id="sum-total">$' + subtotal.toFixed(2) + '</span></div>'
     + '</div>';
 
-  /* Highlight selected shipping option */
-  function highlightShipping() {
-    document.querySelectorAll('.ship-opt-label').forEach(function(l) {
-      var radio = l.querySelector('input[type=radio]');
-      l.style.borderColor = radio && radio.checked ? 'var(--gold)' : 'var(--border)';
-      l.style.background  = radio && radio.checked ? 'rgba(200,147,42,.05)' : '';
-    });
-  }
+
 
   /* Initial render */
   setTimeout(function() {
     updateOrderSummary();
-    var note = document.getElementById('shipping-note');
-    if (note) {
-      note.textContent = subtotal >= 75
-        ? 'Free shipping on your order!'
-        : 'Shipping: $6.95 · Free on orders over $75';
-    }
   }, 50);
 
   /* Initialize Square card */
