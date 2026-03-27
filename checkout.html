@@ -90,10 +90,12 @@
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
 
-  /* ── Smart flat rate shipping based on cart contents ──
-     Rate calculated automatically — no options shown to customer.
-  ── */
-  function getShippingPrice() {
+  /* ── EasyPost live carrier rates ── */
+  var selectedShippingRate = null;
+  var shippingRatesLoaded  = false;
+
+  /* Fallback flat rates if EasyPost fails */
+  function getFallbackShipping() {
     if (subtotal >= 75) return 0;
     var items = getCart();
     var hasRod  = items.some(function(i){ return i.category === 'rods'; });
@@ -102,21 +104,127 @@
       return i.category === 'line' || i.category === 'leaders' || i.category === 'accessories';
     });
     var fliesOnly = items.every(function(i){ return i.category === 'flies'; });
-    if (hasRod)      return 14.95;
-    if (hasReel)     return 9.95;
-    if (hasGear)     return 9.95;
-    if (fliesOnly)   return subtotal >= 30 ? 6.95 : 4.95;
+    if (hasRod)    return 14.95;
+    if (hasReel)   return 9.95;
+    if (hasGear)   return 9.95;
+    if (fliesOnly) return subtotal >= 30 ? 6.95 : 4.95;
     return 6.95;
+  }
+
+  function getShippingPrice() {
+    if (subtotal >= 75) return 0;
+    return selectedShippingRate ? selectedShippingRate.rate : getFallbackShipping();
   }
 
   function getShippingLabel() {
     if (subtotal >= 75) return 'Free Shipping';
+    return selectedShippingRate ? selectedShippingRate.label : 'Calculated at checkout';
+  }
+
+  /* Calculate cart weight in oz */
+  function getCartWeightOz() {
     var items = getCart();
-    var hasRod     = items.some(function(i){ return i.category === 'rods'; });
-    var fliesOnly  = items.every(function(i){ return i.category === 'flies'; });
-    if (hasRod)    return 'USPS Priority Mail';
-    if (fliesOnly) return 'USPS First Class';
-    return 'USPS Priority Mail';
+    var totalOz = 0;
+    items.forEach(function(item) {
+      var qty = item.qty || 1;
+      var w = item.weight_oz ? parseFloat(item.weight_oz) : 0;
+      if (!w) {
+        /* Default weights by category */
+        var cat = (item.category || '').toLowerCase();
+        if (cat === 'rods')        w = 10;
+        else if (cat === 'reels')  w = 8;
+        else if (cat === 'line')   w = 3;
+        else if (cat === 'leaders') w = 1;
+        else if (cat === 'accessories') w = 4;
+        else                       w = 0.2; /* flies */
+      }
+      totalOz += w * qty;
+    });
+    /* Add box/packaging weight */
+    return Math.max(totalOz + 2, 1);
+  }
+
+  var rateDebounceTimer = null;
+  function fetchLiveRates() {
+    var zip   = (document.getElementById('zip')   || {}).value || '';
+    var state = (document.getElementById('state') || {}).value || '';
+    var city  = (document.getElementById('city')  || {}).value || '';
+
+    if (zip.length < 5) return;
+    if (subtotal >= 75) {
+      renderShippingOptions([]);
+      return;
+    }
+
+    clearTimeout(rateDebounceTimer);
+    rateDebounceTimer = setTimeout(function() {
+      var shippingEl = document.getElementById('shipping-options-wrap');
+      if (shippingEl) shippingEl.innerHTML = '<div style="font-family:Fira Mono,monospace;font-size:.74rem;color:var(--stone);padding:10px 0">Getting live rates…</div>';
+
+      fetch(SUPA_URL + '/functions/v1/get-shipping-rates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          toZip:     zip,
+          toState:   state,
+          toCity:    city,
+          toCountry: 'US',
+          weightOz:  getCartWeightOz()
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.success && data.rates && data.rates.length) {
+          renderShippingOptions(data.rates);
+        } else {
+          /* Fall back to flat rates silently */
+          selectedShippingRate = { rate: getFallbackShipping(), label: 'Standard Shipping' };
+          if (shippingEl) shippingEl.innerHTML = '';
+          updateOrderSummary();
+        }
+      })
+      .catch(function() {
+        selectedShippingRate = { rate: getFallbackShipping(), label: 'Standard Shipping' };
+        if (shippingEl) shippingEl.innerHTML = '';
+        updateOrderSummary();
+      });
+    }, 600);
+  }
+
+  function renderShippingOptions(rates) {
+    var wrap = document.getElementById('shipping-options-wrap');
+    if (!wrap) return;
+
+    if (!rates.length) {
+      wrap.innerHTML = '<div style="font-family:Fira Mono,monospace;font-size:.74rem;color:var(--stone);padding:8px 0">Free shipping on this order!</div>';
+      selectedShippingRate = { rate: 0, label: 'Free Shipping' };
+      updateOrderSummary();
+      return;
+    }
+
+    /* Auto-select cheapest */
+    if (!selectedShippingRate) selectedShippingRate = rates[0];
+
+    wrap.innerHTML = rates.map(function(r, idx) {
+      var checked = idx === 0 ? 'checked' : '';
+      var days    = r.days ? ' (' + r.days + ' day' + (r.days > 1 ? 's' : '') + ')' : '';
+      return '<label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);margin-bottom:8px;cursor:pointer;border-radius:2px;transition:border-color .2s" class="rate-opt">'
+        + '<input type="radio" name="shipping_rate" value="' + idx + '" ' + checked + ' onchange="selectRate(' + idx + ',' + JSON.stringify(r).replace(/"/g, '&quot;') + ')" style="accent-color:var(--forest)" />'
+        + '<span style="flex:1;font-size:.88rem">' + r.label + days + '</span>'
+        + '<strong>$' + r.rate.toFixed(2) + '</strong>'
+        + '</label>';
+    }).join('');
+
+    updateOrderSummary();
+  }
+
+  function selectRate(idx, rate) {
+    selectedShippingRate = rate;
+    document.querySelectorAll('.rate-opt').forEach(function(l, i) {
+      l.style.borderColor = i === idx ? 'var(--gold)' : 'var(--border)';
+      l.style.background  = i === idx ? 'rgba(200,147,42,.05)' : '';
+    });
+    updateOrderSummary();
   }
 
   
@@ -241,10 +349,10 @@
     + '<div class="form-group"><label>Email</label><input type="email" id="email" required /></div>'
     + '<div class="form-group"><label>Address</label><input type="text" id="address" required /></div>'
     + '<div class="form-row">'
-    + '<div class="form-group"><label>City</label><input type="text" id="city" required /></div>'
-    + '<div class="form-group"><label>State</label><input type="text" id="state" maxlength="2" placeholder="TN" required oninput="updateOrderSummary()" /></div>'
+    + '<div class="form-group"><label>City</label><input type="text" id="city" oninput="fetchLiveRates()" required /></div>'
+    + '<div class="form-group"><label>State</label><input type="text" id="state" oninput="fetchLiveRates()" maxlength="2" placeholder="TN" required oninput="updateOrderSummary()" /></div>'
     + '</div>'
-    + '<div class="form-group"><label>ZIP Code</label><input type="text" id="zip" maxlength="10" required /></div>'
+    + '<div class="form-group"><label>ZIP Code</label><input type="text" id="zip" oninput="fetchLiveRates()" maxlength="10" required /></div>'
     + '<div style="background:var(--cream);border:1px solid var(--border);padding:14px 18px;margin-bottom:24px;font-family:Fira Mono,monospace;font-size:.82rem;color:var(--text-muted)">'
     + '<div style="background:var(--cream);border:1px solid var(--border);padding:14px 18px;margin-bottom:24px;font-family:Fira Mono,monospace;font-size:.82rem;color:var(--text-muted)" id="shipping-note"></div>'
     + '</div>'
@@ -262,7 +370,8 @@
     + itemRows
     + '<hr class="order-divider" />'
     + '<div class="order-total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
-    + '<div class="order-total-row"><span>Shipping <span id="sum-shipping-label" style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone)"></span></span><span id="sum-shipping">calculating…</span></div>'
+    + '<div style="margin-bottom:16px"><div style="font-family:Fira Mono,monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-bottom:8px">Shipping</div><div id="shipping-options-wrap"></div></div>'
+    + '<div class="order-total-row"><span>Shipping <span id="sum-shipping-label" style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone)"></span></span><span id="sum-shipping">---</span></div>'
     + '<div class="order-total-row" id="sum-discount-row" style="display:none;color:#2d7a3a"><span>Discount</span><span id="sum-discount"></span></div>'
     + '<div class="order-total-row"><span>Tax</span><span id="sum-tax">Enter state</span></div>'
     + '<div class="order-total-row grand"><span>Total</span><span id="sum-total">$' + subtotal.toFixed(2) + '</span></div>'
