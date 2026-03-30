@@ -50,6 +50,8 @@
       <button class="filter-btn" onclick="setCat('accessories',this)">Accessories</button>
     </div>
 
+    <!-- Subcategory bar — shown only when Flies is selected -->
+    <div class="filter-bar" id="subcat-bar" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"></div>
     <div id="products-count" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);margin-bottom:20px"></div>
     <div id="products-grid" class="product-grid">
       <div class="loading"><div class="spinner"></div>Loading products…</div>
@@ -63,8 +65,18 @@
 
 <script src="shared.js"></script>
 <script>
-  var allProducts = [];
-  var currentCat  = 'all';
+  var allProducts  = [];
+  var currentCat   = 'all';
+  var currentSubcat = 'all';
+
+  /* Subcategory groups */
+  var SUBCATS = {
+    'Trout Flies':           ['Mayflies','Caddisflies','Midges','Stoneflies','Streamers','Terrestrials','Stillwater & Misc','Selections','Pre-Rigged Flies'],
+    'Standard Trout Flies':  ['Dry Flies','Euro/Nymph','Streamers','Nymphs & Midges','Terrestrials'],
+    'Steelhead & Salmon':    ['Salmon','Spey Flies','Egg Flies','Wet Flies & Nymphs','Atlantic Salmon','Selections'],
+    'Saltwater Flies':       ['Flats','Saltwater','Selections'],
+    'Other Freshwater Flies':['Bass','Bream/Panfish','Pike/Muskie','Minnow/Baitfish Imitations','Selections']
+  };
 
   document.getElementById('header-mount').innerHTML = renderHeader('Shop');
   document.getElementById('footer-mount').innerHTML = renderFooter();
@@ -83,6 +95,7 @@
   sbGet('products', 'in_stock=eq.true&order=name')
     .then(function(data) {
       allProducts = data;
+      if (currentCat === 'flies') renderSubcatBar('flies');
       filterProducts();
       initFadeUp();
     })
@@ -92,8 +105,41 @@
     });
 
   function setCat(cat, btn) {
-    currentCat = cat;
+    currentCat   = cat;
+    currentSubcat = 'all';
     document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderSubcatBar(cat);
+    filterProducts();
+  }
+
+  function renderSubcatBar(cat) {
+    var bar = document.getElementById('subcat-bar');
+    if (cat !== 'flies') { bar.style.display = 'none'; return; }
+
+    var btns = '<button class="filter-btn active" data-sub="all" onclick="setSubcat(this)" style="font-size:.7rem;padding:6px 14px">All Flies</button>';
+
+    Object.keys(SUBCATS).forEach(function(group) {
+      var groupBtns = '';
+      SUBCATS[group].forEach(function(sub) {
+        var fullSub = group + ' > ' + sub;
+        var hasProducts = allProducts.some(function(p){ return p.subcategory === fullSub; });
+        if (!hasProducts) return;
+        groupBtns += '<button class="filter-btn" data-sub="' + fullSub + '" onclick="setSubcat(this)" style="font-size:.7rem;padding:6px 14px">' + sub + '</button>';
+      });
+      if (groupBtns) {
+        btns += '<span style="font-family:Fira Mono,monospace;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--stone);padding:0 4px 0 8px;display:flex;align-items:center">' + group + '</span>';
+        btns += groupBtns;
+      }
+    });
+
+    bar.innerHTML = btns;
+    bar.style.display = 'flex';
+  }
+
+    function setSubcat(btn) {
+    currentSubcat = btn.dataset.sub;
+    document.querySelectorAll('#subcat-bar .filter-btn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
     filterProducts();
   }
@@ -102,9 +148,10 @@
     var q    = document.getElementById('search-input').value.toLowerCase();
     var sort = document.getElementById('sort-select').value;
     var list = allProducts.filter(function(p) {
-      var matchCat  = currentCat === 'all' || p.category === currentCat;
-      var matchText = !q || p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
-      return matchCat && matchText;
+      var matchCat    = currentCat === 'all' || p.category === currentCat;
+      var matchSubcat = currentSubcat === 'all' || p.subcategory === currentSubcat;
+      var matchText   = !q || p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
+      return matchCat && matchSubcat && matchText;
     });
     /* Sort */
     if (sort === 'price_asc')  list.sort(function(a,b){ return a.price - b.price; });
