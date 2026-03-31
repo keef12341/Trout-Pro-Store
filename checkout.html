@@ -90,31 +90,15 @@
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
 
-  /* ── Flat rate shipping based on cart contents ── */
+  /* ── Shipping: 4.5% of subtotal ── */
   function getShippingPrice() {
     if (subtotal >= 75) return 0;
-    var items = getCart();
-    var hasRod    = items.some(function(i){ return i.category === 'rods'; });
-    var hasReel   = items.some(function(i){ return i.category === 'reels'; });
-    var hasGear   = items.some(function(i){
-      return i.category === 'line' || i.category === 'leaders' || i.category === 'accessories';
-    });
-    var fliesOnly = items.every(function(i){ return i.category === 'flies'; });
-    if (hasRod)    return 14.95;
-    if (hasReel)   return 9.95;
-    if (hasGear)   return 9.95;
-    if (fliesOnly) return subtotal >= 30 ? 6.95 : 4.95;
-    return 6.95;
+    return parseFloat((subtotal * 0.045).toFixed(2));
   }
 
   function getShippingLabel() {
     if (subtotal >= 75) return 'Free Shipping';
-    var items = getCart();
-    var hasRod    = items.some(function(i){ return i.category === 'rods'; });
-    var fliesOnly = items.every(function(i){ return i.category === 'flies'; });
-    if (hasRod)    return 'USPS Priority Mail';
-    if (fliesOnly) return 'USPS First Class';
-    return 'USPS Priority Mail';
+    return 'Standard Shipping';
   }
 
   
