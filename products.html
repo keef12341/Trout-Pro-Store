@@ -44,10 +44,12 @@
     <div class="filter-bar" id="cat-bar" style="display:flex">
       <button class="filter-btn active" onclick="setCat('all',this)">All Products</button>
       <button class="filter-btn" onclick="setCat('flies',this)">Flies</button>
+      <button class="filter-btn" onclick="setCat('flyboxes',this)">Fly Boxes</button>
       <button class="filter-btn" onclick="setCat('rods',this)">Fly Rods</button>
       <button class="filter-btn" onclick="setCat('reels',this)">Reels</button>
       <button class="filter-btn" onclick="setCat('line',this)">Fly Line</button>
       <button class="filter-btn" onclick="setCat('leaders',this)">Leaders &amp; Tippet</button>
+      <button class="filter-btn" onclick="setCat('flyboxes',this)">Fly Boxes</button>
       <button class="filter-btn" onclick="setCat('accessories',this)">Accessories</button>
     </div>
 
@@ -57,10 +59,12 @@
         style="flex:1;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer">
         <option value="all">All Products</option>
         <option value="flies">Flies</option>
+        <option value="flyboxes">Fly Boxes</option>
         <option value="rods">Fly Rods</option>
         <option value="reels">Reels</option>
         <option value="line">Fly Line</option>
         <option value="leaders">Leaders &amp; Tippet</option>
+        <option value="flyboxes">Fly Boxes</option>
         <option value="accessories">Accessories</option>
       </select>
       <select id="mobile-subcat-select" onchange="mobileSubcatChange(this)"
@@ -208,7 +212,7 @@
     var q    = document.getElementById('search-input').value.toLowerCase();
     var sort = document.getElementById('sort-select').value;
     var list = allProducts.filter(function(p) {
-      var matchCat    = currentCat === 'all' || p.category === currentCat;
+      var matchCat    = currentCat === 'all' || p.category === currentCat || (currentCat === 'flyboxes' && (p.category === 'flyboxes' || (p.name && p.name.toLowerCase().includes('fly box'))));
       var matchSubcat = currentSubcat === 'all' || p.subcategory === currentSubcat;
       var matchText   = !q || p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
       return matchCat && matchSubcat && matchText;
