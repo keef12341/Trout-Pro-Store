@@ -40,7 +40,8 @@
     </div>
 
     <!-- Category tabs -->
-    <div class="filter-bar" id="cat-bar">
+    <!-- Desktop filter buttons -->
+    <div class="filter-bar" id="cat-bar" style="display:flex">
       <button class="filter-btn active" onclick="setCat('all',this)">All Products</button>
       <button class="filter-btn" onclick="setCat('flies',this)">Flies</button>
       <button class="filter-btn" onclick="setCat('rods',this)">Fly Rods</button>
@@ -50,7 +51,24 @@
       <button class="filter-btn" onclick="setCat('accessories',this)">Accessories</button>
     </div>
 
-    <!-- Subcategory bar — shown only when Flies is selected -->
+    <!-- Mobile dropdowns -->
+    <div class="mobile-filter-row" style="display:none;gap:10px;margin-bottom:16px">
+      <select id="mobile-cat-select" onchange="mobileCatChange(this)"
+        style="flex:1;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer">
+        <option value="all">All Products</option>
+        <option value="flies">Flies</option>
+        <option value="rods">Fly Rods</option>
+        <option value="reels">Reels</option>
+        <option value="line">Fly Line</option>
+        <option value="leaders">Leaders &amp; Tippet</option>
+        <option value="accessories">Accessories</option>
+      </select>
+      <select id="mobile-subcat-select" onchange="mobileSubcatChange(this)"
+        style="flex:1;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer;display:none">
+      </select>
+    </div>
+
+    <!-- Subcategory bar — desktop only, shown when Flies selected -->
     <div class="filter-bar" id="subcat-bar" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"></div>
     <div id="products-count" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);margin-bottom:20px"></div>
     <div id="products-grid" class="product-grid">
@@ -103,6 +121,48 @@
       document.getElementById('products-grid').innerHTML =
         '<div class="empty-state"><h3>Could not load products</h3><p>Please try again in a moment.</p></div>';
     });
+
+  /* Mobile dropdown handlers */
+  function mobileCatChange(sel) {
+    currentCat    = sel.value;
+    currentSubcat = 'all';
+    var subSel = document.getElementById('mobile-subcat-select');
+    if (currentCat === 'flies') {
+      populateMobileSubcat();
+      subSel.style.display = 'block';
+    } else {
+      subSel.style.display = 'none';
+    }
+    filterProducts();
+  }
+
+  function mobileSubcatChange(sel) {
+    currentSubcat = sel.value;
+    filterProducts();
+  }
+
+  function populateMobileSubcat() {
+    var sel = document.getElementById('mobile-subcat-select');
+    var opts = '<option value="all">All Flies</option>';
+    Object.keys(SUBCATS).forEach(function(group) {
+      SUBCATS[group].forEach(function(sub) {
+        var fullSub = group + ' > ' + sub;
+        var has = allProducts.some(function(p){ return p.subcategory === fullSub; });
+        if (has) opts += '<option value="' + fullSub + '">' + group + ' — ' + sub + '</option>';
+      });
+    });
+    sel.innerHTML = opts;
+  }
+
+  /* Show/hide mobile vs desktop filters based on screen width */
+  function updateFilterDisplay() {
+    var isMobile = window.innerWidth <= 600;
+    document.getElementById('cat-bar').style.display    = isMobile ? 'none' : 'flex';
+    document.getElementById('subcat-bar').style.display = isMobile ? 'none' : (currentCat === 'flies' ? 'flex' : 'none');
+    document.querySelectorAll('.mobile-filter-row').forEach(function(el){ el.style.display = isMobile ? 'flex' : 'none'; });
+  }
+  updateFilterDisplay();
+  window.addEventListener('resize', updateFilterDisplay);
 
   function setCat(cat, btn) {
     currentCat   = cat;

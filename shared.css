@@ -434,3 +434,8 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
   .about-section { padding: 32px 16px !important; }
   .about-stats { grid-template-columns: 1fr !important; gap: 12px; }
 }
+
+/* Hide on mobile */
+@media(max-width:600px){
+  .hide-on-mobile { display: none !important; }
+}
