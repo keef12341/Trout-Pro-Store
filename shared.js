@@ -84,7 +84,6 @@ function renderHeader(activePage) {
     { href: '/', label: 'Home' },
     { href: '/products.html', label: 'Shop' },
     { href: '/blog.html', label: 'Blog' },
-    { href: 'https://perfectflystore.com/your-streams/', label: 'River Reports', external: true },
     { href: '/contact.html', label: 'Contact' }
   ];
   const nav = pages.map(p =>
@@ -102,7 +101,10 @@ function renderHeader(activePage) {
       </button>
       <nav role="navigation" aria-label="Main navigation">
         ${nav}
-        <a href="/cart.html" class="cart-btn" aria-label="Shopping cart">
+        <a href="tel:8005944726" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);text-decoration:none;display:flex;align-items:center;gap:4px;margin-right:8px" class="hide-on-mobile">
+      &#128222; 800-594-4726
+    </a>
+    <a href="/cart.html" class="cart-btn" aria-label="Shopping cart">
           <svg viewBox="0 0 24 24" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--cream);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61H19a2 2 0 001.98-1.72L22 6H6"/></svg>
           <span class="cart-count" id="cart-badge">0</span>
         </a>
@@ -124,13 +126,10 @@ function renderFooter() {
     <div class="footer-inner">
       <div class="footer-brand">
         <img src="/images/troutprostorelogo.png" alt="Trout Pro Store" />
-        <p>America's destination for fly fishing flies, rods, gear, and 200+ river reports.</p>
-        <div class="social-links">
-          <a href="https://www.facebook.com/TroutProStore" aria-label="Facebook" target="_blank" rel="noopener">fb</a>
-          <a href="https://twitter.com/troutprostore" aria-label="Twitter" target="_blank" rel="noopener">tw</a>
-          <a href="https://www.instagram.com/troutprostore" aria-label="Instagram" target="_blank" rel="noopener">ig</a>
-          <a href="https://www.youtube.com/user/troutuprof" aria-label="YouTube" target="_blank" rel="noopener">yt</a>
-        </div>
+        <p>America's destination for fly fishing flies, rods, and gear.</p>
+        <p style="font-family:'Fira Mono',monospace;font-size:.8rem;margin-top:8px">
+          <a href="tel:8005944726" style="color:rgba(255,255,255,.6)">&#128222; 800-594-4726</a>
+        </p>
       </div>
       <div class="footer-col"><h4>Shop</h4><ul>
         <li><a href="/products.html?cat=flies">Flies</a></li>
@@ -138,11 +137,6 @@ function renderFooter() {
         <li><a href="/products.html?cat=line">Fly Line</a></li>
         <li><a href="/products.html?cat=accessories">Accessories</a></li>
         <li><a href="/products.html">All Products</a></li>
-      </ul></div>
-      <div class="footer-col"><h4>Company</h4><ul>
-        <li><a href="/about.html">About Us</a></li>
-        <li><a href="/contact.html">Contact Us</a></li>
-        <li><a href="/blog.html">Blog</a></li>
       </ul></div>
       <div class="footer-col"><h4>Company</h4><ul>
         <li><a href="/about.html">About Us</a></li>
