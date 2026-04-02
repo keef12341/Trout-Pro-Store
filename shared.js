@@ -99,14 +99,16 @@ function renderHeader(activePage) {
       <nav role="navigation" aria-label="Main navigation">
         ${nav}
       </nav>
-      <div style="display:flex;align-items:center;gap:12px">
-        <a href="tel:8005944726" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);text-decoration:none;white-space:nowrap" class="hide-on-mobile">&#128222; 800-594-4726</a>
-        <a href="/cart.html" class="cart-btn" aria-label="Shopping cart">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--cream);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61H19a2 2 0 001.98-1.72L22 6H6"/></svg>
+      <div style="display:flex;align-items:center;gap:8px;height:100%">
+        <a href="tel:8005944726" style="font-family:'Fira Mono',monospace;font-size:.72rem;color:var(--stone);text-decoration:none;white-space:nowrap;line-height:1" class="hide-on-mobile">&#128222; 800-594-4726</a>
+        <a href="/cart.html" class="cart-btn" aria-label="Shopping cart" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;position:relative">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg" style="stroke:var(--cream);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61H19a2 2 0 001.98-1.72L22 6H6"/></svg>
           <span class="cart-count" id="cart-badge">0</span>
         </a>
-        <button class="hamburger" id="hambBtn" aria-label="Open navigation" aria-expanded="false">
-          <span></span><span></span><span></span>
+        <button class="hamburger" id="hambBtn" aria-label="Open navigation" aria-expanded="false" style="display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;background:none;border:none;cursor:pointer;padding:0">
+          <span style="display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all .3s"></span>
+          <span style="display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all .3s"></span>
+          <span style="display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;transition:all .3s"></span>
         </button>
       </div>
     </div>
