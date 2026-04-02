@@ -72,33 +72,21 @@
   if (!cart.length) { location.href = 'cart.html'; }
 
   /* ── Tax rates by state ── */
-  var STATE_TAX = {
-    'AL':0.04,'AK':0,'AZ':0.056,'AR':0.065,'CA':0.0725,'CO':0.029,
-    'CT':0.0635,'DE':0,'FL':0.06,'GA':0.04,'HI':0.04,'ID':0.06,
-    'IL':0.0625,'IN':0.07,'IA':0.06,'KS':0.065,'KY':0.06,'LA':0.0445,
-    'ME':0.055,'MD':0.06,'MA':0.0625,'MI':0.06,'MN':0.06875,'MS':0.07,
-    'MO':0.04225,'MT':0,'NE':0.055,'NV':0.0685,'NH':0,'NJ':0.06625,
-    'NM':0.05125,'NY':0.04,'NC':0.0475,'ND':0.05,'OH':0.0575,'OK':0.045,
-    'OR':0,'PA':0.06,'RI':0.07,'SC':0.06,'SD':0.045,'TN':0.07,
-    'TX':0.0625,'UT':0.0485,'VT':0.06,'VA':0.053,'WA':0.065,
-    'WV':0.06,'WI':0.05,'WY':0.04,'DC':0.06
-  };
-
+  /* ── Sales tax: Tennessee only at 9.25%, applied to subtotal only ── */
   function getTaxRate(stateCode) {
-    return STATE_TAX[(stateCode||'').toUpperCase().trim()] || 0;
+    var state = (stateCode || '').toUpperCase().trim();
+    return state === 'TN' ? 0.0925 : 0;
   }
 
   var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
 
-  /* ── Shipping: 4.5% of subtotal ── */
+  /* ── Shipping: flat $4.95, free over $50 ── */
   function getShippingPrice() {
-    if (subtotal >= 75) return 0;
-    return parseFloat((subtotal * 0.045).toFixed(2));
+    return subtotal >= 50 ? 0 : 4.95;
   }
 
   function getShippingLabel() {
-    if (subtotal >= 75) return 'Free Shipping';
-    return 'Standard Shipping';
+    return subtotal >= 50 ? 'Free Shipping' : 'Standard Shipping — $4.95';
   }
 
   
@@ -161,7 +149,7 @@
     var shipping  = getShippingPrice();
     var shipLabel = getShippingLabel();
     var taxRate   = getTaxRate(stateVal);
-    var tax       = subtotal * taxRate;
+    var tax       = subtotal * taxRate; /* Tax on subtotal only, not shipping */
 
     /* Update shipping label and price display */
     var shipLabelEl = document.getElementById('ship-label');
@@ -249,6 +237,7 @@
     + itemRows
     + '<hr class="order-divider" />'
     + '<div class="order-total-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
+    + (subtotal < 50 ? '<div style="background:rgba(200,147,42,.1);border:1px solid rgba(200,147,42,.3);padding:10px 14px;margin:8px 0;font-family:Fira Mono,monospace;font-size:.74rem;color:var(--forest);border-radius:2px;text-align:center">&#127381; Add <strong>$' + (50 - subtotal).toFixed(2) + ' more</strong> for FREE shipping!</div>' : '<div style="background:rgba(44,122,44,.1);border:1px solid rgba(44,122,44,.3);padding:10px 14px;margin:8px 0;font-family:Fira Mono,monospace;font-size:.74rem;color:var(--forest);border-radius:2px;text-align:center">&#10003; You qualify for FREE shipping!</div>')
     + '<div class="order-total-row"><span>Shipping <span id="sum-shipping-label" style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone)"></span></span><span id="sum-shipping">calculating…</span></div>'
     + '<div class="order-total-row" id="sum-discount-row" style="display:none;color:#2d7a3a"><span>Discount</span><span id="sum-discount"></span></div>'
     + '<div class="order-total-row"><span>Tax</span><span id="sum-tax">Enter state</span></div>'

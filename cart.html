@@ -74,7 +74,7 @@
     }).join('');
 
     var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
-    var shipping = subtotal >= 75 ? 0 : 6.95;
+    var shipping = subtotal >= 50 ? 0 : 4.95;
     var total    = subtotal + shipping;
 
     el.innerHTML =
@@ -85,7 +85,7 @@
       + '<div class="cart-summary">'
       + '<div class="summary-row"><span>Subtotal</span><span>$' + subtotal.toFixed(2) + '</span></div>'
       + '<div class="summary-row"><span>Shipping</span><span>' + (shipping === 0 ? '<span style="color:#5aaa5a">Free</span>' : '$' + shipping.toFixed(2)) + '</span></div>'
-      + (shipping > 0 ? '<div style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone);margin-bottom:8px">Add $' + (75 - subtotal).toFixed(2) + ' more for free shipping</div>' : '')
+      + (shipping > 0 ? '<div style="font-family:Fira Mono,monospace;font-size:.68rem;color:var(--stone);margin-bottom:8px">Add $' + (50 - subtotal).toFixed(2) + ' more for free shipping</div>' : '')
       + '<div class="summary-row total"><span>Total</span><span>$' + total.toFixed(2) + '</span></div>'
       + '<a href="checkout.html" class="btn-primary" style="display:block;text-align:center;margin-top:20px;padding:16px">Proceed to Checkout</a>'
       + '<a href="products.html" style="display:block;text-align:center;margin-top:12px;font-family:Fira Mono,monospace;font-size:.74rem;color:var(--stone)">&larr; Continue Shopping</a>'
