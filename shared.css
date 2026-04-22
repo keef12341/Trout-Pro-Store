@@ -547,7 +547,9 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
   .mobile-nav { display: none !important; }
 }
 
-/* ── SECTION TAG — gold pill label ── */
+
+
+/* ── SECTION TAG ── */
 .section-tag {
   font-family: 'Fira Mono', monospace !important;
   font-size: .68rem !important;
@@ -556,8 +558,42 @@ footer{background:#111a11;color:rgba(255,255,255,.6)}
   color: var(--forest) !important;
   background: rgba(200, 147, 42, 0.18) !important;
   border: 1px solid rgba(200, 147, 42, 0.35) !important;
-  display: inline-block !important;
-  padding: 4px 12px !important;
+  display: inline !important;
+  padding: 3px 10px !important;
   margin-bottom: 12px !important;
   border-radius: 2px !important;
+  width: auto !important;
+  max-width: fit-content !important;
+}
+
+/* ── CATEGORY CARD NAME BOX ── */
+.cat-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(to top, rgba(10,20,10,.85) 0%, rgba(10,20,10,.1) 60%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+}
+.cat-label {
+  font-family: 'Fira Mono', monospace !important;
+  font-size: .62rem !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,.7) !important;
+  padding: 0 16px 4px !important;
+  display: block !important;
+}
+.cat-name {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: var(--white) !important;
+  background: rgba(10,20,10,.75) !important;
+  padding: 10px 16px !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  line-height: 1.2 !important;
 }
