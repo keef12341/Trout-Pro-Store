@@ -48,27 +48,28 @@
       <button class="filter-btn" onclick="setCat('rods',this)">Fly Rods</button>
       <button class="filter-btn" onclick="setCat('reels',this)">Reels</button>
       <button class="filter-btn" onclick="setCat('line',this)">Fly Line</button>
+      <button class="filter-btn" onclick="setCat('sets',this)">Fly Fishing Sets</button>
       <button class="filter-btn" onclick="setCat('leaders',this)">Leaders &amp; Tippet</button>
-      <button class="filter-btn" onclick="setCat('flyboxes',this)">Fly Boxes</button>
+      
       <button class="filter-btn" onclick="setCat('accessories',this)">Accessories</button>
     </div>
 
     <!-- Mobile dropdowns -->
-    <div class="mobile-filter-row" style="display:none;gap:10px;margin-bottom:16px">
+    <div class="mobile-filter-row" style="display:none;flex-direction:column;gap:10px;margin-bottom:16px;width:100%;box-sizing:border-box">
       <select id="mobile-cat-select" onchange="mobileCatChange(this)"
-        style="flex:1;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer">
+        style="width:100%;box-sizing:border-box;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:16px;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer">
         <option value="all">All Products</option>
         <option value="flies">Flies</option>
-        <option value="flyboxes">Fly Boxes</option>
         <option value="rods">Fly Rods</option>
         <option value="reels">Reels</option>
         <option value="line">Fly Line</option>
+        <option value="sets">Fly Fishing Sets</option>
         <option value="leaders">Leaders &amp; Tippet</option>
-        <option value="flyboxes">Fly Boxes</option>
         <option value="accessories">Accessories</option>
+        <option value="flyboxes">Fly Boxes</option>
       </select>
       <select id="mobile-subcat-select" onchange="mobileSubcatChange(this)"
-        style="flex:1;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:.8rem;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer;display:none">
+        style="width:100%;box-sizing:border-box;padding:12px 14px;border:1.5px solid var(--border);font-family:'Fira Mono',monospace;font-size:16px;outline:none;background:var(--white);color:var(--text);border-radius:2px;cursor:pointer;display:none">
       </select>
     </div>
 
