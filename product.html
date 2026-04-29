@@ -91,7 +91,11 @@
               + '<div class="size-label">' + esc(label) + ' <span id="selected-size-label"></span></div>'
               + '<div class="size-grid">'
               + p.options.map(function(s) {
-                  return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
+                  var label = typeof s === 'object' ? s.option : s;
+                  var price = typeof s === 'object' ? s.price : null;
+                  var priceAttr = price ? ' data-price="' + price + '"' : '';
+                  var priceTag = price ? ' <span style="font-family:Fira Mono,monospace;font-size:.72rem;color:var(--stone)">$' + Number(price).toFixed(2) + '</span>' : '';
+                  return '<button class="size-btn" data-size="' + esc(String(label)) + '"' + priceAttr + ' onclick="selectSize(this)">' + esc(String(label)) + priceTag + '</button>';
                 }).join('')
               + '</div>'
               + '<div class="size-required" id="size-required">Please select an option before adding to cart</div>'
@@ -123,6 +127,10 @@
       p.selectedSize = selected.dataset.size;
     }
 
+    /* Use option-specific price if selected */
+    if (p.__selectedPrice) {
+      p = Object.assign({}, p, { price: p.__selectedPrice });
+    }
     addToCart(p, qty);
     var t = document.getElementById('toast');
     t.textContent = p.name + (p.selectedSize ? ' (Size ' + p.selectedSize + ')' : '') + ' added to cart';
@@ -141,6 +149,16 @@
     if (lbl) lbl.textContent = '— ' + size;
     var req = document.getElementById('size-required');
     if (req) req.style.display = 'none';
+    /* Update price if this option has its own price */
+    if (btn.dataset.price) {
+      var priceEl = document.querySelector('.product-detail-price');
+      if (priceEl) priceEl.textContent = '$' + Number(btn.dataset.price).toFixed(2);
+      /* Update Pay button */
+      var payBtn = document.querySelector('.btn-primary');
+      if (payBtn) payBtn.textContent = 'Add to Cart — $' + Number(btn.dataset.price).toFixed(2);
+      /* Store updated price on product */
+      window.__product.__selectedPrice = parseFloat(btn.dataset.price);
+    }
   }
 </script>
 </body>
