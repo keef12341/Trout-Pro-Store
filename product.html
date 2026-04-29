@@ -17,7 +17,7 @@
     .product-detail-cat{font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--river-light);margin-bottom:12px}
     .product-detail-name{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:var(--forest);line-height:1.15;margin-bottom:16px}
     .product-detail-price{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--forest);margin-bottom:24px}
-    .product-detail-desc{font-size:1rem;color:var(--text-muted);line-height:1.8;margin-bottom:32px}
+    .product-detail-desc{font-size:1rem;color:var(--text-muted);line-height:1.8;margin-bottom:32px;max-height:400px;overflow-y:auto;padding-right:8px;white-space:pre-line}
     .size-section{margin-bottom:28px}
     .size-label{font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);margin-bottom:12px;display:flex;align-items:center;gap:10px}
     .size-label span{color:var(--forest);font-weight:600}
@@ -70,16 +70,16 @@
       + '<div class="product-detail-cat">' + esc(p.category) + '</div>'
       + '<h1 class="product-detail-name">' + esc(p.name) + '</h1>'
       + '<div class="product-detail-price">$' + Number(p.price).toFixed(2) + '</div>'
-      + '<div class="product-detail-desc">' + esc(p.description || '') + '</div>'
+      + '<div class="product-detail-desc">' + esc(p.description || '').replace(/\n/g, '<br />') + '</div>'
       + (p.sizes && p.sizes.length > 0
           ? '<div class="size-section">'
-            + '<div class="size-label">Hook Size / Size <span id="selected-size-label"></span></div>'
+            + '<div class="size-label">Hook Size <span id="selected-size-label"></span></div>'
             + '<div class="size-grid">'
             + p.sizes.map(function(s) {
-            + '<button class="size-btn" data-size="' + esc(s) + '" onclick="selectSize(this)">' + esc(s) + '</button>'
+                return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
               }).join('')
             + '</div>'
-            + '<div class="size-required" id="size-required">Please select a size before adding to cart</div>'
+            + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
             + '</div>'
           : '')
       + '<div class="qty-row"><span class="qty-label">Qty</span><input type="number" class="qty-input" id="qty" value="1" min="1" max="99" /></div>'
@@ -92,10 +92,23 @@
   });
 
   function handleAdd() {
+    var p = window.__product;
     var qty = parseInt(document.getElementById('qty').value) || 1;
-    addToCart(window.__product, qty);
+
+    /* Check if size is required but not selected */
+    if (p.sizes && p.sizes.length > 0) {
+      var selected = document.querySelector('.size-btn.selected');
+      if (!selected) {
+        var req = document.getElementById('size-required');
+        if (req) { req.style.display = 'block'; }
+        return;
+      }
+      p.selectedSize = selected.dataset.size;
+    }
+
+    addToCart(p, qty);
     var t = document.getElementById('toast');
-    t.textContent = window.__product.name + ' added to cart';
+    t.textContent = p.name + (p.selectedSize ? ' (Size ' + p.selectedSize + ')' : '') + ' added to cart';
     t.classList.add('show');
     setTimeout(function() { t.classList.remove('show'); }, 2800);
   }
