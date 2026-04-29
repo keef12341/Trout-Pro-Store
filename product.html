@@ -55,7 +55,7 @@
   var id = new URLSearchParams(location.search).get('id');
   if (!id) { location.href = 'products.html'; }
 
-  sbGet('products', 'id=eq.' + id + '&select=*').then(function(data) {
+  sbGet('products', 'id=eq.' + id + '&select=id,name,price,description,category,image_url,in_stock,sizes,options,option_label,subcategory').then(function(data) {
     if (!data.length) { location.href = 'products.html'; return; }
     var p = data[0];
     document.title = p.name + ' | Trout Pro Store';
@@ -71,17 +71,34 @@
       + '<h1 class="product-detail-name">' + esc(p.name) + '</h1>'
       + '<div class="product-detail-price">$' + Number(p.price).toFixed(2) + '</div>'
       + '<div class="product-detail-desc">' + esc(p.description || '').replace(/\n/g, '<br />') + '</div>'
-      + (p.sizes && p.sizes.length > 0
-          ? '<div class="size-section">'
-            + '<div class="size-label">Hook Size <span id="selected-size-label"></span></div>'
-            + '<div class="size-grid">'
-            + p.sizes.map(function(s) {
-                return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
-              }).join('')
-            + '</div>'
-            + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
-            + '</div>'
-          : '')
+      + (function() {
+          /* Hook sizes for flies */
+          if (p.sizes && p.sizes.length > 0) {
+            return '<div class="size-section">'
+              + '<div class="size-label">Hook Size <span id="selected-size-label"></span></div>'
+              + '<div class="size-grid">'
+              + p.sizes.map(function(s) {
+                  return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
+                }).join('')
+              + '</div>'
+              + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
+              + '</div>';
+          }
+          /* General options for other products */
+          if (p.options && p.options.length > 0) {
+            var label = p.option_label || 'Option';
+            return '<div class="size-section">'
+              + '<div class="size-label">' + esc(label) + ' <span id="selected-size-label"></span></div>'
+              + '<div class="size-grid">'
+              + p.options.map(function(s) {
+                  return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
+                }).join('')
+              + '</div>'
+              + '<div class="size-required" id="size-required">Please select an option before adding to cart</div>'
+              + '</div>';
+          }
+          return '';
+        })()
       + '<div class="qty-row"><span class="qty-label">Qty</span><input type="number" class="qty-input" id="qty" value="1" min="1" max="99" /></div>'
       + '<button class="btn-primary" style="width:100%;text-align:center;padding:16px" onclick="handleAdd()">Add to Cart</button>'
       + '<a href="/products.html" style="display:block;text-align:center;margin-top:16px;font-family:Fira Mono,monospace;font-size:.76rem;color:var(--stone)">&larr; Back to Shop</a>'
@@ -95,8 +112,8 @@
     var p = window.__product;
     var qty = parseInt(document.getElementById('qty').value) || 1;
 
-    /* Check if size is required but not selected */
-    if (p.sizes && p.sizes.length > 0) {
+    /* Check if size/option is required but not selected */
+    if ((p.sizes && p.sizes.length > 0) || (p.options && p.options.length > 0)) {
       var selected = document.querySelector('.size-btn.selected');
       if (!selected) {
         var req = document.getElementById('size-required');
