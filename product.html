@@ -55,126 +55,213 @@
   var id = new URLSearchParams(location.search).get('id');
   if (!id) { location.href = 'products.html'; }
 
-  sbGet('products', 'id=eq.' + id + '&select=id,name,price,description,category,image_url,in_stock,sizes,options,option_label,subcategory').then(function(data) {
+  sbGet('products', 'id=eq.' + id + '&select=*').then(function(data) {
     if (!data.length) { location.href = 'products.html'; return; }
     var p = data[0];
     document.title = p.name + ' | Trout Pro Store';
 
-    /* Build option selectors HTML */
     function buildOptions(p) {
+      var opts = p.options;
+      var html = '';
+
       /* Flies — hook sizes */
       if (p.sizes && p.sizes.length > 0) {
-        return '<div class="size-section">'
+        html += '<div class="size-section">'
           + '<div class="size-label">Hook Size <span id="sel-label"></span></div>'
           + '<div class="size-grid">'
-          + p.sizes.map(function(s) {
-              return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectOpt(this)">' + esc(String(s)) + '</button>';
+          + p.sizes.map(function(s){
+              return '<button class="size-btn" data-size="'+esc(String(s))+'" onclick="selectHook(this)">'+esc(String(s))+'</button>';
             }).join('')
           + '</div>'
-          + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
+          + '<div class="size-required" id="size-required">Please select a hook size</div>'
           + '</div>';
+        return html;
       }
-      /* General options — flat array [{option, price, image}] */
-      if (p.options && Array.isArray(p.options) && p.options.length > 0) {
+
+      if (!opts) return '';
+
+      /* Two-attribute selector: {attr1_label, attr1_values, attr2_label, attr2_values, prices} */
+      if (opts.attr1_label) {
+        html += '<div class="size-section">'
+          + '<div class="size-label">'+esc(opts.attr1_label)+' <span id="sel-attr1" style="color:var(--forest);font-weight:600"></span></div>'
+          + '<div class="size-grid" id="grid-attr1">'
+          + (opts.attr1_values||[]).map(function(v){
+              return '<button class="size-btn attr1-btn" data-val="'+esc(String(v))+'" onclick="selectAttr1(this)">'+esc(String(v))+'</button>';
+            }).join('')
+          + '</div></div>';
+        if (opts.attr2_label) {
+          html += '<div class="size-section" id="sec-attr2" style="opacity:.4;pointer-events:none">'
+            + '<div class="size-label">'+esc(opts.attr2_label)+' <span id="sel-attr2" style="color:var(--forest);font-weight:600"></span></div>'
+            + '<div class="size-grid" id="grid-attr2">'
+            + (opts.attr2_values||[]).map(function(v){
+                return '<button class="size-btn attr2-btn" data-val="'+esc(String(v))+'" onclick="selectAttr2(this)">'+esc(String(v))+'</button>';
+              }).join('')
+            + '</div></div>';
+        }
+        html += '<div class="size-required" id="size-required">Please select all options</div>';
+        return html;
+      }
+
+      /* Single flat array [{option, price, image}] */
+      if (Array.isArray(opts) && opts.length > 0) {
         var label = p.option_label || 'Option';
-        return '<div class="size-section">'
-          + '<div class="size-label">' + esc(label) + ' <span id="sel-label"></span></div>'
+        html += '<div class="size-section">'
+          + '<div class="size-label">'+esc(label)+' <span id="sel-label"></span></div>'
           + '<div class="size-grid">'
-          + p.options.map(function(o) {
-              var opt   = typeof o === 'object' ? o.option : o;
-              var price = typeof o === 'object' ? o.price  : null;
-              var img   = typeof o === 'object' ? o.image  : null;
-              var attrs = ' data-size="' + esc(String(opt)) + '"';
-              if (price) attrs += ' data-price="' + price + '"';
-              if (img)   attrs += ' data-image="' + esc(img) + '"';
-              var priceTag = (price && price !== p.price) ? ' <span style="font-family:Fira Mono,monospace;font-size:.7rem;color:var(--stone)">$' + Number(price).toFixed(2) + '</span>' : '';
-              return '<button class="size-btn"' + attrs + ' onclick="selectOpt(this)">' + esc(String(opt)) + priceTag + '</button>';
+          + opts.map(function(o){
+              var opt   = typeof o==='object' ? o.option : o;
+              var price = typeof o==='object' ? o.price  : null;
+              var img   = typeof o==='object' ? o.image  : null;
+              var attrs = ' data-size="'+esc(String(opt))+'"';
+              if (price) attrs += ' data-price="'+price+'"';
+              if (img)   attrs += ' data-image="'+esc(img)+'"';
+              var ptag  = (price && price !== p.price) ? ' <span style="font-family:Fira Mono,monospace;font-size:.7rem;color:var(--stone)">$'+Number(price).toFixed(2)+'</span>' : '';
+              return '<button class="size-btn"'+attrs+' onclick="selectFlat(this)">'+esc(String(opt))+ptag+'</button>';
             }).join('')
           + '</div>'
-          + '<div class="size-required" id="size-required">Please select an option before adding to cart</div>'
+          + '<div class="size-required" id="size-required">Please select an option</div>'
           + '</div>';
+        return html;
       }
+
       return '';
     }
 
     document.getElementById('product-mount').innerHTML =
-      '<div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/products.html">Shop</a> &rsaquo; ' + esc(p.name) + '</div>'
-      + '<div class="product-detail">'
-      + '<div class="product-detail-img" id="prod-img-wrap">'
-      + (p.image_url ? '<img id="prod-img" src="' + p.image_url + '" alt="' + esc(p.name) + '" />' : '<div class="no-img">No image</div>')
-      + '</div>'
-      + '<div class="product-detail-info">'
-      + '<div class="product-detail-cat">' + esc(p.category) + '</div>'
-      + '<h1 class="product-detail-name">' + esc(p.name) + '</h1>'
-      + '<div class="product-detail-price" id="prod-price">$' + Number(p.price).toFixed(2) + '</div>'
-      + '<div class="product-detail-desc">' + esc(p.description || '').replace(/\n/g, '<br />') + '</div>'
-      + buildOptions(p)
-      + '<div class="qty-row"><span class="qty-label">Qty</span><input type="number" class="qty-input" id="qty" value="1" min="1" max="99" /></div>'
-      + '<button class="btn-primary" style="width:100%;text-align:center;padding:16px" onclick="handleAdd()">Add to Cart</button>'
-      + '<a href="/products.html" style="display:block;text-align:center;margin-top:16px;font-family:Fira Mono,monospace;font-size:.76rem;color:var(--stone)">&larr; Back to Shop</a>'
-      + '</div>'
-      + '</div>';
+      '<div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/products.html">Shop</a> &rsaquo; '+esc(p.name)+'</div>'
+      +'<div class="product-detail">'
+      +'<div class="product-detail-img">'
+      +(p.image_url ? '<img id="prod-img" src="'+p.image_url+'" alt="'+esc(p.name)+'" />' : '<div class="no-img">No image</div>')
+      +'</div>'
+      +'<div class="product-detail-info">'
+      +'<div class="product-detail-cat">'+esc(p.category)+'</div>'
+      +'<h1 class="product-detail-name">'+esc(p.name)+'</h1>'
+      +'<div class="product-detail-price" id="prod-price">$'+Number(p.price).toFixed(2)+'</div>'
+      +'<div class="product-detail-desc">'+esc(p.description||'').replace(/\n/g,'<br />')+'</div>'
+      +buildOptions(p)
+      +'<div class="qty-row"><span class="qty-label">Qty</span><input type="number" class="qty-input" id="qty" value="1" min="1" max="99" /></div>'
+      +'<button class="btn-primary" style="width:100%;text-align:center;padding:16px" onclick="handleAdd()">Add to Cart</button>'
+      +'<a href="/products.html" style="display:block;text-align:center;margin-top:16px;font-family:Fira Mono,monospace;font-size:.76rem;color:var(--stone)">&larr; Back to Shop</a>'
+      +'</div></div>';
 
     window.__product = p;
+    window.__attr1 = null;
+    window.__attr2 = null;
   });
 
-  function selectOpt(btn) {
-    document.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
+  /* Hook size selector */
+  function selectHook(btn) {
+    document.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('selected');});
     btn.classList.add('selected');
-
-    /* Update label */
     var lbl = document.getElementById('sel-label');
-    if (lbl) lbl.textContent = '— ' + btn.dataset.size;
-
-    /* Hide error */
+    if (lbl) lbl.textContent = '— '+btn.dataset.size;
     var req = document.getElementById('size-required');
     if (req) req.style.display = 'none';
+    window.__product.selectedSize = btn.dataset.size;
+  }
 
-    /* Update price */
+  /* Flat single-selector */
+  function selectFlat(btn) {
+    document.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('selected');});
+    btn.classList.add('selected');
+    var lbl = document.getElementById('sel-label');
+    if (lbl) lbl.textContent = '— '+btn.dataset.size;
+    var req = document.getElementById('size-required');
+    if (req) req.style.display = 'none';
+    window.__product.selectedSize = btn.dataset.size;
     if (btn.dataset.price) {
-      var priceEl = document.getElementById('prod-price');
-      if (priceEl) priceEl.textContent = '$' + Number(btn.dataset.price).toFixed(2);
+      var el = document.getElementById('prod-price');
+      if (el) el.textContent = '$'+Number(btn.dataset.price).toFixed(2);
       window.__product.__selectedPrice = parseFloat(btn.dataset.price);
     }
+    if (btn.dataset.image) swapImage(btn.dataset.image);
+  }
 
-    /* Swap image with fade */
-    if (btn.dataset.image) {
-      var imgEl = document.getElementById('prod-img');
-      if (imgEl) {
-        imgEl.style.transition = 'opacity 0.25s ease';
-        imgEl.style.opacity = '0';
-        setTimeout(function() {
-          imgEl.src = btn.dataset.image;
-          imgEl.style.opacity = '1';
-        }, 250);
-      }
+  /* Two-attr selector — first attribute */
+  function selectAttr1(btn) {
+    document.querySelectorAll('.attr1-btn').forEach(function(b){b.classList.remove('selected');});
+    btn.classList.add('selected');
+    window.__attr1 = btn.dataset.val;
+    var lbl = document.getElementById('sel-attr1');
+    if (lbl) lbl.textContent = '— '+btn.dataset.val;
+    /* Enable attr2 if it exists */
+    var sec2 = document.getElementById('sec-attr2');
+    if (sec2) { sec2.style.opacity='1'; sec2.style.pointerEvents='auto'; }
+    /* Reset attr2 */
+    document.querySelectorAll('.attr2-btn').forEach(function(b){b.classList.remove('selected');});
+    window.__attr2 = null;
+    var lbl2 = document.getElementById('sel-attr2');
+    if (lbl2) lbl2.textContent = '';
+    /* If no attr2, update price now */
+    var opts = window.__product.options;
+    if (opts && !opts.attr2_label) updateTwoAttrPrice();
+    var req = document.getElementById('size-required');
+    if (req) req.style.display = 'none';
+  }
+
+  /* Two-attr selector — second attribute */
+  function selectAttr2(btn) {
+    document.querySelectorAll('.attr2-btn').forEach(function(b){b.classList.remove('selected');});
+    btn.classList.add('selected');
+    window.__attr2 = btn.dataset.val;
+    var lbl = document.getElementById('sel-attr2');
+    if (lbl) lbl.textContent = '— '+btn.dataset.val;
+    updateTwoAttrPrice();
+    var req = document.getElementById('size-required');
+    if (req) req.style.display = 'none';
+  }
+
+  function updateTwoAttrPrice() {
+    var opts = window.__product.options;
+    if (!opts || !opts.prices) return;
+    var match = opts.prices.find(function(v){
+      return v.attr1 === window.__attr1 && (!opts.attr2_label || v.attr2 === window.__attr2);
+    });
+    if (match) {
+      var el = document.getElementById('prod-price');
+      if (el) el.textContent = '$'+Number(match.price).toFixed(2);
+      window.__product.__selectedPrice = match.price;
+      if (match.image) swapImage(match.image);
     }
+    window.__product.selectedSize = window.__attr1 + (window.__attr2 ? ' / '+window.__attr2 : '');
+  }
+
+  function swapImage(src) {
+    var img = document.getElementById('prod-img');
+    if (!img) return;
+    img.style.transition = 'opacity 0.25s ease';
+    img.style.opacity = '0';
+    setTimeout(function(){ img.src = src; img.style.opacity = '1'; }, 250);
   }
 
   function handleAdd() {
     var p = window.__product;
     var qty = parseInt(document.getElementById('qty').value) || 1;
-    var needsOption = (p.sizes && p.sizes.length > 0) || (p.options && Array.isArray(p.options) && p.options.length > 0);
+    var opts = p.options;
+    var needsSel = (p.sizes && p.sizes.length > 0) || opts;
 
-    if (needsOption) {
-      var selected = document.querySelector('.size-btn.selected');
-      if (!selected) {
+    if (needsSel) {
+      var hasSel = p.selectedSize || false;
+      if (!hasSel) {
         var req = document.getElementById('size-required');
         if (req) req.style.display = 'block';
         return;
       }
-      p.selectedSize = selected.dataset.size;
+      /* Two-attr: need both selected */
+      if (opts && opts.attr1_label && opts.attr2_label && !window.__attr2) {
+        var req = document.getElementById('size-required');
+        if (req) req.style.display = 'block';
+        return;
+      }
     }
 
-    if (p.__selectedPrice) {
-      p = Object.assign({}, p, { price: p.__selectedPrice });
-    }
-
-    addToCart(p, qty);
+    var cartP = Object.assign({}, p);
+    if (p.__selectedPrice) cartP.price = p.__selectedPrice;
+    addToCart(cartP, qty);
     var t = document.getElementById('toast');
-    t.textContent = p.name + (p.selectedSize ? ' (' + p.selectedSize + ')' : '') + ' added to cart';
+    t.textContent = p.name + (p.selectedSize ? ' ('+p.selectedSize+')' : '') + ' added to cart';
     t.classList.add('show');
-    setTimeout(function() { t.classList.remove('show'); }, 2800);
+    setTimeout(function(){ t.classList.remove('show'); }, 2800);
   }
 
   function esc(s) {
