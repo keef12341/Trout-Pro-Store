@@ -249,7 +249,17 @@
       + '<div class="product-card-name">' + esc(p.name) + '</div>'
       + '<div class="product-card-desc">' + esc((p.description||'').substring(0,80)) + (p.description && p.description.length > 80 ? '…' : '') + '</div>'
       + '<div class="product-card-footer">'
-      + '<div class="product-card-price">$' + Number(p.price).toFixed(2) + '</div>'
+      + (function() {
+          if (p.options && p.options.length > 1) {
+            var prices = p.options.map(function(o){ return typeof o === 'object' ? o.price : p.price; }).filter(Boolean);
+            var minP = Math.min.apply(null, prices);
+            var maxP = Math.max.apply(null, prices);
+            if (minP !== maxP) {
+              return '<div class="product-card-price">$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2) + '</div>';
+            }
+          }
+          return '<div class="product-card-price">$' + Number(p.price).toFixed(2) + '</div>';
+        })()
       + '<button class="add-to-cart-btn" onclick="event.stopPropagation();handleAdd(' + JSON.stringify(p).replace(/"/g,'&quot;') + ')">Add to Cart</button>'
       + '</div>'
       + '</div>'
