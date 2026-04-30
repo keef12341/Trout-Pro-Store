@@ -60,49 +60,55 @@
     var p = data[0];
     document.title = p.name + ' | Trout Pro Store';
 
+    /* Build option selectors HTML */
+    function buildOptions(p) {
+      /* Flies — hook sizes */
+      if (p.sizes && p.sizes.length > 0) {
+        return '<div class="size-section">'
+          + '<div class="size-label">Hook Size <span id="sel-label"></span></div>'
+          + '<div class="size-grid">'
+          + p.sizes.map(function(s) {
+              return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectOpt(this)">' + esc(String(s)) + '</button>';
+            }).join('')
+          + '</div>'
+          + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
+          + '</div>';
+      }
+      /* General options — flat array [{option, price, image}] */
+      if (p.options && Array.isArray(p.options) && p.options.length > 0) {
+        var label = p.option_label || 'Option';
+        return '<div class="size-section">'
+          + '<div class="size-label">' + esc(label) + ' <span id="sel-label"></span></div>'
+          + '<div class="size-grid">'
+          + p.options.map(function(o) {
+              var opt   = typeof o === 'object' ? o.option : o;
+              var price = typeof o === 'object' ? o.price  : null;
+              var img   = typeof o === 'object' ? o.image  : null;
+              var attrs = ' data-size="' + esc(String(opt)) + '"';
+              if (price) attrs += ' data-price="' + price + '"';
+              if (img)   attrs += ' data-image="' + esc(img) + '"';
+              var priceTag = (price && price !== p.price) ? ' <span style="font-family:Fira Mono,monospace;font-size:.7rem;color:var(--stone)">$' + Number(price).toFixed(2) + '</span>' : '';
+              return '<button class="size-btn"' + attrs + ' onclick="selectOpt(this)">' + esc(String(opt)) + priceTag + '</button>';
+            }).join('')
+          + '</div>'
+          + '<div class="size-required" id="size-required">Please select an option before adding to cart</div>'
+          + '</div>';
+      }
+      return '';
+    }
+
     document.getElementById('product-mount').innerHTML =
       '<div class="breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/products.html">Shop</a> &rsaquo; ' + esc(p.name) + '</div>'
       + '<div class="product-detail">'
-      + '<div class="product-detail-img">'
-      + (p.image_url ? '<img src="' + p.image_url + '" alt="' + esc(p.name) + '" />' : '<div class="no-img">No image</div>')
+      + '<div class="product-detail-img" id="prod-img-wrap">'
+      + (p.image_url ? '<img id="prod-img" src="' + p.image_url + '" alt="' + esc(p.name) + '" />' : '<div class="no-img">No image</div>')
       + '</div>'
       + '<div class="product-detail-info">'
       + '<div class="product-detail-cat">' + esc(p.category) + '</div>'
       + '<h1 class="product-detail-name">' + esc(p.name) + '</h1>'
-      + '<div class="product-detail-price">$' + Number(p.price).toFixed(2) + '</div>'
+      + '<div class="product-detail-price" id="prod-price">$' + Number(p.price).toFixed(2) + '</div>'
       + '<div class="product-detail-desc">' + esc(p.description || '').replace(/\n/g, '<br />') + '</div>'
-      + (function() {
-          /* Hook sizes for flies */
-          if (p.sizes && p.sizes.length > 0) {
-            return '<div class="size-section">'
-              + '<div class="size-label">Hook Size <span id="selected-size-label"></span></div>'
-              + '<div class="size-grid">'
-              + p.sizes.map(function(s) {
-                  return '<button class="size-btn" data-size="' + esc(String(s)) + '" onclick="selectSize(this)">' + esc(String(s)) + '</button>';
-                }).join('')
-              + '</div>'
-              + '<div class="size-required" id="size-required">Please select a hook size before adding to cart</div>'
-              + '</div>';
-          }
-          /* General options for other products */
-          if (p.options && p.options.length > 0) {
-            var label = p.option_label || 'Option';
-            return '<div class="size-section">'
-              + '<div class="size-label">' + esc(label) + ' <span id="selected-size-label"></span></div>'
-              + '<div class="size-grid">'
-              + p.options.map(function(s) {
-                  var label = typeof s === 'object' ? s.option : s;
-                  var price = typeof s === 'object' ? s.price : null;
-                  var priceAttr = price ? ' data-price="' + price + '"' : '';
-                  var priceTag = price ? ' <span style="font-family:Fira Mono,monospace;font-size:.72rem;color:var(--stone)">$' + Number(price).toFixed(2) + '</span>' : '';
-                  return '<button class="size-btn" data-size="' + esc(String(label)) + '"' + priceAttr + ' onclick="selectSize(this)">' + esc(String(label)) + priceTag + '</button>';
-                }).join('')
-              + '</div>'
-              + '<div class="size-required" id="size-required">Please select an option before adding to cart</div>'
-              + '</div>';
-          }
-          return '';
-        })()
+      + buildOptions(p)
       + '<div class="qty-row"><span class="qty-label">Qty</span><input type="number" class="qty-input" id="qty" value="1" min="1" max="99" /></div>'
       + '<button class="btn-primary" style="width:100%;text-align:center;padding:16px" onclick="handleAdd()">Add to Cart</button>'
       + '<a href="/products.html" style="display:block;text-align:center;margin-top:16px;font-family:Fira Mono,monospace;font-size:.76rem;color:var(--stone)">&larr; Back to Shop</a>'
@@ -112,53 +118,67 @@
     window.__product = p;
   });
 
+  function selectOpt(btn) {
+    document.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
+    btn.classList.add('selected');
+
+    /* Update label */
+    var lbl = document.getElementById('sel-label');
+    if (lbl) lbl.textContent = '— ' + btn.dataset.size;
+
+    /* Hide error */
+    var req = document.getElementById('size-required');
+    if (req) req.style.display = 'none';
+
+    /* Update price */
+    if (btn.dataset.price) {
+      var priceEl = document.getElementById('prod-price');
+      if (priceEl) priceEl.textContent = '$' + Number(btn.dataset.price).toFixed(2);
+      window.__product.__selectedPrice = parseFloat(btn.dataset.price);
+    }
+
+    /* Swap image with fade */
+    if (btn.dataset.image) {
+      var imgEl = document.getElementById('prod-img');
+      if (imgEl) {
+        imgEl.style.transition = 'opacity 0.25s ease';
+        imgEl.style.opacity = '0';
+        setTimeout(function() {
+          imgEl.src = btn.dataset.image;
+          imgEl.style.opacity = '1';
+        }, 250);
+      }
+    }
+  }
+
   function handleAdd() {
     var p = window.__product;
     var qty = parseInt(document.getElementById('qty').value) || 1;
+    var needsOption = (p.sizes && p.sizes.length > 0) || (p.options && Array.isArray(p.options) && p.options.length > 0);
 
-    /* Check if size/option is required but not selected */
-    if ((p.sizes && p.sizes.length > 0) || (p.options && p.options.length > 0)) {
+    if (needsOption) {
       var selected = document.querySelector('.size-btn.selected');
       if (!selected) {
         var req = document.getElementById('size-required');
-        if (req) { req.style.display = 'block'; }
+        if (req) req.style.display = 'block';
         return;
       }
       p.selectedSize = selected.dataset.size;
     }
 
-    /* Use option-specific price if selected */
     if (p.__selectedPrice) {
       p = Object.assign({}, p, { price: p.__selectedPrice });
     }
+
     addToCart(p, qty);
     var t = document.getElementById('toast');
-    t.textContent = p.name + (p.selectedSize ? ' (Size ' + p.selectedSize + ')' : '') + ' added to cart';
+    t.textContent = p.name + (p.selectedSize ? ' (' + p.selectedSize + ')' : '') + ' added to cart';
     t.classList.add('show');
     setTimeout(function() { t.classList.remove('show'); }, 2800);
   }
 
   function esc(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  function selectSize(btn) {
-    var size = btn.dataset.size;
-    document.querySelectorAll('.size-btn').forEach(function(b) { b.classList.remove('selected'); });
-    btn.classList.add('selected');
-    var lbl = document.getElementById('selected-size-label');
-    if (lbl) lbl.textContent = '— ' + size;
-    var req = document.getElementById('size-required');
-    if (req) req.style.display = 'none';
-    /* Update price if this option has its own price */
-    if (btn.dataset.price) {
-      var priceEl = document.querySelector('.product-detail-price');
-      if (priceEl) priceEl.textContent = '$' + Number(btn.dataset.price).toFixed(2);
-      /* Update Pay button */
-      var payBtn = document.querySelector('.btn-primary');
-      if (payBtn) payBtn.textContent = 'Add to Cart — $' + Number(btn.dataset.price).toFixed(2);
-      /* Store updated price on product */
-      window.__product.__selectedPrice = parseFloat(btn.dataset.price);
-    }
   }
 </script>
 </body>
