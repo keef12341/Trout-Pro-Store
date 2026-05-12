@@ -83,7 +83,7 @@ function renderHeader(activePage) {
   const pages = [
     { href: '/', label: 'Home' },
     { href: '/products.html', label: 'Shop' },
-    { href: '/blog.html', label: 'Blog' },
+    { href: '/learn.html', label: 'Learn' },
     { href: '/contact.html', label: 'Contact' }
   ];
   const nav = pages.map(p =>
