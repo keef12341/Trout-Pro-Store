@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn | Trout Pro Store</title>
+  <meta name="description" content="Fly fishing resources, hatch charts, river reports, classes, and guides from Trout Pro Store." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='30' cy='32' rx='22' ry='11' fill='%23c8860a'/%3E%3Cellipse cx='30' cy='35' rx='18' ry='6' fill='%23e8b84a'/%3E%3Cpath d='M52 32 L62 22 L64 32 L62 42 Z' fill='%23a06020'/%3E%3Ccircle cx='12' cy='31' r='3' fill='%23111'/%3E%3Ccircle cx='11' cy='30' r='1' fill='white'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:wght@300;400;600&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    /* ── Learn page — matches site theme ── */
+    .learn-hero{background:var(--forest);padding:72px 40px;text-align:center;position:relative}
+    .learn-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--cream);line-height:1.15;margin-bottom:14px}
+    .learn-hero p{color:rgba(232,220,196,.7);font-size:1rem;font-weight:300;max-width:540px;margin:0 auto;font-family:'Source Serif 4',serif}
+
+    .learn-wrap{max-width:1200px;margin:0 auto;padding:72px 40px}
+    .learn-section-header{margin-bottom:48px}
+
+    .learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .learn-card{background:var(--white);border:1px solid var(--border);transition:transform .25s,box-shadow .25s;text-decoration:none;display:block;color:var(--text);overflow:hidden}
+    .learn-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,46,26,.12)}
+    .learn-card:hover .learn-card-icon{background:var(--moss)}
+    .learn-card-icon{background:var(--forest);height:120px;display:flex;align-items:center;justify-content:center;font-size:3rem;transition:background .3s}
+    .learn-card-body{padding:24px}
+    .learn-card-tag{font-family:'Fira Mono',monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--river-light);margin-bottom:8px;display:block}
+    .learn-card-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--forest);margin-bottom:10px;line-height:1.3}
+    .learn-card-desc{font-size:.86rem;color:var(--text-muted);line-height:1.75;font-family:'Source Serif 4',serif}
+    .learn-card-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+    .learn-card-link:hover{border-bottom-color:var(--gold)}
+
+    .learn-divider{border:none;border-top:1px solid var(--border);margin:0}
+
+    .blog-section{background:var(--cream);padding:72px 40px}
+    .blog-section-inner{max-width:1100px;margin:0 auto}
+    .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+    .blog-post-card{background:var(--white);border:1px solid var(--border);text-decoration:none;color:var(--text);display:block;transition:transform .25s,box-shadow .25s}
+    .blog-post-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(26,46,26,.1)}
+
+    @media(max-width:900px){
+      .learn-grid{grid-template-columns:repeat(2,1fr)}
+      .blog-grid{grid-template-columns:repeat(2,1fr)}
+      .learn-wrap{padding:48px 24px}
+    }
+    @media(max-width:600px){
+      .learn-grid{grid-template-columns:1fr}
+      .learn-hero{padding:48px 20px}
+      .blog-grid{grid-template-columns:1fr}
+      .blog-section{padding:40px 16px}
+      .learn-wrap{padding:32px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<div id="header-mount"></div>
+
+<div class="learn-hero">
+  <span class="section-tag" style="margin-bottom:16px">Resources</span>
+  <h1>Learn & Explore</h1>
+  <p>Hatch charts, river reports, fly fishing classes, techniques, and everything you need to fish smarter.</p>
+</div>
+
+<main>
+  <div class="learn-wrap"><div class="learn-section-header"><span class="section-tag">Resources</span><h2 class="section-heading" style="margin-bottom:8px">Everything You Need</h2><p class="section-sub">From hatch charts to river reports — your complete fly fishing resource.</p></div><div class="learn-grid">
+
+    <a href="blog.html" class="learn-card">
+      <div class="learn-card-icon">📝</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">Articles</span>
+        <div class="learn-card-title">Fly Fishing Journal</div>
+        <p class="learn-card-desc">Tips, destinations, hatch reports, and stories from expert anglers. New articles added regularly.</p>
+        <span class="learn-card-link">Read Articles →</span>
+      </div>
+    </a>
+
+    <a href="hatch-charts.html" class="learn-card">
+      <div class="learn-card-icon">🦋</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">Reference</span>
+        <div class="learn-card-title">Hatch Charts</div>
+        <p class="learn-card-desc">Know exactly what flies to use and when. Detailed hatch charts for major trout streams across the U.S.</p>
+        <span class="learn-card-link">View Hatch Charts →</span>
+      </div>
+    </a>
+
+    <a href="river-reports.html" class="learn-card">
+      <div class="learn-card-icon">🌊</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">Conditions</span>
+        <div class="learn-card-title">River Reports</div>
+        <p class="learn-card-desc">Live USGS streamflow data and detailed reports for hundreds of trout streams across America.</p>
+        <span class="learn-card-link">Check Rivers →</span>
+      </div>
+    </a>
+
+    <a href="classes.html" class="learn-card">
+      <div class="learn-card-icon">🎣</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">Education</span>
+        <div class="learn-card-title">Classes & Instruction</div>
+        <p class="learn-card-desc">Learn fly fishing from the ground up or sharpen your skills with detailed instruction and guides.</p>
+        <span class="learn-card-link">View Classes →</span>
+      </div>
+    </a>
+
+    <a href="techniques.html" class="learn-card">
+      <div class="learn-card-icon">🪝</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">How-To</span>
+        <div class="learn-card-title">Techniques & Methods</div>
+        <p class="learn-card-desc">Casting, presentation, reading water, and matching the hatch. Everything you need to catch more fish.</p>
+        <span class="learn-card-link">Learn Techniques →</span>
+      </div>
+    </a>
+
+    <a href="destinations.html" class="learn-card">
+      <div class="learn-card-icon">🗺️</div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">Travel</span>
+        <div class="learn-card-title">Stream Destinations</div>
+        <p class="learn-card-desc">Guides to the best trout streams in America including the Smokies, Yellowstone, and hundreds more.</p>
+        <span class="learn-card-link">Explore Destinations →</span>
+      </div>
+    </a>
+
+  </div></div>
+
+  <!-- Latest Blog Posts -->
+  <div class="blog-section">
+    <span class="section-tag" style="display:block;text-align:center;margin-bottom:10px">Latest Posts</span>
+    <h2>From the Journal</h2>
+    <p>Fresh articles from our team of expert anglers</p>
+    <div class="blog-section-inner"><div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px"><div><span class="section-tag">Latest Posts</span><h2 class="section-heading" style="margin-bottom:4px">From the Journal</h2><p class="section-sub" style="margin-bottom:0">Fresh articles from our team of expert anglers</p></div><a href="blog.html" class="btn-secondary">All Articles &rarr;</a></div><div class="blog-grid" id="learn-blog-grid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+    </div></div>
+  </div>
+</main>
+
+<div id="footer-mount"></div>
+<script src="shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = renderHeader('Learn');
+  document.getElementById('footer-mount').innerHTML = renderFooter();
+  initHeader();
+
+  /* Load latest blog posts */
+  var SUPA_URL  = 'https://elvbbqozynshrebfqkgf.supabase.co';
+  var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdmJicW96eW5zaHJlYmZxa2dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMDA0ODgsImV4cCI6MjA4OTg3NjQ4OH0.JKGHgZlhSmecWufvlMavTlkgmFK3e9s9Vp2AR1rJalo';
+
+  fetch(SUPA_URL + '/rest/v1/posts?published=eq.true&order=created_at.desc&limit=3', {
+    headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON }
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(posts) {
+    var grid = document.getElementById('learn-blog-grid');
+    if (!posts || !posts.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-family:Fira Mono,monospace;font-size:.82rem">No posts yet.</div>';
+      return;
+    }
+    grid.innerHTML = posts.map(function(p) {
+      var date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+      var preview = (p.content||'').replace(/<[^>]*>/g,'').substring(0,120);
+      var img = p.image_url ? '<img src="'+p.image_url+'" alt="" loading="lazy" style="width:100%;height:180px;object-fit:cover" />' : '<div style="height:180px;background:var(--moss)"></div>';
+      return '<a href="post.html?id='+p.id+'" style="background:var(--white);border:1px solid var(--border);text-decoration:none;color:var(--text);display:block">'
+        + img
+        + '<div style="padding:20px">'
+        + '<div style="font-family:Fira Mono,monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--river-light);margin-bottom:8px">'+(p.tag||'Article')+' · '+date+'</div>'
+        + '<div style="font-family:Playfair Display,serif;font-size:1.1rem;font-weight:700;color:var(--forest);margin-bottom:8px">'+p.title+'</div>'
+        + '<div style="font-size:.84rem;color:var(--text-muted)">'+preview+'…</div>'
+        + '</div></a>';
+    }).join('');
+  });
+</script>
+</body>
+</html>
