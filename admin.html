@@ -267,7 +267,51 @@
     </div>
 
     <!-- ORDERS -->
-    <div class="admin-panel" id="tab-orders">
+    <div class="admin-pan
+  <!-- CLASSES TAB -->
+  <div id="tab-classes" class="tab-pane" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--forest);margin:0">Classes</h2>
+      <button class="btn-primary" onclick="showClassForm()">+ New Class</button>
+    </div>
+
+    <!-- Class Form -->
+    <div id="class-form" style="display:none;background:var(--cream);border:1px solid var(--border);padding:28px;margin-bottom:28px">
+      <h3 id="class-form-title" style="font-family:'Playfair Display',serif;color:var(--forest);margin:0 0 20px">New Class</h3>
+      <input type="hidden" id="class-edit-id" value="" />
+      <div style="margin-bottom:16px">
+        <label style="font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);display:block;margin-bottom:6px">Title</label>
+        <input id="class-title" type="text" placeholder="Class title" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;outline:none;box-sizing:border-box" />
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);display:block;margin-bottom:6px">Short Description</label>
+        <input id="class-desc" type="text" placeholder="Brief description shown on card" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;outline:none;box-sizing:border-box" />
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);display:block;margin-bottom:6px">Image URL</label>
+        <input id="class-image" type="text" placeholder="https://..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;outline:none;box-sizing:border-box" />
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-family:'Fira Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);display:block;margin-bottom:6px">Content</label>
+        <textarea id="class-content" rows="12" placeholder="Write the full class content here..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);font-family:'Source Serif 4',serif;font-size:.95rem;outline:none;resize:vertical;box-sizing:border-box"></textarea>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <input type="checkbox" id="class-published" style="width:16px;height:16px" />
+        <label for="class-published" style="font-family:'Fira Mono',monospace;font-size:.78rem;color:var(--stone)">Published</label>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button class="btn-primary" onclick="saveClass()">Save Class</button>
+        <button onclick="hideClassForm()" style="padding:10px 20px;border:1.5px solid var(--border);background:var(--white);font-family:'Fira Mono',monospace;font-size:.78rem;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Classes List -->
+    <div id="classes-admin-list">
+      <div class="loading"><div class="spinner"></div>Loading classes...</div>
+    </div>
+  </div>
+
+el" id="tab-orders">
       <div class="admin-card">
         <h2>All Orders <span style="font-family:'Fira Mono',monospace;font-size:.76rem;color:var(--stone);font-weight:400">— click any order to view details &amp; ship</span></h2>
         <div id="orders-table"><div class="loading"><div class="spinner"></div>Loading…</div></div>
@@ -907,6 +951,95 @@
   }
 
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ── CLASSES ── */
+  function loadClasses() {
+    sbGet('classes','order=created_at.desc').then(function(classes) {
+      var el = document.getElementById('classes-admin-list');
+      if (!classes.length) {
+        el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--stone);font-family:Fira Mono,monospace;font-size:.82rem">No classes yet. Click New Class to add one.</div>';
+        return;
+      }
+      el.innerHTML = '<table style="width:100%;border-collapse:collapse">'
+        + '<thead><tr style="border-bottom:2px solid var(--border)">'
+        + '<th style="text-align:left;padding:10px 12px;font-family:Fira Mono,monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone)">Title</th>'
+        + '<th style="text-align:left;padding:10px 12px;font-family:Fira Mono,monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone)">Status</th>'
+        + '<th style="padding:10px 12px"></th>'
+        + '</tr></thead><tbody>'
+        + classes.map(function(c) {
+            return '<tr style="border-bottom:1px solid var(--border)">'
+              + '<td style="padding:12px;font-family:Source Serif 4,serif;font-size:.9rem;color:var(--forest);font-weight:600">'+c.title+'</td>'
+              + '<td style="padding:12px"><span style="font-family:Fira Mono,monospace;font-size:.68rem;padding:3px 10px;background:'+(c.published?'rgba(44,122,44,.12)':'rgba(200,147,42,.12)')+';color:'+(c.published?'var(--forest)':'var(--gold)')+';border-radius:2px">'+(c.published?'Published':'Draft')+'</span></td>'
+              + '<td style="padding:12px;text-align:right;white-space:nowrap">'
+              + '<button onclick="editClass('+JSON.stringify(c).replace(/"/g,'&quot;')+')" style="font-family:Fira Mono,monospace;font-size:.72rem;padding:6px 14px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;margin-right:8px">Edit</button>'
+              + '<button onclick="deleteClass(''+c.id+'')" style="font-family:Fira Mono,monospace;font-size:.72rem;padding:6px 14px;border:1.5px solid #c85040;color:#c85040;background:var(--white);cursor:pointer">Delete</button>'
+              + '</td></tr>';
+          }).join('')
+        + '</tbody></table>';
+    });
+  }
+
+  function showClassForm() {
+    document.getElementById('class-form-title').textContent = 'New Class';
+    document.getElementById('class-edit-id').value = '';
+    document.getElementById('class-title').value = '';
+    document.getElementById('class-desc').value = '';
+    document.getElementById('class-image').value = '';
+    document.getElementById('class-content').value = '';
+    document.getElementById('class-published').checked = false;
+    document.getElementById('class-form').style.display = 'block';
+    document.getElementById('class-title').focus();
+  }
+
+  function hideClassForm() {
+    document.getElementById('class-form').style.display = 'none';
+  }
+
+  function editClass(c) {
+    document.getElementById('class-form-title').textContent = 'Edit Class';
+    document.getElementById('class-edit-id').value = c.id;
+    document.getElementById('class-title').value = c.title || '';
+    document.getElementById('class-desc').value = c.description || '';
+    document.getElementById('class-image').value = c.image_url || '';
+    document.getElementById('class-content').value = c.content || '';
+    document.getElementById('class-published').checked = !!c.published;
+    document.getElementById('class-form').style.display = 'block';
+    document.getElementById('class-form').scrollIntoView({behavior:'smooth'});
+  }
+
+  function saveClass() {
+    var id    = document.getElementById('class-edit-id').value;
+    var title = document.getElementById('class-title').value.trim();
+    if (!title) { alert('Please enter a title'); return; }
+    var body = {
+      title:       title,
+      description: document.getElementById('class-desc').value.trim(),
+      image_url:   document.getElementById('class-image').value.trim(),
+      content:     document.getElementById('class-content').value.trim(),
+      published:   document.getElementById('class-published').checked
+    };
+    var url    = SUPA_URL + '/rest/v1/classes' + (id ? '?id=eq.'+id : '');
+    var method = id ? 'PATCH' : 'POST';
+    fetch(url, {
+      method: method,
+      headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer '+authToken, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(body)
+    }).then(function(r) {
+      if (r.ok) { hideClassForm(); loadClasses(); showToast('Class saved!'); }
+      else { alert('Error saving class'); }
+    });
+  }
+
+  function deleteClass(id) {
+    if (!confirm('Delete this class? This cannot be undone.')) return;
+    fetch(SUPA_URL + '/rest/v1/classes?id=eq.'+id, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer '+authToken }
+    }).then(function(r) {
+      if (r.ok) { loadClasses(); showToast('Class deleted'); }
+    });
+  }
+
 </script>
 </body>
 </html>
