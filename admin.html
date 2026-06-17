@@ -972,7 +972,7 @@ el" id="tab-orders">
               + '<td style="padding:12px"><span style="font-family:Fira Mono,monospace;font-size:.68rem;padding:3px 10px;background:'+(c.published?'rgba(44,122,44,.12)':'rgba(200,147,42,.12)')+';color:'+(c.published?'var(--forest)':'var(--gold)')+';border-radius:2px">'+(c.published?'Published':'Draft')+'</span></td>'
               + '<td style="padding:12px;text-align:right;white-space:nowrap">'
               + '<button onclick="editClass('+JSON.stringify(c).replace(/"/g,'&quot;')+')" style="font-family:Fira Mono,monospace;font-size:.72rem;padding:6px 14px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;margin-right:8px">Edit</button>'
-              + '<button onclick="deleteClass(''+c.id+'')" style="font-family:Fira Mono,monospace;font-size:.72rem;padding:6px 14px;border:1.5px solid #c85040;color:#c85040;background:var(--white);cursor:pointer">Delete</button>'
+              + '<button onclick="deleteClass(&quot;'+c.id+'&quot;)" style="font-family:Fira Mono,monospace;font-size:.72rem;padding:6px 14px;border:1.5px solid #c85040;color:#c85040;background:var(--white);cursor:pointer">Delete</button>'
               + '</td></tr>';
           }).join('')
         + '</tbody></table>';
